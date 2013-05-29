@@ -1,0 +1,7 @@
+title plot of ic versus vbe and vce
+$
+mesh infile=npnmesh.msh
+plot.1d inf=ivbe.log x.ax=v3 y.ax=i2 abs log points pause
+plot.1d inf=ivce.log x.ax=v2 y.ax=i2 
+$
+end

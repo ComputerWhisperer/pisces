@@ -1,0 +1,2 @@
+/* NOTE: this file created by the Makefile */
+#define PCAP_FILE	"/icl/lib/plotcap"

@@ -1,0 +1,3 @@
+#undef DO_X10
+#define DO_X11
+#undef DO_SUNVIEW

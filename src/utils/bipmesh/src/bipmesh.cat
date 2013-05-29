@@ -1,0 +1,132 @@
+
+
+
+BIPMESH(1)                USER COMMANDS                BIPMESH(1)
+
+
+
+NAME
+     bipmesh - Pisces deck generator for  simple  MOS  devices  -
+     Version 8908
+
+SYNOPSIS
+     bipmesh [ -abs -f [defaultfile] -m[modifyfile]  -o  [output-
+     file]  ] [ outputfile ]
+
+DESCRIPTION
+     _B_I_P_M_E_S_H is an interactive program that generates a PISCES2-B
+     input  deck  for bipolar structures.  Questions are asked of
+     the user such as doping concentrations  and  lateral  dimen-
+     sion.   Upon  completion, a pisces deck is generated in file
+     outputfile.
+
+OPTIONS
+     -a   Use analytic functions for doping profiles [default].
+
+     -b   Batch mode.  take default data and generate a deck.
+
+     -c   indicates that both Suprem3 and  analytic  doping  pro-
+          files will be used
+
+     -f [defaultfile]
+          read default information from file defaultfile.  if  no
+          filename is given then the default is .defaultmesh.
+
+     -m [modifyfile]
+          indicates that the default values to change (along with
+          their new values) are present in file modifyfile.
+
+     -o [filename]
+          write output to filename.  if no filename is given then
+          the  default  is  mosmesh.out.   also  if a filename is
+          given as the last argument to mosmesh, then the -o flag
+          is ignored.
+
+     -s   indicates that Suprem3 doping profiles will be used
+
+EXAMPLE
+          1 zotz> mosmesh -f playmesh -o outfile - generates Pisces deck from information
+                                            in playmesh and writes the deck to outfile.
+
+          2 zotz> mosmesh -s bip.in - use Suprem3 doping files and creates a pisces deck bip.in.
+
+          3 zotz> mosmesh -m changes -b -o outfile - operates in batch mode, using the defaults
+                                             in .defaultmesh.  In addition any changes to the
+                                             default values are specified in file changes.
+
+FILES
+     .defaultmesh holds responses from previous mosmesh run
+
+
+
+
+Sun Release 3.5   Last change: 28 February 1989                 1
+
+
+
+
+
+
+BIPMESH(1)                USER COMMANDS                BIPMESH(1)
+
+
+
+     .tempfile holds data from current session
+
+
+BUGS
+     does not check input for unreasonable data
+     no backup mode to change a previous entry.  you must rerun the program.
+     please report any other bugs to chin@rats.stanford.edu
+
+AUTHORS
+     Mark Law
+     Goodwin Chin
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Sun Release 3.5   Last change: 28 February 1989                 2
+
+
+

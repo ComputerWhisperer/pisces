@@ -1,0 +1,47 @@
+title npn transistor
+mesh    in=npnmesh.msh
+contac  num=3 resis=1e3
+symb    newton  carr=2 
+method  autonr maxinner=25
+models  temp=300 srh auger conmob fldmob print
+$
+$  generate and plot ic versus vbe
+$
+log outf=ivbe.log
+solve   init outf=npnout0.slv
+solve   v2=5 v3=.1 local out=npnv5.slv
+solve    vstep=0.10 nstep=7 elect=3
+$plot.1d inf=ivbe.log x.ax=v3 y.ax=i2
+$
+$  generate and plot ic versus vce curve
+$
+log     outf=ivce.log
+solve   v2=5 v3=0.1 outf=npn1.slv
+solve     vstep=-0.5  nstep=8  elect=2
+solve     vstep=-0.1 nstep=10 elect=2
+load   inf=npn1.slv
+solve   prev  v2=5 v3=0.2 outf=npn2.slv
+solve    vstep=-0.5  nstep=8  elect=2
+solve     vstep=-0.1 nstep=10 elect=2
+load   inf=npn2.slv
+solve    prev v2=5 v3=0.3 outf=npn3.slv
+solve    vstep=-0.5  nstep=8  elect=2
+solve     vstep=-0.1 nstep=10 elect=2
+load   inf=npn3.slv
+solve    prev v2=5 v3=0.4 outf=npn4.slv
+solve    vstep=-0.5  nstep=8  elect=2
+solve     vstep=-0.1 nstep=10 elect=2
+load   inf=npn4.slv
+solve    prev v2=5 v3=0.5 outf=npn5.slv 
+solve    vstep=-0.5  nstep=8  elect=2
+solve     vstep=-0.1 nstep=10 elect=2
+load   inf=npn5.slv
+solve    prev v2=5 v3=0.6 outf=npn6.slv 
+solve    vstep=-0.5  nstep=8  elect=2
+solve     vstep=-0.1 nstep=10 elect=2
+load   inf=npn6.slv
+solve    prev v2=5 v3=0.7 outf=npn7.slv 
+solve    vstep=-0.5  nstep=8  elect=2
+solve     vstep=-0.1 nstep=10 elect=2
+$plot.1d inf=ivce.log log x.ax=v2 y.ax=i2
+end

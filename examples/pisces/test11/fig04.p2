@@ -1,0 +1,36 @@
+Title	HMOS FET (1.5um channel) (JUST FOR FIG 4)
+$
+$ *** A : Mdefine rectangular grid ***
+$
+Mesh	rectangular nx=38 ny=23 outf=junk.msh
+X.mesh	n=1	l=0	r=1
+x.m	n=4	l=0.50	r=0.7
+x.m	n=8	l=0.70	r=0.75
+x.m	n=15	l=0.95	r=1.25
+x.m	n=24	l=2.05	r=1.0
+x.m	n=31	l=2.30	r=0.8
+x.m	n=35	l=2.50	r=1.33
+x.m	n=38	l=3.00	r=1.40
+Y.mesh	n=1	l=-.035	r=1
+y.m	n=4	l=0	r=1
+y.m	n=9	l=0.10	r=1.25
+y.m	n=16	l=0.50	r=1.15
+y.m	n=23	l=2.0	r=1.25
+
+$
+$ *** regions ***
+$
+region	num=1  ix.l=1  ix.h=38  iy.l=1  iy.h=4  oxide
+region	num=2  ix.l=1  ix.h=38  iy.l=4  iy.h=23 silicon
+$
+$ *** electrodes ***
+$
+elec	num=1  ix.l=4  ix.h=35  iy.l=1  iy.h=1
+elec	num=2  ix.l=1  ix.h=38  iy.l=23 iy.h=23
+elec	num=3  ix.l=1  ix.h=3   iy.l=4  iy.h=4
+elec	num=4  ix.l=36 ix.h=38  iy.l=4  iy.h=4
+
+$ fig 4
+$plot.2d	bound grid no.fill no.top
+
+end

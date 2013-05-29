@@ -1,0 +1,18 @@
+
+			SCHOTTKY DIODE
+
+This simulation is a very simple example of the schottky diode.  The 
+junction consists of a p-type region with a concentration of 5e19 and
+a metal contact with a work function difference of 0.8 eV.  The device
+measures 1 x 1 micron, and a very simple mesh is used to grid this small
+area.  The mesh is saved in a file called shot.msh.  The intial solution
+is obtained using a two carrier gummel method.  To solve for the forward
+characteristics, a two carrier newton method is used.  Forward characteristics
+are solved for by grounding the contact and by forward biasing the 
+junction by applying a positive voltage to the p region.  The simulation
+results are stored in a log file called shotIV.log.  
+
+This example also tests for the charge conservation pertaining to the 
+two contacts.  Charge extraction is basically integration of charge on
+the metal contact.  This should show charge neutrality in the absence
+of applied bias.   This is done by a file called schot.p2.

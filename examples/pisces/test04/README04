@@ -1,0 +1,43 @@
+
+			ELO MOSFET
+
+
+This example consist of a simulation of a 1.5 micron ELO MOSFET.  This
+device is similar to the previous device (psuedo soi).  In this device
+the oxide is not only under the source and drain diffusions like the 
+previous device, but its also under the the channel.  There are windows in
+the oxide to provide the holes a path to the substrate.
+
+The device consists of identical size and mesh as the psuedo soi device.
+The mesh is constructed by a file called n3egrid.p2.  The eliminate and
+spread statements are still the same.  The region statements define
+the oxide locations in the device.  The device is then doped appropriately
+and the grid, junctions and the doping contours are plotted.
+
+A file called n3esolve.p2 is used as with the previous device to solve 
+the initial gate and drain characteristics.  The mesh as usual is imported
+into the file first.  To solve for initial conditions at zero bias, 
+the gummel method is used.  The file specifies the surface mobility using
+the material card.  The models used in this simulation are concentration and
+field dependent mobilities and impact ionization.  The impact ionization 
+is not important at low bias but needed at high bias when the fields get
+strong.
+
+The initial solution is obtained and an outfile is saved as nbias.init.
+Then the method is switched to single carrier newton for the remaining
+gate and drain current and voltage characteristics.  A log file is started
+to store the data of the simulation.  A solution is first obtained at 
+the drain to source voltage of .1 volts and saved in an outfile called
+nbias.1.  The gate is then stepped from -0.5 volts to 2.0 volts and the
+gate characteristics are plotted.  Next, the drain voltage is raised from
+zero to 100 millivolts and the result is saved in a file called
+bbL20dv4.100mv.  The gate voltage is then stepped from 0 to 5 volts and the 
+result is saved in bbL20d.100mv.  It is good to save some outfiles during
+the simulation so that post processing at selected bias points can be done.
+
+A file called n3edrain.p2 is used to obtain the current voltage characteristics in the linear and saturation regions.  This file loads in the mesh and the
+initial solution from the past simulation and then steps the gate voltage
+up to the desired bias (3V).  The drain to source voltage is then stepped
+up to 3 volts.  The drain to source voltage versus the drain current is then
+plotted.
+

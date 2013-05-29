@@ -1,0 +1,71 @@
+.\" @(#)w.1 1.1 86/07/10 SMI; from UCB 4.2
+.TH BIPMESH 1 "28 February 1989"
+.SH NAME
+bipmesh \- Pisces deck generator for simple MOS devices - Version 8908
+.SH SYNOPSIS
+\fBbipmesh\fP [ \fB\-abs -f [defaultfile] -m[modifyfile] -o [outputfile] \fP ] [ outputfile ]
+.IX  "w command"  ""  "\fLw\fP \(em what are users doing"
+.IX  "what are users doing"  ""  "what are users doing \(em \fLw\fP"
+.IX  users  "what are they doing"  users  "what are they doing \(em \fLw\fP"
+.IX  login  "what are users doing"  login  "what are users doing \(em \fLw\fP"
+.SH DESCRIPTION
+.LP
+\fIBIPMESH\fP is an interactive program that generates a PISCES2-B input
+deck for bipolar structures.
+Questions are asked of the user such as doping concentrations and
+lateral dimension.
+Upon completion, a pisces deck is generated in file outputfile.
+.SH OPTIONS
+.TP
+\fB\-a\fP
+Use analytic functions for doping profiles [default].
+.TP
+\fB\-b\fP
+Batch mode.  take default data and generate a deck.
+.TP
+\fB\-c\fP
+indicates that both Suprem3 and analytic doping profiles will be used
+.TP
+\fB\-f [defaultfile]\fP
+read default information from file defaultfile.  if no filename is given
+then the default is .defaultmesh.
+.TP
+\fB\-m [modifyfile]\fP
+indicates that the default values to change (along with their new values)
+are present in file modifyfile.
+.TP
+\fB\-o [filename]\fP
+write output to filename.  if no filename is given then the default is
+mosmesh.out.  also if a filename is given as the last argument to 
+mosmesh, then the -o flag is ignored.
+.TP
+\fB\-s\fP
+indicates that Suprem3 doping profiles will be used
+.SH EXAMPLE
+.RS
+.nf
+1 zotz> mosmesh -f playmesh -o outfile \- generates Pisces deck from information
+                                  in playmesh and writes the deck to outfile.
+                                  
+2 zotz> mosmesh -s bip.in \- use Suprem3 doping files and creates a pisces deck bip.in.
+
+3 zotz> mosmesh -m changes -b -o outfile \- operates in batch mode, using the defaults
+                                   in .defaultmesh.  In addition any changes to the
+                                   default values are specified in file changes.
+.SH FILES
+.fi
+\&.defaultmesh
+holds responses from previous mosmesh run
+
+\&.tempfile
+holds data from current session
+
+.SH BUGS
+.nf
+does not check input for unreasonable data
+no backup mode to change a previous entry.  you must rerun the program.
+please report any other bugs to chin@rats.stanford.edu
+.SH AUTHORS
+.nf
+Mark Law
+Goodwin Chin

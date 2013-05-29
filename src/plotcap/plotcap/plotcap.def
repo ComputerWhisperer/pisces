@@ -1,0 +1,8 @@
+# Date:
+# LOCAL DEFINITIONS, edit this not "/tmp/icl"/lib/plotcap.std
+ 
+%next ""/tmp/icl"/lib/plotcap.std"
+ 
+# -------------------------------------------
+# -- Add local defintions here --------------
+tty:	LIKE=hp2648::

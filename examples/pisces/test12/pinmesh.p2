@@ -1,0 +1,84 @@
+$Title Isolation between different structures on the same chip
+$
+$ ***************************
+$ ***  file = isol13.grid  ***
+$ ***************************
+$
+$ This structure is a isolation structure for a pin diode.
+$
+$ *** define rectangular grid ***
+$
+mesh rectangular nx=150 ny=40 outfile=isol13.msh
+
+x.m n=1  l=0    r=1
+x.m n=10  l=96   r=0.9 
+x.m n=20  l=100  r=1   
+x.m n=26 l=110  r=1   
+x.m n=36 l=114  r=1   
+x.m n=46 l=136  r=1   
+x.m n=56 l=140  r=1   
+x.m n=62 l=145  r=1   
+x.m n=70 l=149  r=1   
+x.m n=78 l=171  r=1   
+x.m n=88 l=175  r=1   
+x.m n=93 l=180  r=1   
+x.m n=103 l=184  r=1   
+x.m n=111 l=206  r=1   
+x.m n=121 l=210  r=1   
+x.m n=150 l=450  r=1.2   
+
+y.m n=1  l=0    r=1
+y.m n=5  l=2.3  r=0.9
+y.m n=10 l=3.15 r=1   
+y.m n=15 l=6    r=1.1
+y.m n=23 l=150  r=1.2
+y.m n=30 l=294  r=0.75
+y.m n=35 l=296.85 r=0.9
+y.m n=40 l=300  r=1.1
+$
+$ *** eliminate unnecessary grid points ***
+$
+elim y.dir ix.low =10 ix.hi=20 iy.low=16 iy.high=40
+elim y.dir ix.low =26 ix.hi=36 iy.low=16 iy.high=40
+elim y.dir ix.low =46 ix.hi=56 iy.low=16 iy.high=40
+elim y.dir ix.low =62 ix.hi=70 iy.low=16 iy.high=40
+elim y.dir ix.low =78 ix.hi=88 iy.low=16 iy.high=40
+elim y.dir ix.low =93 ix.hi=103 iy.low=16 iy.high=40
+elim y.dir ix.low =111 ix.hi=121 iy.low=16 iy.high=40
+elim y.dir ix.low =10 ix.hi=20 iy.low=18 iy.high=40
+elim y.dir ix.low =26 ix.hi=36 iy.low=18 iy.high=40
+elim y.dir ix.low =46 ix.hi=56 iy.low=18 iy.high=40
+elim y.dir ix.low =62 ix.hi=70 iy.low=18 iy.high=40
+elim y.dir ix.low =78 ix.hi=88 iy.low=18 iy.high=40
+elim y.dir ix.low =93 ix.hi=103 iy.low=18 iy.high=40
+elim y.dir ix.low =111 ix.hi=121 iy.low=18 iy.high=40
+$
+$ *** regions ***
+$
+region num=1 ix.l=1 ix.h=150  iy.l=1 iy.h=40 silicon
+$
+$ *** electrodes***
+$
+elec num=1  ix.l=1   ix.h=3   iy.l=1  iy.h=1
+elec num=2  ix.l=17  ix.h=19  iy.l=1  iy.h=1
+elec num=3  ix.l=1   ix.h=150  iy.l=40 iy.h=40
+$
+$ *** doping ***
+$
+dop unif  conc=1e12  p.type outfile=isol13.dopf
+dop gauss conc=2e15  n.type peak=0 charact =0.85
+dop gauss conc=1e18  p.type peak=0 charact =0.85 x.left= 100 x.right= 110
+dop gauss conc=1e18  p.type peak=0 charact =0.85 x.left= 140 x.right= 145
+dop gauss conc=1e18  p.type peak=0 charact =0.85 x.left= 175 x.right= 180
+dop gauss conc=1e18  p.type peak=0 charact =0.85 x.left= 210 
+dop gauss conc=1e18  p.type peak=300 charact =0.85 
+$
+$ ******************************
+$ *** first regrid on doping ***
+$ ******************************
+$
+$regrid doping log reg=1 y.min=0 y.max=15 
+$ + cos.angle=.2 smooth.k=1
+$ + ratio=4 dopf=isol13.dopf outf=isol13.mesh
+$
+end

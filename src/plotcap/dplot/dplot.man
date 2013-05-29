@@ -1,0 +1,804 @@
+.\" Wed Jan 31 10:57:16 PST 1990 (dredge--stanford)
+.TH  DPLOT 1L "STANFORD UNIVERSITY"
+.PP
+.SH  NAME
+dplot \- General data plotting / plot manipulation program.
+.PP
+.SH  SYNOPSIS
+.PP
+dplot [\-l[2]] [-o outfile] [\-d plotdev] [\-t tplotfile]
+[data/command files] [\-i]
+.PP
+.SH  "VERSION 4.1b"
+.PP
+mail bugs to dplot\-bugs@Oasis.Stanford.Edu or
+.br
+{ucbvax,decwrl}!labrea!oasis!dplot\-bugs
+.SH "CHANGES SINCE REV. 3.3"
+.PP
+Rev 4.1a
+Labels can now be place relative to data coordinates using the
+$label.loc.data (default: $label.loc.screen).  Subsequent $label.loc N
+calls will be take as data values.  Also, $locate commands will return
+values relative to the data values.
+.br
+Added the $pen.symb command to control the pen thickness for drawing symbols
+similar to the $pen.data and $pen.axis commands.
+.br
+Added the $label.size N command to set the size of labels ($label,
+$symb.label, $line.label) independent of the $symb.size command.
+Formerly, $label.size = $symb.size * 1.5
+.PP
+Rev 3.4
+There is a command to call the high2 library's axplt2() function directly
+from dplot.  It is not pretty nor easy to use (since it is simply a raw
+interface to axplt2() itself), but in some cases it may be the only way
+to get the job done.  The comnand is $axplt2 \fIstring\fR.  The argument
+is a comma separated list of parameters for axplt2().  See the
+.B high2
+manual for details.
+.PP
+Rev 3.3
+Add the ``$echo string'' command.  Helpful for commenting
+script files.
+.SH  DESCRIPTION
+.PP
+\fBdplot\fR
+is a general plotting program that takes several different
+inputs and creates plots on a given plot device.  There are two main
+and overlapping uses for \fBdplot\fR:
+plotting raw data and  redrawing
+plot ``save'' files.  
+.B dplot
+also allows transformation of plots
+through offsetting, rotation, and scaling.  It can also produce
+plots for several different plot devices.
+.PP
+Command line arguments can be actual 
+.B dplot
+commands or some
+special commands used only on the command line.
+Arguments include:
+.TP 
+\-d plotdev
+Set plot device to 'plotdev'.  If used, this
+should be the first argument to \fBdplot\fR.
+The device specification
+can be any device defined in the plot device capabilities data base
+\fIplotcap\fR.
+If no plot device is given, the value of the environment
+variable 
+.B DEFPDEV
+will be used.  If this is not given, the user's
+terminal is taken as the plot device to use.
+.TP 
+\-t tplotfile
+Take 
+.I tplotfile
+as a binary save file
+(like that produced by Suprem\-III or 
+.B dplot
+with the
+output device set to \fBsave\fR).
+Redraw the plot with any
+transformations already given to \fBdplot\fR.
+.TP 
+files...
+The named file are take to be data/dplot\-command 
+files.  Both data and 
+.B dplot
+commands can be intermixed
+within the same file or any number of files.  A standard
+setup can be placed in one file followed by the data files
+or everything in one file.
+.TP 
+\-f file
+Like above, but just the single file name following
+is taken as a dplot commands/text file.  Useful after the
+\fB\-T\fR
+option has been used to insert a commands/text file.
+.TP 
+\-T
+Take all subsequent (untagged) files to be 
+.B tplot
+files.
+This switches the default from untagged files being 
+text/commands and 
+.B \-t
+tagged files are 
+.B tplot
+files.
+.TP 
+\-F
+Take all subsequent (untagged) files to be dplot command/
+text files.  This undoes the 
+.B \-T
+option.
+.PP
+.TP 
+\-o outfile
+Set plot output file to \fIoutfile\fR.
+All output
+will put in this file instead of the default device given
+in \fBplotcap\fR.  This option works best if it is given before
+the \-d (device) option.
+.TP
+\-l[2]
+Log all \fBdplot\fR commands to the file \fBdplot.log\fR.  This is an ascii
+file of \fBdplot\fR commands that can be edited and/or re-executed by dplot.
+If the option is \fB\-l2\fR, then save files will be expanded and logged.
+.TP 
+\-i
+Use the standard input as the input file for \fBdplot\fR.
+This option can be inserted anywhere in the command line
+and as often as necessary.  This can be used, for example,
+to pipe program output into 
+.B dplot
+after some setup
+files have been read. \fINOTE\fR:
+If no arguments are given
+on the command line, the standard input is assumed.
+.TP 
+\-
+Same as \fB\-i\fR.
+More Unix compatible concept.
+.TP 
+,
+Same as \fB\-i\fR.
+Easier for me to use.
+.TP 
+\-{dplot command} [dplot arg]
+Any dplot command and possible
+argument can be given on the command line beginning
+with a '\-' (minus sign).
+.PP
+Several examples may help illustrate what can be done with \fBdplot\fR.
+.TP 
+% dplot \-clear setup file.dat
+Will clear the screen,
+take commands from the file 
+.B setup
+and read the data from
+\fBfile.dat\fR
+.TP 
+% dplot \-d hp2623 \-clear setup file.dat
+Like above, but plots
+to the 
+.B hp2623
+terminal.
+.TP 
+% dplot
+Use the standard input as input for 
+.B dplot
+.TP 
+% dplot \-d hp2623 setup \-i
+Use new plot device, take commands
+from the setup file and continue reading from the standard
+input (until an EOF).
+.TP 
+% dplot setup fil1.dat fil2.dat fil3.dat
+.PP
+Set up for given data ranges, etc and plot data from several
+data files.
+.TP 
+% myprog | dplot setup \-i
+.PP
+Pipe the output of 
+.B myprog
+into \fBdplot\fR.
+.B dplot
+will
+read the file 
+.I setup
+and then take input (until EOF) from
+the standard input (the piped output of 
+.B myprog
+in this
+case).
+.TP 
+% dplot \-T tplot.1 tplot.2 tplot.3
+.PP
+All files after the 
+.B \-T
+are taken as (binary)
+save files.
+.TP 
+alias cnp 'dplot \-T \-d canon'
+.PP
+This is functionally equivalent to the (old) 
+.B cnp
+program.
+.SH  "COMMANDS/TEXT/DATA FILES"
+.PP
+\fBdplot\fR
+text files can be any format file.  They are parsed into
+words separated by white space (space, tab, return characters).
+\fBdplot\fR
+commands are signaled by a word beginning with the 
+command marker character (default: \fB$\fR).
+It may have an argument.
+Numbers (data) to be plotted are thought to be in columns. Column
+counting is done by white space separated words but only
+numeric 
+.I words
+are used in the counting. 
+Comments may be embedded within 
+.B dplot
+files with a pound character (pound: \fB#\fR).  Text between the pound
+character and the end of line is ignored.
+Data and commands
+can be intermixed with one or more files.
+.PP
+.SH  COMMANDS
+.PP
+\fBdplot\fR
+command summary.  These commands are input 
+to 
+.B dplot
+through files (with or without data) or the 
+standard input or the command line macros.
+.PP
+Some commands take sub\-commands given as 
+.I command.sub
+and
+some can take an argument and some take both.  Arguments are
+either numeric or character (as in file names).
+Character type arguments should be quoted with either single or double
+quotes (and embedded quote characters may be escaped by preceding them
+with a backslash character).  If the character argument is only one word
+long, it need not be quoted.
+In the
+following descriptions the use of a sub\-command will be indicated
+as 
+.I $command.S
+and that of an argument will be either
+.I "$command num"
+or
+.IR "$command str" .
+Where sub\-commands
+are 
+.I x
+or 
+.I y
+the sub\-command may be omitted and both
+the corresponding X and Y values are set to the given argument.
+.TP 
+$dump
+Show current
+.B dplot
+settings.  There is an option: 
+.B $dump.to
+.I file
+where the current settings
+are dumped to the file 
+.I file
+in a form re\-readable by
+\fBdplot\fR.
+.SH  "COMMANDS: NUMERIC ARGUMENTS"
+.TP 
+$addto.S num
+Set data offset values (these values get added to
+each datum 
+.I "S = {x,y}"
+.TP
+$axsize.S num
+Hack command to override default axis label sizes.
+.I "S = {title,label}"
+.TP 
+$clip.S.SS [num]
+Set clip values for plotting.  These values
+are in inches (for now, soon it can be inches on logical or
+physical axis or at some data values).
+.I "S = {high, low}"
+and
+.IR "SS = {x,y}" .
+There are a couple
+of different forms of this command best illustrated by example:
+.RS 
+.B "$clip.high.x 6.5"
+Set high clipping on x axis
+at 6.5 inches. 
+.br
+.B "$clip.high   6.5"
+Set x and y high clips at 6.5in.
+.br
+.B $clip.high
+No number given. Set high clipping at axis
+locations.
+.RE
+.TP 
+$col.S num
+Set column number for X and Y. 
+.I "S = {x, y}"
+.TP
+$label.loc.S num
+Set the locators for label drawing.
+This affects the commands
+.BR "$symb.label" ,
+.BR "$line.label" ,
+and
+.BR $label .
+These values can also be set (on devices with the capability) with the
+$locate command.
+.I "S = {x, y}"
+Note that the value by default is relative to the screen, but can
+be changed to data relative with the $label.loc.data command.
+.TP
+$label.size N
+Set the size of label strings used with $label, $line.label and
+$symb.label.
+.TP 
+$line num
+Set the line type with which to plot. Note:
+some plot devices may have no line types.
+.TP 
+$locate num
+See $locate in the `action' commands below.
+.TP 
+$max.S num
+Set the maximum values to be plotted.
+.I "S = {x, y}"
+.TP 
+$min.S num
+Set the minimum values to be plotted.
+.I "S = {x, y}"
+.TP 
+$mulby.S num
+Set data scale values (each datum gets multipled by
+these values 
+.I "S = {x,y}"
+.TP 
+$ncols num
+Set the number of columns of data in the input.
+.TP 
+$offset.S num
+Set the origin offset to 
+.IR num .
+.I "S = {x, y}"
+.TP 
+$pen.S num
+Set pen width for drawing.  There are three pens,
+one for data, one for axes and one for symbols and strings.
+.I "S = {data, axis, symb} "
+.TP 
+$rotate.S num
+Set the rotation angle and point about which 
+rotation is to take place.
+.I "S = {x, y, angle} "
+.TP 
+$scale.S num
+Set the scale factor for each direction.
+.I "S = {x, y}"
+.TP
+$segment.S num
+Select a segment (G_MARK'ed section of gplot2() calls) to be deleted on replay
+of save files ($gplot commands or $tplot files). If there is no subcommand or
+it is
+.IR del ,
+then set
+.I num
+to be a segment to be deleted (gplot2() subcommands are segment/G_MARK
+numbers).
+If the subcommand is
+.I keep
+then the segment will be kept (remove it from the to-be-deleted list).
+Additionally, with no numeric parameter, the sub-command
+.I show
+will print the current to-be-deleted list of segment numbers.
+Likewise, the sub-command
+.I reset
+will keep all segments (reset the list to empty).
+.I "S = { -empty-, del, keep, show, reset }"
+.TP 
+$symb.S num
+Set the symbol to be plotted at each point if
+plotting by symbol.
+.I "S = {size}"
+or omitted. If S is omitted, set symbol to symbol
+.IR num .
+Symbols are numbered from 0 to 15.
+If S is 
+.I size
+change the default symbol size.
+.SH  "COMMANDS: ACTION OR SET-LOGICAL-FLAG"
+.TP
+$abs.S.SS
+Plot only the absolute values of data. To turn on: $abs or $abs.on
+will plot the absolute value of both X and Y values. To turn both off
+$abs.off.  To affect the absolute value of just X or Y, try $abs.x or
+$abs.x.on and $abs.x.off (and $abs.y or $abs.y.on and $abs.y.off).
+.TP 
+$axis
+Draw the appropriate axis (Given: min, max, linear/log, labels).
+.TP
+$axis.box
+Draw a simple box for the axis (ie: without tic marks and tic labels).
+.TP 
+$by.S
+Plot 'by'
+.IR "S = {line, symb, both}" .
+Do plotting with
+symbols, lines or both.
+.TP 
+$clear
+Clear the plot \fI``screen''\fR.
+.TP
+$label.loc.SS
+Set the mode for $label.loc.{x,y} commands.  If SS=screen (the default),
+label locations are screen relative.  If SS=data then the values will
+be assumed to be data relative.
+.TP 
+$linear.S
+Set plot type to linear scale (this is the default).
+.I "S = {x, y}"
+.TP 
+$locate
+Use the tablet (assuming one is available) to get the
+current 
+.I {x,y}
+position instead of using 
+.BR "$label.loc" .
+Thus, any
+.BR "$symb.label" , "$line.label" ,
+or 
+.B $label
+commands will draw at the 
+.I located
+point. (NOTE: if
+this command has a numeric operand, it will be passed to
+to 
+.B gplot
+call as the subcommand.  This is included since
+in some 
+.B Plotcap
+definitions, the type of tablet is
+determined with the 
+.B gplot
+subcommand.)
+.TP 
+$log.S
+Set plot type to logarithmic. 
+.I "S = {x, y}"
+.TP
+$pen.S
+Raise or lower the drawing pen explicitly.
+.I "S = {up, down}"
+The pen is automatically raised when $ncols, $col.x, $col.y change or
+when a new data file is begun.  It is sometimes, however, nice to be able
+to alter the default action.
+.TP
+$reset.S
+Reset internal variables to the original default values.  The $reset.cols
+command can be used to re-synchronize column counting for data items.
+.SH  "COMMANDS: STRING ARGUMENTS"
+.TP 
+$asave str
+Simultaneously plot to current device and save
+all plot commands to a file.  Saving can be paused and 
+restarted as well as stopped at any time. The auto\-save
+commands would look like: 
+.br
+.B "$asave savefile.gp"
+	# turn saving on to new file.
+.br
+.B $asave.off
+	# don't save, file still open.
+.br
+.B $asave.on
+	# save again, to (still) open file.
+.br
+.B $asave.stop
+	# stop saving, close file.
+.br
+Note that the command 
+.B "$asave.file savefile.gp"
+is the same
+as 
+.B "$asave savefile.gp"
+and that only these forms take
+a parameter (a file name).
+.TP
+$axplt2 str
+Call the
+.B high2
+library function
+.B axplt2
+directly.  This was added as a quick hack for someone and has been
+left in since it may be the only way to accomplish some tasks.
+The string is a comma separated list of 
+.B axplt2
+arguments.  See the
+.B high2
+manual.
+.TP
+$cd str
+Or
+.I $chdir str
+can be used (on systems that support directory trees) to change the working
+directory to which dplot is connected.  Note that not all versions support
+this command (but those that don't are on systems where the command has
+no meaning).
+.TP 
+$device str
+(or \fBdev\fR).
+Set plot device to that named
+.IR str .
+.TP
+$echo.s str
+Echo the given string to the standard output.
+.I str
+is optional.
+If the sub\-command is 
+.B nl
+then echo without added a newline. ($echo.nl "hi")
+.TP 
+$file str
+Take commands and/or data from the file named
+.IR str .
+.TP
+$gpget str
+Call the 
+.B gpgeti()
+routine directly.  Prints the information returned.  Useful for debugging
+but probably not much else. Example: $gpget G_PSIZE
+.TP
+$gplot str
+Call gplot2() directly.  String is a comma separated list of
+gplot arguments (see
+.B gplot2 
+for details).  The 
+.B gplot
+commands can be numeric or symbolic.  For example:
+$gplot "G_MOVE,,2,3.45" or $gplot "gmove,,2,3.45" or
+$gplot 3,0,2,3.45 are all equivalent.  Note that a null parameter
+is set to zero.  The names are mapped from the system
+.B gplot
+include or the file specified by the GPLOTH environment variable.
+This was originally added  for debugging, but has proved useful
+for many other needs.
+Note the case is unimportant and that underscore characters are optional.
+.TP 
+$label.S str
+Set the label for each axis to 
+.IR str .
+.I "S = {x, y}"
+If 
+.I S
+is not given then draw the string at the current
+label locations. (See the command 
+.B "$label.loc num"
+in the
+Commands with numeric values section).
+.TP 
+$line.label str
+Draw a small line segment in the current line
+type at the current label location 
+(See 
+.BR "$label.loc num" )
+followed by the given string.
+.TP 
+$outfile str
+Set the output file to
+.IR str .
+All plot output
+will be put in this file.
+.TP 
+$symb.label str
+Draw the current symbol at the current label
+location (See
+.BR "$label.loc num" )
+followed by the given string.
+.TP 
+$sys str
+Execute the system command 
+.I str
+in a sub\-shell.
+This is a shell escape.  Note that like titles, etc. if
+there are embedded white spaces, the string must be quoted.
+.br
+.B NOTE:
+there is a special form of the 
+.B $sys
+commands.
+As with
+most Unix commands, an exclamation mark in the first column
+is taken as a shell escape.  But in this case no quoting (other
+than that required by the shell being used) is required; the
+remainder of the line up to a newline is take as the shell
+command to execute.  Likewise, if the first character is the
+shell escape and the second character is a less than symbol
+(\fB<\fR)
+then the entire line is taken as a shell command to
+execute and (like
+.IR sys.in )
+the output from the command is
+trapped by 
+.B dplot
+and used as input at that point.
+.TP 
+$sys.in str
+Like the 
+.B sys
+command, but all output from the
+command is 
+.I caught
+by 
+.B dplot
+and taken as further
+input. See note for
+.BR sys .
+.TP 
+$title str
+Set the title of the plot to
+.IR str .
+NOTE: if
+the title has embedded spaces, it must be quoted (with
+either single or double quotes).
+.TP 
+$tplot str
+Take 
+.I str
+to be a 
+.B tplot
+file and re\-draw
+the plot. (See the 
+.I -t
+option).
+.TP 
+$tty
+Take input from the user's terminal at this point until
+a control\-D is reached.
+.SH  "COMMANDS: SOME EXTRA COMMANDS (MISC.)"
+.PP
+There are now some 
+.I extra
+commands that allow
+a little more fooling around with the final plot.  These
+are like regular 
+.B dplot
+commands, except that they have
+an extra sub\-command, as
+.BR "$extra.command.sub arg" .
+.TP 
+$phys.c.s arg
+This command can be used to alter the physical
+set up of the plot axis.  Note that in some cases the argument
+can be a percentage. This should be given as a number between
+0 and 100 immediately followed by a percent sign.  Thus
+to specify that the origin of the X\-axis should be at 10
+percent of the screen:
+.RS 
+.RS 
+.B $phys.origin.x 10%
+.RE
+.RE
+Note also that giving 
+.B .10
+would mean 1/10th of a plot 
+unit (inch).
+.RS 
+.TP 
+$phys.origin.S val
+Set the origin of the axis to the
+given value.  Value can either be some absolute
+value or a percentage of full screen size. 
+.B "S = x,y"
+and if omitted, both X and Y are set.
+.TP 
+$phys.len.S val
+Set the length  of each axis to the
+given value.  Again the same holds for percentages and
+x or y being omitted.
+.TP 
+$phys.max.S val
+Regardless of the settings for origin and
+length, the right side (for
+.IR x )
+and/or the top
+side (for
+.IR y )
+are not to be greater than 
+.I val
+(in plot units \- inches).
+.TP 
+$phys.aspect.S val
+Set the aspect ratio for the axis.
+Within the above constraints, make the largest plot
+possible with the given ratio in length of sides.
+For 
+.I S
+= 
+.B "x, x/y"
+or omitted, 
+.I val
+is taken
+as the ratio of X to Y. For 
+.I S
+= 
+.B "y , y/x"
+the
+value is taken as the ratio of Y to X.
+.SH "STARTUP FILES"
+When dplot starts up it will search for a file of commands to execute before
+anything else.  The file can be in several places, the first one found will
+be the one executed.  The first file tried is the value of the
+environment variable
+.BR DPLOTRC .
+If this variable is not set or the named file is not readable,
+it will try the file
+.B .dplotrc 
+in the current directory.
+If this is non-existent or is unreadable, it will try
+the file
+.B .dplotrc 
+in the users home directory.
+The start up file may contain any
+.B dplot
+commands or comments or whatever.
+.SH FILES
+.B $DPLOTRC
+\- User specifiable startup file name.
+.br
+.B ./.dplotrc
+\- Next choice for a startup file.
+.br
+.B $HOME/.dplotrc
+\- And the next choice for a startup file for dplot. 
+.SH  "ENVIRONMENT VARIABLES"
+.PP
+.B DPLOTRC
+\- User specifiable startup file name.
+.br
+.B DEFPDEV
+\- Default plot device if none given. 
+.br
+.B DEFPFIL
+\- Default output file if none given. 
+.br
+.B PLOTCAP
+\- Alternate plotcap file. 
+.br
+.B GPLOTH
+\- Location of the gplot definitions file (often "/usr/include/local/gplot.h")
+other than the default.  This is only used with symbolic
+constants with the $gplot command.
+.B TERM
+\- Default plot device if DEFPDEV not given. 
+.br
+.B HOME
+\- Home directory to in which to find start up file.
+.br
+.B LOGDIR
+\- Used for home directory if HOME is not set (System V systems).
+.br
+.B SHELL
+\- Shell to use for shell escapes (sys commands).
+.SH  DIAGNOSTICS
+.PP
+Errors are reported giving input file and line number and maybe some
+added information.  Numbers in parenthesis are error returns from
+a specific internal subroutine.
+.SH  NOTES
+.PP
+.B dplot
+now sets plot sizes by default to some percentage of the 
+screen (plot device) size.  It also does not clip on the axis bounds
+(as one might expect).  Thus, you may want to create a 
+.B .dplotrc
+file in you home directory and add the following lines to emulate the
+way dplot used to start up:
+.PP
+.RS 
+$phys.origin.x 1.25  
+.br
+$phys.origin.y  .75  
+.br
+$phys.len.x   8.0  
+.br
+$phys.len.y   4.0  
+.br
+$clip.high  
+.br
+.RE
+.SH  AUTHOR
+Michael Eldredge (dredge@Oasis.Stanford.Edu)

@@ -1,0 +1,1 @@
+echo $2 $3 >> toc-pages.${1}r

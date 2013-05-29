@@ -1,0 +1,14 @@
+title suprem3 file for base for bjtmesh
+initialize structure=collector.str
+
+implant boron dose=2e14 energy=30
+
+diffusion temperature=1050 time=30
+
+savefile structure filename=ext_base.str
+savefile export filename=ext_base.exp
+
+print layer
+$ plot chemical  net cmax=1e19 cmin=1e15
+
+stop

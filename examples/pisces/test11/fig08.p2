@@ -1,0 +1,57 @@
+title HMOS FET (1.5um channel) - Regrid example
+$
+$ *** define rectangular grid ***
+$
+mesh	rectangular nx=13 ny=10 outf=hmos0.msh
+x.m     n=1	l=0	r=1
+x.m	n=13	l=3.00	r=1
+y.m	n=1	l=-.035	r=1
+y.m	n=3	l=0	r=1
+y.m	n=10	l=2.0	r=1
+$
+$ *** regions ***
+$
+region	num=1 ix.l=1 ix.h=13 iy.l=1 iy.h=3 oxide
+region	num=2 ix.l=1 ix.h=13 iy.l=3 iy.h=10 silicon
+$
+$  *** electrodes ***
+$
+elec	num=1 ix.l=3	ix.h=11	iy.l=1	iy.h=1
+elec	num=2 ix.l=1	ix.h=13	iy.l=10	iy.h=10
+elec	num=3 ix.l=1	ix.h=2	iy.l=3	iy.h=3
+elec	num=4 ix.l=12	ix.h=13	iy.l=3	iy.h=3
+$
+$ *** doping and fixed charge ***
+$
+dop	region=2 uniform  n.type concentration=3E15 outf=hmos.dop
+dop	region=2 gaussian p.type conc=2.0E16 junction=0.50
+dop	region=2 uniform  p.type concentration=6E15
+
+dop	region=2 gaussian n.type conc=2.0E20 junction=0.35 x.r=0.5 ratio=0.75
+dop	region=2 gaussian n.type conc=2.0E20 junction=0.35 x.l=2.5 ratio=0.75
+interface qf=1E10 x.min=0.5 x.max=2.5 y.min=0 y.max=0
+$
+$ *** regrid on doping
+$ .....ignore=1 on regrid cards tells PISCES not to refine mesh in
+$      region 1 (the oxide).
+regrid	doping log reg=2 ratio=6 smooth.k=1 outf=hmos1.msh dopf=hmos.dop
+  +	ignore=1
+regrid	doping log reg=2 ratio=6 smooth.k=1 outf=hmos2.msh dopf=hmos.dop
+  +	ignore=1
+$
+$ *** first regrid on potential
+$
+contact num=1 n.poly
+symbolic carriers=0
+solve initial
+regrid potential ratio=0.2 region=2 smooth.k=1 dopf=hmos.dop outf=hmos3.msh
+  +	ignore=1
+$
+$ *** second regrid on potential
+$
+symbolic carriers=0
+solve initial outfile=hmos0.slv
+regrid potential ratio=0.2 region=2 smooth.k=1 dopf=hmos.dop outf=hmos4.msh
+  +	ignore=1
+
+end

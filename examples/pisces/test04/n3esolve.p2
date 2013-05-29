@@ -1,0 +1,70 @@
+Title Long Channel MOSFET (1.5um channel) with substrate doping of 1e15 [Subthreshold Region]
+$
+$ * * * A : define rectangular grid * * * 
+$
+mesh 	inf=nmeshe.msh
+$
+$ * * * Symbolic Factorization (Gummel) and Parameters * * * 
+symb    gummel carr=1 electrons
+method  iccg damped
+$
+$ * * * Materials/Contacts * * * 
+mater   num=2 g.surf=0.75
+contact num=1 n.poly
+$
+$ * * * Models * * * 
+$
+models  conmob temp=300 fldmob print
+impact crowell lamdae=6.2e-7 lamdah=3.8e-7
+$
+$ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+$
+$ * * * Solve Initial Bias Point; Save in nbias/n3teL1d15init * * * 
+$
+solve   initial outfile=nbias.slv
+$
+$ * * * Switch to Newton Method * * *
+$
+symb    newton carriers=1 electrons
+method  autonr 
+$
+$ * * * Setup IV Log File * * * 
+$ 
+log 	outf=nIV.log
+$
+$ Solve for Vds = 0.1 volts; Save in nbias/n3teL1d15a * * * 
+solve   v4=0.1 outf=nbias.1.slv
+$
+$ * * * Step Vgs from -0.5 to 2.0 volts (vds=0.1 volts)
+solve   v1=-0.5 vstep=0.1 nsteps=25 electrode=1
+$
+$options plotdev=stout
+$
+$ * * * Plot Id vs Vgs (Log and Linear Scales)
+$plot.1d   x.axis=v1 y.axis=i4 logarithm pause
+$plot.1d   x.axis=v1 y.axis=i4 pause
+$
+$ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+$
+$***** Increase the drain voltage from v4=0 to v4=100mv *****
+$
+solve v1=0.0 v2=0.0 v3=0.0 v4=0.01 
++ vstep=0.01 nsteps=8 elect=4 
+$
+solve v1=0.0 v2=0.0 v3=0.0 v4=0.10 outf=bbL20dv4.100mv.slv
+$
+$
+$***** Increase the gate voltage from v1=0 to v1=5v *****
+$
+solve prev v1=0.1 v2=0.0 v3=0.0 v4=0.10 
++ vstep=0.10 nsteps=8 elect=1 
+$
+solve v1=1.0 v2=0.0 v3=0.0 v4=0.10 
+$
+solve prev v1=1.0 v2=0.0 v3=0.0 v4=0.10 
++ vstep=0.20 nsteps=20 elect=1 
+$
+solve prev v1=5.0 v2=0.0 v3=0.0 v4=0.10 outf=bbL20d.100mv.slv
+$
+end
+

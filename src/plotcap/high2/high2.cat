@@ -1,0 +1,396 @@
+
+
+
+HIGH2(3L)           UNIX Programmer's Manual            HIGH2(3L)
+
+
+
+NAME
+     high2 - high level (2 dimensional) plot routines.
+
+SYNOPSIS
+     linking/loading:
+          cc _f_i_l_e_s....  -lhigh2  -lgplot ...
+
+     calling sequences:
+
+     axplt2(xst, yst, len, axang, Fval, Eval, Flab, Llab, ltic, utic, labht,
+          tlang, tloc, tang, tht, tdp, title, axtht, lform, vform) ;
+
+     axtcs2(fmin, fmax, lexpnd, llog, axmin, axmax, axdel, ntics) ;
+
+     _l_e_n = numb2(x0, y0, val, size, ang, hornt, wornt, form);
+
+     #include <gplot.h>
+     plota(x, y, pen) ;
+
+     symbl2(x0, y0, cbuf, cnt, hsize, wsize, angle, hornt, wornt) ;
+
+     symb2(x0, y0, cbuf, cnt, size, angle, hornt, wornt) ;
+          _N_O_T_E: _s_y_m_b_2 _i_s _o_b_v_i_a_t_e_d _b_y _s_y_m_b_l_2.
+
+DESCRIPTION
+     This document describes the library high2 routines.  The
+     library includes routines to draw line segments, symbols and
+     characters strings, numbers and axes as well as a routine to
+     help guess the tic-mark related parameters for the axis
+     drawing routine.  Each routine is described separately with
+     in this manual page (to avoid a manual entry for each).  The
+     documentation for each of these routines is simply the
+     header out of each routine's source file.  Therefore, it is
+     not quite like normal man pages.
+
+
+
+
+AXPLT2
+     axplt2 - user interface for axis plotting.
+
+     Synopsis:
+     axplt2(xst, yst, len, axang, Fval, Eval, Flab, Llab, ltic, utic, labht,
+         tlang, tloc, tang, tht, tdp, title, axtht, lform, vform)
+
+     Draw an axis at the given XST,YST location (inches, say)
+     labeled with the given values.  Tic-mark size, direction,
+     and orientation can be given.  It is also possible to give a
+     label for the axis and to set the format for the tic-mark
+     label numbers.
+
+     xst  (float) X coordinate of start of axis, in plot units
+
+
+
+Printed 3/27/87        STANFORD UNIVERSITY                      1
+
+
+
+
+
+
+HIGH2(3L)           UNIX Programmer's Manual            HIGH2(3L)
+
+
+
+     yst  (float) Y coordinate of start of axis, in plot units
+     len  (float) length of axis in plot units, drawn from (xst,
+          yst)
+     axang
+          (float) angle at which axis is to be drawn, measured
+          from horizontal. "axang" > 0 implies angle is measured
+          counterclockwise from horizontal.
+     Fval (float) axis value at start of axis
+     Eval (float) axis value at end of axis
+     Flab (float) first labeled value on the axis.  This value
+          will always appear on the axis.
+     Llab (float) maximum label that will be printed on the axis.
+          This value may or may not appear, depending on whether
+          it is an integral number of major ticks away from Flab.
+     ltic (float) value between labeled ticks, i.e. "distance"
+          between each labeled tick mark.  For a logarithmic axis
+          this must be a 10.
+     utic (int) number of unlabeled tick marks between each
+          labeled tick. "utic" < 0 means logarithmic spacing of
+          ticks.  If "utic" is in fact less than 0, its value
+          represents the percent increment of the minor tick
+          marks.  For example, if utic = -2, then minor tick
+          marks will be placed at 20%, 40%, 60%, and 80% of the
+          decade.  utic = -3 means minor ticks at 30%, 60%, and
+          90%, and so on.  Of course, if utic has a magnitude
+          greater than 10 in the logarithmic case, bogus spacings
+          will occur.  The only exception is if utic = -1.  In
+          this case, no tick is placed at 10%, with ticks being
+          placed at 20%, 30%, 40%, ....
+     labht
+          (float) height of major tick labels.  0 ==> no labels.
+     tlang
+          (float) angle at which labels on ticks are to be drawn.
+          This angle is measured as positive being counterclock-
+          wise from axang.
+     tloc (int) flag naming the location of the tick labels.
+          This parameter has 2 values:
+          1    => labels on "top" of axis.  Top is regarded as
+               above the axis if axang were 0.
+          0    => labels on "bottom" of axis.  This is inter-
+               preted the same way as "top."
+     tang (float) angle at which tick itself is to be drawn.
+          This angle is measured with respect to "axang."
+     tht  (float) height of major ticks, in plot units.  This
+          value is in the direction of the "top" of the axis.
+     tdp  (float) depth of major tick, in plot units.  This value
+          is in the direction of the "bottom" of the axis.
+     title
+          (char []) address of character array containing axis
+          title.
+     axtht
+          (float) axis title height, in plot units.
+
+
+
+Printed 3/27/87        STANFORD UNIVERSITY                      2
+
+
+
+
+
+
+HIGH2(3L)           UNIX Programmer's Manual            HIGH2(3L)
+
+
+
+     lform
+          (int) location of axis title, according to the follow-
+          ing key:
+          2    => top, axang+180
+          1    => top, axang
+          -1   => bottom, axang
+          -2   => bottom, axang+180
+     vform
+          (char []) format of numerical labels.  This should not
+          have a '%' in it, as this routine adds one. The format
+          must be for floating point numbers.  (e.g. "g" or
+          ".2f")
+
+     return values:
+          none.
+
+     notes:
+          o+ This routine is insane with the number of parameters.
+          Its intention is to be everything to everyone in axis
+          drawing.   This is of course an absurd hope.  It does,
+          however, do many things for many people.  In adding the
+          flexibility, there is also a great deal of complexity.
+          Likewise, there are still some bugs when this is used
+          in some situations.
+
+
+
+
+AXTCS2
+     axtcs2 - Calculate tic-mark positioning.
+
+     Synopsis:
+     axtcs2(fmin, fmax, lexpnd, llog, axmin, axmax, axdel, ntics)
+
+     Can be used to chose the number of tics and inter-tic spac-
+     ings for the axplt2 routine.
+
+     fmin - (float) Input: minimum data value for axis.
+     fmax - (float) Input: maximum data value for axis.
+     lexpnd
+          - (int)   Input: boolean flag, expand axis?
+          1    o+ axmin <= fmin, etc.
+          0    o+ axmin >= fmin, etc.
+
+     lloc - (int)   Input: boolean flag. 1::axis is logarithmic.
+
+     axmin
+          - (float *) Output: Minimum value for axis label.
+
+     axmax
+          - (float *) Output: Maximum value for axis label.
+
+
+
+
+Printed 3/27/87        STANFORD UNIVERSITY                      3
+
+
+
+
+
+
+HIGH2(3L)           UNIX Programmer's Manual            HIGH2(3L)
+
+
+
+     axdel
+          - (float *) Output: Inter-tic value.
+
+     ntics
+          - (int   *) Output: Number of unlabeled tics between
+          labels.
+
+     notes:
+          o+ Still doesn't do examples like 1.00233 to 1.00237
+          right.
+
+
+
+
+NUMB2
+     numb2 - routine that writes a number in graphics mode
+
+     Given a number, draw it in the graphics space at the given
+     location, size and orientation.
+
+     Synopsis:
+     len = numb2(x0, y0, val, size, ang, hornt, wornt, form);
+
+     x0   (float) x-coordinate of where number is to start
+     y0   (float) y-coordinate of where number is to start
+     val  (float) floating point number to be output
+     size (float) maximum number of character positions to be
+          filled in writing the number
+     ang  (float) angle at which the number is to be written
+     hornt
+          (float) height orientation.
+     wornt
+          (float) width orientation.
+     form (char []) C-type format to use, except that the `%'must
+          not be included as this routine adds one. "%d" format
+          should not be used, use "%g" to get the same effect.
+          (e.g. "g" or ".2f")
+
+     return value:
+          numb2 returns the length of the string written.
+
+
+
+
+PLOTA
+     plota - Plot with the pen up or down to the point (x,y).
+
+     Move from the current location to that given with the pen up
+     (MOVE) or down (DRAW).
+
+     Synopsis:
+     plota(x, y, pen)
+
+
+
+Printed 3/27/87        STANFORD UNIVERSITY                      4
+
+
+
+
+
+
+HIGH2(3L)           UNIX Programmer's Manual            HIGH2(3L)
+
+
+
+     x    (float) X value (in inches, say) to which to plot.
+     y    (float) Y value to which to plot.
+     pen  (int) Indication of pen position (up or down).
+          G_DRAW
+               pen down (draw a line to (x,y) ).
+          G_MOVE
+               pen up (no draw, just move to (x,y) ).
+
+
+
+
+SYMBL2
+     symbl2 - Symbol and character string drawing routine.
+
+     Symbol drawing routine. Will draw one or more characters
+     from a given starting point at a given angle and size. Or
+     will draw a single centered symbol (often used for plotting
+     individual data points).
+
+     Synopsis:
+     symbl2(x0, y0, cbuf, cnt, hsize, wsize, angle, hornt, wornt)
+
+     x0   (float) Starting point in x.
+     y0   (float) Starting point in y.
+     cbuf (char []) String of characters to draw.
+     cnt  (int) Number of character is 'cbuf'
+     hsize
+          (float) Height in plot units (ie: inches) for each
+          character.
+     wsize
+          (float) Width in plot units (ie: inches) for each char-
+          acter.
+     angle
+          (float) Angle (degrees) at which to draw the string of
+          characters (from x,y to the horizontally to the right
+          is 0 degrees).
+     hornt
+          (float) Height orientation of character string.  Range:
+          0 <= hornt <= 1.0
+          0.0 : x,y is bottom of symbol string.
+          1.0 : x,y is top of symbol string.
+     wornt
+          (float) Width orientation of character string.  Range:
+          0 <= wornt <= 1.0
+          0.0 : x,y is left of symbol string.
+          1.0 : x,y is right of symbol string.
+
+     Notes:
+     o+ This routine replaces the symb2 routine. The difference is
+     that now both the size for then width and the height of each
+     character can be given.  This is basically to allow users
+     who plot in scaled units (e.g. concentration vs. depth) to
+
+
+
+Printed 3/27/87        STANFORD UNIVERSITY                      5
+
+
+
+
+
+
+HIGH2(3L)           UNIX Programmer's Manual            HIGH2(3L)
+
+
+
+     include centerable symbols un-scaled.  For example:
+               gscale(depth_fact, conc_fact) ;
+
+               for ( _e_a_c_h _p_o_i_n_t ) {
+                    gplot(depth, conc, pen) ;
+                    symb2(depth, conc, "\02", 1, 1./conc_fact, 1./depth_fact,
+                         angle, .5, .5) ;
+                    }
+
+               gscale(1./depth_fact, 1./conc_fact) ;
+
+     o+ This routine makes use of 'gplot' transformation features.
+     o+ This version uses character definition vectors generated
+     by the _m_k_s_y_m program.
+     o+ Current centerable symbols are:
+               0    - a square
+               1    - a circle
+               2    - a triangle
+               3    - a plus
+               4    - an X
+               5    - a diamond
+               6    - an up arrow
+               7    - a closed top X
+               8    - a 'Z'
+               9    - a 'Y'
+               10   - a curved edged square
+               11   - an asterisk
+               12   - an hourglass
+               13   - an apostrophe
+               14   - a star of david
+               15   - a clover leaf
+
+SEGMENT NUMBERS
+     This version of the high2 library uses gplot2(G_MARK, ... )
+     calls to mark the axis and strings created by calls to
+     axplt2() and symbl2().
+
+     axplt2()
+          Opens with gplot2(G_MARK, GM_AXIS, 0., 0.) and closes
+          with gplot2(G_MARK, -GM_AXIS, 0., 0.).
+
+     sybml2()
+          Opens with gplot2(G_MARK, GM_STRING, 0., 0.) and closes
+          with gplot2(G_MARK, -GM_STRING, 0., 0.).
+
+
+
+
+SEE ALSO
+     gplot2(3L), mksym(1L), plotcap(5L), dplot(1L)
+
+
+
+
+
+Printed 3/27/87        STANFORD UNIVERSITY                      6
+
+
+

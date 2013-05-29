@@ -1,0 +1,103 @@
+TITLE	PISCES Example 07 - 0.8 Micron MOSFET
+COMMENT	Specify a rectangular mesh
+$options plotdev=stout
+MESH    Rectang nx=49   diag.fli ny=43  smooth=1
+x.mesh  n=1     l=0     r=1
+x.mesh  n=6     l=1.0  r=1
+x.mesh  n=10    l=1.07  r=1
+X.MESH  N=14    L=1.14  R=1
+x.mesh  n=16    l=1.18   r=1
+x.mesh  n=33    l=1.9 r=1
+x.mesh  n=35    l=1.94 r=1
+x.mesh  n=40    l=2.01 r=1
+X.MESH  N=44    L=2.08 R=1
+x.mesh  n=49    l=3.08 r=1
+y.mesh  n=1     l=-0.0155     r=1
+y.mesh  n=9     l=0.00  r=1
+y.mesh  n=21    l=0.0024  r=1
+y.mesh  n=22    l=0.0030 r=1
+y.mesh  n=23    l=0.0040 r=1
+y.mesh  n=24    l=0.0060 r=1
+y.mesh  n=25    l=0.0080 r=1
+y.mesh  n=26    l=0.0100 r=1
+y.mesh  n=27    l=0.0150   r=1
+y.mesh  n=28    l=0.0200  r=1
+y.mesh  n=29    l=0.0300   r=1
+y.mesh  n=30    l=0.0500   r=1
+y.mesh  n=31    l=0.0800   r=1
+y.mesh  n=32    l=0.1150   r=1
+y.mesh  n=33    l=0.1500   r=1
+y.mesh  n=34    l=0.1800    r=1
+y.mesh  n=37    l=0.4300    r=1
+y.mesh  n=38    l=0.5300    r=1
+y.mesh  n=39    l=0.7300    r=1
+y.mesh  n=40    l=1.1300    r=1
+y.mesh  n=41    l=1.7300    r=1
+y.mesh  n=43    l=3.0    r=1
+comment	eliminate some unnecessary substrate nodes
+elimin  ix.lo=15  ix.hi=33  iy.lo=35  iy.hi=43  y.dir
+elimin  ix.lo=6  ix.hi=44  iy.lo=37  iy.hi=43  y.dir
+elimin  ix.lo=1  ix.hi=49  iy.lo=40  iy.hi=43  y.dir
+elimin  ix.lo=1 ix.hi=7 iy.lo=2  iy.hi=8 x.dir
+elimin  ix.lo=1 ix.hi=6 iy.lo=2  iy.hi=8 x.dir
+elimin  ix.lo=1 ix.hi=5 iy.lo=2  iy.hi=8 x.dir
+elimin  ix.lo=43 ix.hi=49 iy.lo=2  iy.hi=8 x.dir
+elimin  ix.lo=44 ix.hi=49 iy.lo=2  iy.hi=8 x.dir
+elimin  ix.lo=45 ix.hi=49 iy.lo=2  iy.hi=8 x.dir
+elimin  ix.lo=1 ix.hi=6 iy.lo=10  iy.hi=28 x.dir
+elimin  ix.lo=44 ix.hi=49 iy.lo=10  iy.hi=28 x.dir
+elimin  ix.lo=1 ix.hi=5 iy.lo=11  iy.hi=25 x.dir
+elimin  ix.lo=45 ix.hi=49 iy.lo=11  iy.hi=25 x.dir
+elimin  ix.lo=1 ix.hi=4 iy.lo=11  iy.hi=21 x.dir
+elimin  ix.lo=46 ix.hi=49 iy.lo=11  iy.hi=21 x.dir
+elimin  ix.lo=1 ix.hi=3 iy.lo=11  iy.hi=21 x.dir
+elimin  ix.lo=47 ix.hi=49 iy.lo=11  iy.hi=21 x.dir
+elimin  ix.lo=1 ix.hi=2 iy.lo=11  iy.hi=21 x.dir
+elimin  ix.lo=48 ix.hi=49 iy.lo=11  iy.hi=21 x.dir
+comment	specify oxide and silicon regions
+region  num=1   ix.lo=1 ix.hi=49 iy.lo=1 iy.hi=9 oxide
+region  num=2   ix.lo=1  ix.hi=49 iy.lo=9  iy.hi=43  SILICON
+comment	electrode definition
+electr  num=1   ix.lo=10 ix.hi=40 iy.lo=1 iy.hi=1
+electr  num=2   ix.lo=1 ix.hi=49 iy.lo=43 iy.hi=43
+electr  num=3   ix.lo=1 ix.hi=6   iy.lo=9 iy.hi=9
+electr  num=4   ix.lo=44 ix.hi=49 iy.lo=9 iy.hi=9
+comment specify impurity profiles and fixed charge
+doping  reg=2 inf=depthcon x.r=1.035
++       ratio=0.75 outfil=DOP07 ASCII
+Doping  reg=2 inf=depthcon x.l=2.045 
++       ratio=0.75 ascii
+comment region beside the channel is also doped with boron by latteral
++        diffusion 
+doping  reg=2 UNIFORM P.TYPE CONC=1.7E16
+interf  qf=3e10
+comment	regrid on doping
+title	Example 07 - initial Grid
+$plot.2d no.fill boundary grid no.top pause 
+comment	specify contacts, materials, and models
+contact num=1 n.poly
+materia reg=2 g.surf=.75
+models  arora CONMOB fldmob srh print   
++   TFLDMB ACC.SF=0.87 INV.SF=0.75 OX.L=1.07 OX.R=2.01 OX.B=0.0
+comment	symbolic factorization,solve,regrid on potential
+title	Example 07 - Potential Regrid
+symb    carriers=0
+METHOD  XNORM RHS
+solve   init 
+regrid  potent    ratio=.3 dopf=DOP07
++       outf=M131.msh
+$plot.2d no.fill bound grid no.top pause 
+COMMENT IMPURITY PROFILE PLOTS
+title   Example 07 - Si/SiO2 interface Impurity Profile
+$plot.1d doping x.start=0 x.end=3.2 y.start=0.0 y.end=0.0
+$+        points  pause 
+$+       min=14 max=21
+title   Example 07 - Source Impurity Profile
+$plot.1d doping x.start=1.0 x.end=1.0 y.start=0 y.end=3.0
+$+       log abs points  pause 
+$+       min=14 max=21
+title   Example 07 - Gate Impurity Profile
+$plot.1d doping x.start=1.5569 x.end=1.5569 y.start=0.0 y.end=3.0
+$+       log abs points pause  min=14 max=18 
+$PRINT   POINT MATER Y.MIN=0.0 Y.MAX=0.0
+END

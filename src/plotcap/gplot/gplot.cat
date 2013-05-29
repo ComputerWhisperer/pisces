@@ -1,0 +1,462 @@
+
+
+
+GPLOT(3L)           15555552UNIX Programmer's Manual           15555552GPLOT(3L)
+
+
+
++NAME
+     ,gplot - General device independent plotting library.
+
++SYNOPSIS
+     #include <local/gplot.h>
+
+     setpdev(plotdev) char* plotdev ;
+     setpfil(plotfil) char* plotfil ;
+     setsfil(savefil) char* savefil ;
+
+     gplot(x, y, pen) float x, y ;  int pen ;
+     gmove(x, y) float x, y ;
+     gdraw(x, y) float x, y ;
+
+     gclear()
+     ggtoa()
+     gatog()
+     gpend()
+
+     gnline(n) int n ;
+     gnfill(n) int n ;
+     gnpen(n) int n ;
+
+     garea(x,y,how) float x, y ;  int how ;
+
+     gtrans(x,y) float x, y ;
+     gscale(x,y) float x, y ;
+     grotat(x,y,a) float x, y, a ;
+
+     gclipl(x,y,how) float x, y ; int how ;
+     gcliph(x,y,how) float x, y ; int how ;
+
+     gpgeti(cmd, iv, fv) int cmd, iv[] ;  float fv[] ;
+     greset(cmd) int cmd ;
+
+DESCRIPTION
+     ,The +gplot ,routines allow plotting to any device definable
+     within the plot device description data base _p_l_o_t_c_a_p.  The
+     routines allow some very simple graphics primitives to be
+     implemented on any of these devices.  It should be noted
+     that not all desired graphics operations can be performed,
+     only a simple subset is available - there is no cursor
+     tracking, for example.  However, there are functions for
+     transformations, clipping, area fill and cursor locating.
+     This document is a simple introduction to the +gplot ,library.
+     For the full description, see +gplot2,(3L).
+
+     In general, you will want to first select the plot device
+     for output using +setpdev(,_p_l_o_t_d_e_v+) ,where _p_l_o_t_d_e_v is a null
+     terminated character string giving the name of the plot dev-
+     ice as specified in the +plotcap ,file.
+
+
+
+
+Printed 9/26/89        STANFORD UNIVERSITY                      1
+
+
+
+
+
+
+GPLOT(3L)           15555552UNIX Programmer's Manual           15555552GPLOT(3L)
+
+
+
+     Next, create the desired plot with the routines to move,
+     draw, clear and transform. And, finally, post all internal
+     buffers and end plotting to the given device with a call to
+     +gpend(),.  If no call is made to +setpdev(),, the +gplot
+     ,software will try to set up a default plot device.  It first
+     looks for an environment variable +DEFPDEV,.  If found, the
+     +plotcap ,file is searched for the device given as the value
+     of +DEFPDEV . ,If no such environment variable is given, the
+     environment is then searched for the variable +TERM,.
+     Finally, if if neither variable is set, the +plotcap ,file is
+     searched for a device called _d_e_f_a_u_l_t.  This device is gen-
+     erally defined at the beginning of the +plotcap ,file for the
+     local system's default plotdevice.  For example:
+
+          +default: LIKE="hp2648"::  # our default plot dev
+
+     ,To override the default output device, call
+     +setpfil(,_p_l_o_t_f_i_l_e+) ,where _p_l_o_t_f_i_l_e is the name of the new out-
+     put file. Note that if both +setpdev,() and +setpfil,() are
+     being used, the file should be set first.  This is because
+     the +setpdev,() function prepares for plotting by opening the
+     default file if one isn't set.
+
+     Units used in calls are in default plot units for the device
+     (e.g. inches).  These units can be scaled with calls to
+     gscale().
+
++FUNCTIONS
+     setpdev,(plotdev)
+          Optional call to select the output plotting device.  If
+          the device is not found in a plotcap file, an error is
+          printed and -1 is returned, else 0 is returned.  The
+          system plotcap file is searched (often:
+          /usr/local/lib/plotcap), however, if the environment
+          variable PLOTCAP is set, that will be used as the
+          plotcap file.  If no call to +setpdev ,is made, then the
+          environment variable DEFPDEV is searched for. If this
+          is not set, then the environment variable TERM is used.
+          If this is not set, the device "default" will be used.
+          In all cases, a failure in setting a device will result
+          in all subsequent plotting calls going to a null device
+          (until a new, good device gets set).
+
+     +setpfil,(plotfil)
+          Optional call to select the output plot file.  If the
+          environment variable DEFPFIL is set it will be used as
+          the default if there is never any call to +setpfil,.  If
+          this is not set, then the FILE capability in the
+          plotcap file will be used.  If there is no file capa-
+          bility, then the standard output is used.  If the file
+          name is simply a dot (`.') the the standard output will
+          be used as the output file (useful for overriding the
+
+
+
+Printed 9/26/89        STANFORD UNIVERSITY                      2
+
+
+
+
+
+
+GPLOT(3L)           15555552UNIX Programmer's Manual           15555552GPLOT(3L)
+
+
+
+          default file).  If the file name begins with a plus
+          (`+') the the output file will be opened in append
+          mode.  If the file name begins with a pipe-symbol (`|')
+          then the remainder of the filename string is taken as a
+          command line to be executed into which the plot library
+          will pipe its output (say a spooler or a filter).
+          Return -1 if error or 0 if ok.
+
+     +setsfil,(filename)
+          Open the file as an _a_u_t_o-_s_a_v_e _f_i_l_e.  No matter what
+          device has been set (with setpdev()) and what output
+          file (with setpfil()) each plot call will also be saved
+          in the named file in the gplot-binary-meta-file format.
+          These files can be replayed with +dplot,(1L), for exam-
+          ple.  Return -1 if error or 0 if ok.
+
+     +gplot,(x,y,pen)
+          According to _p_e_n, move (pen = _G__M_O_V_E) or draw (pen =
+          _G__D_R_A_W) to the given (x,y) point.
+
+     +gmove,(x,y)
+          Move to the given (x,y) point with the pen up. Same as
+          +gplot(x,y,G_MOVE) ,.
+
+     +gdraw,(x,y)
+          Draw to the given (x,y) point with the pen down.  Same
+          as +gplot(x,y,G_DRAW),.
+
+     +gclear,()
+          Clear the screen / go to the next page / prepare for
+          the next plot.
+
+     +ggtoa,()
+          Post internal buffers to the plot output file and
+          switch to alpha-mode if need be.  This is useful when
+          the output device is a terminal to see intermediate
+          plots.  This should always be used before prompting
+          (for example).  The function +post,() is a synonym; it
+          remains for historical reasons.  There is also a func-
+          tion +gatog,() which can be used to switch back to graph-
+          ics mode before continuing to plot.  It is not needed,
+          however, since the plot library is aware that ggtoa()
+          was called and will automatically switch back to graph-
+          ics mode when needed.
+
+     +gpend,()
+          The mandatory last plotting function.  Posts all inter-
+          nal buffers, executes any clean up functions (ie: put-
+          ting the terminal back in alpha mode) and ends plotting
+          to the current device.
+
+     +garea,(x,y,how)
+
+
+
+Printed 9/26/89        STANFORD UNIVERSITY                      3
+
+
+
+
+
+
+GPLOT(3L)           15555552UNIX Programmer's Manual           15555552GPLOT(3L)
+
+
+
+          Define and fill a polygonal area (with the current area
+          fill pattern/color).  For the first point the the area,
+          _h_o_w should be +G_BEGIN,. For each subsequent point, _h_o_w
+          should be +G_ON,. And finally, any other command (other
+          than +garea(x,y,G_ON) ,will cause the current area to be
+          filled.  It is however a good idea to have a final call
+          with _h_o_w +G_OFF ,or +G_STOP,.  If the last point given does
+          not close the polygon, gplot will close it.
+
+     +gnfill,(n)
+          Select the a new area fill pattern to be used for sub-
+          sequent calls to area fill.  The number of possible
+          patterns is device dependent, but is alway greater that
+          zero.  The actual number can be obtained with the
+          gpgeti(G_FILS,iv,fv) call - iv[0] is the current type
+          and iv[1] is the maximum number available.
+
+     +gnline,(n)
+          Select the new line pattern to be used for subsequent
+          drawing.  The number of possible patterns is device
+          dependent, but is alway greater that zero.  The actual
+          number can be obtained with the gpgeti(G_LINE,iv,fv)
+          call - iv[0] is the current type and iv[1] is the max-
+          imum number available.
+
+     +gnpen,(n)
+          Select the new pen style to be used for subsequent
+          drawing.  The number of possible styles is device
+          dependent, but is alway greater that zero.  The actual
+          number can be obtained with the gpgeti(G_PEN,iv,fv)
+          call - iv[0] is the current style and iv[1] is the max-
+          imum number available.
+
+     +gscale,(x,y)
+          Scale all following plotting by the values given for
+          each direction.  To ``undo'' a given scaling, use:
+          +gscale(1.0/x,1.0/y),.
+
+     +gtrans,(x,y)
+          Offset (translate) all following plotting by the values
+          given for each direction.  To undo a given translation,
+          use: +gtrans(-x,-y),.
+
+     +grotat,(x,y,angle)
+          Rotate all following plotting about point (x,y) through
+          the given angle (in degrees).  To undo a given rota-
+          tion, use: +grotat,(x,y, -angle).
+
+     +gclipl,(x,y,how)
+          Set the lower bound clipping limits.  If how is G_ONLOG
+          (the default if how is 0) then X and Y are taken to be
+          logical values. If how is G_ONPHS then the X and Y
+
+
+
+Printed 9/26/89        STANFORD UNIVERSITY                      4
+
+
+
+
+
+
+GPLOT(3L)           15555552UNIX Programmer's Manual           15555552GPLOT(3L)
+
+
+
+          values are not transformed, assuming that they are phy-
+          sical locations (in the original plot units).  It is
+          also possible to set whether, on return to the visible
+          screen, a clipped line is broken from or connected to
+          the point at which it left.  This is done by calling
+          either gclipl() or gcliph() as: gclipl(0.,0.,G_DOBREAK)
+          - to not connect the two clipped points or
+          gclipl(0.,0.,G_NOBREAK) - to connect (not break) the
+          two clipped points.  Clip values can be reset with
+          greset(G_CLIPL).
+
+     +gcliph(x,y,how)
+          ,Like gclipl(x,y,how), but set the higher clip limits.
+          Clip values can be reset with greset(G_CLIPH).
+
+     +gpgeti,(cmd,+iv,,fv)
+          Get information.  This can be used to get the current
+          cursor location or to return internal parameters. Fol-
+          lowing are the descriptions for each _c_m_d.
+
+          G_CLOC
+               Let the user move the cursor and select a loca-
+               tion. Return the cursor location as: fv[0] - x
+               location, fv[1] - y location, iv[2] - is the
+               key/button used to select the location.
+
+          G_PSIZE
+               Return the maximum size of the current device.
+               fv[0] - maximum X size, fv[1] - maximum Y size.
+
+          G_CLIPL
+               Return the current lower bounds clipping loca-
+               tions.
+
+          G_CLIPH
+               Return the current upper bounds clipping loca-
+               tions.
+
+          G_REVCO
+               Return the current revision code (version number)
+               of the gplot library in iv[0].
+
+          G_LINE
+               Return the current line type (iv[0]) and the max-
+               imum number of lines supported by the current dev-
+               ice (iv[1]).
+
+          G_PEN
+               Return the current pen type (iv[0]) and the max-
+               imum number of pens supported by the current dev-
+               ice (iv[1]).
+
+
+
+
+Printed 9/26/89        STANFORD UNIVERSITY                      5
+
+
+
+
+
+
+GPLOT(3L)           15555552UNIX Programmer's Manual           15555552GPLOT(3L)
+
+
+
+          G_FILS
+               Return the current area fill patterns (iv[0]) and
+               the maximum number of patterns supported by the
+               current device (iv[1]).
+
+     +greset,(cmd)
+          Reset specific parameters back to the default value.
+
+          G_ROTATE
+               (or G_SCALE or G_TRANS or G_ANGLE) reset the
+               transformation matrix to the default.
+
+          G_CLIPH
+               Reset the high (low) clip bounds to the default.
+
++F77 LINKS
+     ,The +gplot ,library can be accessed with cover function
+     defined in the library +-lgplotF77,.  It contains links to the
+     plot software for users of +F77,.  Thus all of the above _f_u_n_c_-
+     _t_i_o_n_s in C are really subroutines to f77 users and therefore
+     must be called.
+
+          +call gplot(x, y, GMOVE) ;
+
+     ,Also note that the include file should be:
+     +<local/gplotF77.h>,.  This file has the same constants
+     defined as +gplot.h ,without the underscore; it is actually
+     contains ratfor defines for the gplot constants.
+
++FILES
+     gplot.h ,- Macros and constants.
+     +gplotF77.h ,- F77 form of +gplot.h
+     /usr/local/lib/plotcap ,- Device capability data base.
+     +/usr/local/lib/libgplot.a ,- Plot library
+     +/usr/local/lib/libgplotF77.a ,- Fortran entry points for
+     gplot functions.
+
++ENVIRONMENT VARIABLES
+     DEFPDEV
+          ,Use as the default plot device if no call to +setpdev ,is
+          given.
+
+     +DEFPFIL
+          ,Use as the default output file if no call to +setpfil ,is
+          given.
+
+     +TERM ,If new plot device has been set and +DEFPDEV ,is not set,
+          then use the terminal as the default plot device.
+
+     +PLOTCAP
+          ,Use as _p_l_o_t_c_a_p file instead of the system wide plotcap
+          file. Useful for debugging new device definitions or if
+
+
+
+Printed 9/26/89        STANFORD UNIVERSITY                      6
+
+
+
+
+
+
+GPLOT(3L)           15555552UNIX Programmer's Manual           15555552GPLOT(3L)
+
+
+
+          you would like to use a slightly modified definition
+          for some device.
+
++SEE ALSO
+     ,gplot2(3L), high2(3L), plotcap(5L), dplot(1L)
+
++AUTHOR
+     ,Michael Eldredge (dredge@oasis.Stanford.edu)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Printed 9/26/89        STANFORD UNIVERSITY                      7
+
+
+

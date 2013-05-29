@@ -1,0 +1,462 @@
+
+
+
+
+
+
+                    MOSMESH Users Guide
+                        Version 8822
+           Goodwin Chin (chin@rats.stanford.edu)
+                        Mark E. Law
+                          AEL 231
+                    Stanford University
+                    Stanford, CA  94305
+
+
+
+_I_n_t_r_o_d_u_c_t_i_o_n
+
+
+     MOSMESH is intended to provide automatic generation  of
+Pisces-2B input decks.  Currently only substrate MOS devices
+are supported ( i.e. NMOS devices in a p-well on n-type sub-
+strate  are not allowed ).  In the interactive mode, MOSMESH
+will ask the user  for  structure  and  doping  information.
+Based  on  the input, grid is heuristically determined, con-
+tacts are placed, doping profiles are determined,  and  bias
+cards  are  generated.   For repetitive runs that occur in a
+manufacturing environment, a batch mode  is  provided  where
+input can be read from a file.  The final output is an ascii
+file with suitable comments that may either be run  directly
+by  Pisces or used as a template for further modification by
+the user.
+
+
+_I_n_s_t_a_l_l_a_t_i_o_n
+
+
+     Installation is accomplished by using the UNIX Makefile
+utility.   Typing "make" in the source directory should com-
+pile all the source files  and  create  an  executable  file
+called "mosmesh".  Be sure to edit Makefile to tell the com-
+pilers the type of operating system  and  hardware  you  are
+running  on.  This document is present in user_man.troff and
+a formatted version is in user_man.cat.  A  README  file  is
+also present for help.
+
+_U_s_e _o_f _M_O_S_M_E_S_H
+
+
+     A UNIX syntax is used to invoke the program.  The  syn-
+tax in BNF form is as follows:
+
+_m_o_s_m_e_s_h [-_a_b_i_s_t -_f [_d_e_f_a_u_l_t_f_i_l_e] -_m[_m_o_d_i_f_y_f_i_l_e] -_o [_o_u_t_p_u_t_f_i_l_e] ] [_o_u_t_p_u_t_f_i_l_e]
+
+where
+
+a    denotes that analytic profiles are to be used (default)
+
+b    indicates batch mode
+
+
+
+
+                     September 15, 1988
+
+
+
+
+
+                           - 2 -
+
+
+i    indicates  that  bias  statements  to  simulate   drain
+     characteristics will be generated
+
+s    indicates that Suprem3 doping profiles  will  be  used.
+     Suprem3 provides export files in either ascii or binary
+     format(you will be asked which one you are using by the
+     program).   For  ascii  export  files use the following
+     Suprem3 command:
+          _s_a_v_e_f_i_l_e _e_x_p_o_r_t _f_o_r_m_a_t_t_e _f_i_l_e_n_a_m_e=<_c>
+
+     Otherwise use the following Suprem3 command to generate
+     binary export files:
+          _s_a_v_e_f_i_l_e _e_x_p_o_r_t _f_i_l_e_n_a_m_e=<_c>
+
+
+t    indicates that bias statements to simulate gate charac-
+     teristics will be generated
+
+f    indicates that the default  parameters  will  be  taken
+     from file defaultfile.  if defaultfile is not specified
+     that the defaults will be taken from a  file  .default-
+     mesh,  if  it  exists.  otherwise  there are no default
+     values and the user is expected to answer  all  of  the
+     questions in interactive mode.
+
+m    indicates that the default values to change (along with
+     their  new values) are present in file modifyfile. this
+     allows  automatic  change  of  parameters  in  a  rapid
+     fashion  - suitable for use in a manufacturing environ-
+     ment.
+
+o    indicated that the output will be  written  to  output-
+     file. if outputfile is not specified, the data is writ-
+     ten to mosmesh.out.  note that the  outputfile  can  be
+     specified  outside of the flag sequence.  any name out-
+     side of the flag sequence will supercede any name given
+     in the -o flag.
+
+     If you forget the syntax the options will be listed  if
+     you type
+          _m_o_s_m_e_s_h -?
+
+Examples on the use of the  command-line  syntax  are  given
+below:
+_1 _z_o_t_z > _m_o_s_m_e_s_h
+MOSMESH will be in interactive mode, using the defaults from
+.defaultmesh  and writing the output to mosmesh.out. No bias
+cards  will  be  generated.   MOSMESH  and  MOSMESH  -a  are
+synonymous in this release.
+
+
+_2 _z_o_t_z > _m_o_s_m_e_s_h -_i _d_r_a_i_n._i_n
+MOSMESH will be in interactive mode, using the defaults from
+.defaultmesh  and writing the output to drain.in. Bias cards
+
+
+
+                     September 15, 1988
+
+
+
+
+
+                           - 3 -
+
+
+will be generated to simulate the drain-IV characteristics.
+
+
+_3 _z_o_t_z > _m_o_s_m_e_s_h -_i -_o _d_r_a_i_n._i_n
+Equivalent to example 2 above.
+
+
+_4 _z_o_t_z > _m_o_s_m_e_s_h -_s_t _g_a_t_e._i_n
+MOSMESH will be in interactive  mode,  using  the  .defaults
+from  .defaultmesh  and  writing the output to gate.in. Bias
+cards will be generated to simulate the gate-IV characteris-
+tics.  In  addition,  doping  files  will  be expected to be
+Suprem3 format (either ascii  Suprem3  export  as  discussed
+above or an ascii file containing concentration versus depth
+information).
+
+
+_5 _z_o_t_z > _m_o_s_m_e_s_h -_t -_f _s_t_a_n_d_a_r_d_p_a_r_a_m_e_t_e_r_s -_b _d_r_a_i_n._i_n
+MOSMESH will gather default parameters from the  file  stan-
+dardparameters  and automatically generate an output file in
+drain.in. In batch mode the user is  not  prompted  and  the
+program returns silently.
+
+
+_6 _z_o_t_z > _m_o_s_m_e_s_h -_m _c_h_a_n_g_e_s -_b -_o _o_u_t_f_i_l_e
+MOSMESH will operate in batch mode, using  the  defaults  in
+.defaultmesh.  In addition any changes to the default values
+are specified in file changes.  An  example  of  the  format
+necessary for changes is:
+
+0 100   -       Poly Gate Width(um)     0
+6 P     -       Doping Type     6
+7 boron.dat     -       Suprem3 doping profile filename 7
+15 2    -       Maximum Source Substrate Reverse Bias   15
+
+The first column is associated with a  tag  number  denoting
+which input is desired to be changed (the tag number appears
+in the last column of .defaultmesh).  The second column con-
+tains  the  new  default  value  desired.  Other columns are
+ignored although an easy way to create changes  is  to  copy
+.defaultmesh into changes and then edit the file, adding the
+new default value and  tacking  on  the  tag  in  the  first
+column.
+
+
+_I_n_t_e_r_a_c_t_i_v_e _S_e_s_s_i_o_n _W_i_t_h _M_O_S_M_E_S_H
+
+Below is an example of MOSMESH in interactive mode:
+
+_1 _l_a_n_c_a_s_h_i_r_e:_l_a_t_e_x> _m_o_s_m_e_s_h -_t _t_e_s_t._o_u_t
+                   _M_O_S_M_E_S_H _V_e_r_s_i_o_n _8_8_2_2
+        _C_u_r_r_e_n_t_l_y _o_n_l_y _M_O_S _d_e_v_i_c_e_s _a_r_e _s_u_p_p_o_r_t_e_d
+        _D_e_f_a_u_l_t _v_a_l_u_e_s _b_a_s_e_d _o_n _y_o_u_r _l_a_s_t _r_u_n _a_r_e _i_n _b_r_a_c_k_e_t_s
+        _I_n_p_u_t _f_r_o_m ._d_e_f_a_u_l_t_m_e_s_h _a_n_d _o_u_t_p_u_t _t_o _t_e_s_t._o_u_t
+
+
+
+                     September 15, 1988
+
+
+
+
+
+                           - 4 -
+
+
+_l_a_t_e_r_a_l _d_i_f_f_u_s_i_o_n _c_o_n_s_t_a_n_t [_0._8] :
+_P_o_l_y _G_a_t_e _W_i_d_t_h(_u_m) [_2] :
+_S_p_a_c_e_r _T_h_i_c_k_n_e_s_s(_u_m) (_Z_e_r_o _f_o_r _n_o_n_e) [_0._1_5] :
+_P_o_l_y _M_e_t_a_l _S_p_a_c_i_n_g(_u_m) [_2] :
+_S_u_b_s_t_r_a_t_e _D_o_p_i_n_g [_1_e+_1_6] : _1_e_1_5
+_G_a_t_e _O_x_i_d_e _T_h_i_c_k_n_e_s_s(_a_n_g) [_2_5_0] :
+_C_h_a_n_n_e_l _T_h_r_e_s_h_o_l_d _A_d_j_u_s_t
+        _N/_P/_0(_n_o_n_e) _t_y_p_e _d_o_p_i_n_g? [_P]
+        _Y_o_u _c_a_n _e_n_t_e_r _d_o_p_i_n_g _i_n_f_o_r_m_a_t_i_o_n _i_n _3 _w_a_y_s:
+                 _1) _p_e_a_k _c_o_n_c., _p_e_a_k _c_o_n_c. _l_o_c_a_t_i_o_n, _s_t_d. _d_e_v
+                 _2) _p_e_a_k _c_o_n_c., _p_e_a_k _c_o_n_c. _l_o_c_a_t_i_o_n, _j_u_n_c. _d_e_p_t_h
+                 _3) _p_e_a_k _c_o_n_c., _p_e_a_k _c_o_n_c. _l_o_c_a_t_i_o_n, _d_o_s_e
+                         _t_h_i_s _o_n_e _i_s _n_o_t _g_o_o_d _f_o_r _h_i_g_h _c_o_n_c_e_n_t_r_a_t_i_o_n_s!!
+                 _p_l_e_a_s_e _p_i_c_k _1, _2 _o_r _3 [_3] :
+        _P_e_a_k _D_o_p_i_n_g _C_o_n_c_e_n_t_r_a_t_i_o_n [_1_e+_1_6] : _2._0_e_1_6
+        _P_e_a_k _D_o_p_i_n_g _L_o_c_a_t_i_o_n [_0._1] :
+        _D_o_s_e [_2_e+_1_2] : _1_e_1_2
+_L_i_g_h_t_l_y _D_o_p_e_d _D_r_a_i_n
+        _N/_P/_0(_n_o_n_e) _t_y_p_e _d_o_p_i_n_g? [_N]
+        _Y_o_u _c_a_n _e_n_t_e_r _d_o_p_i_n_g _i_n_f_o_r_m_a_t_i_o_n _i_n _3 _w_a_y_s:
+                 _1) _p_e_a_k _c_o_n_c., _p_e_a_k _c_o_n_c. _l_o_c_a_t_i_o_n, _s_t_d. _d_e_v
+                 _2) _p_e_a_k _c_o_n_c., _p_e_a_k _c_o_n_c. _l_o_c_a_t_i_o_n, _j_u_n_c. _d_e_p_t_h
+                 _3) _p_e_a_k _c_o_n_c., _p_e_a_k _c_o_n_c. _l_o_c_a_t_i_o_n, _d_o_s_e
+                         _t_h_i_s _o_n_e _i_s _n_o_t _g_o_o_d _f_o_r _h_i_g_h _c_o_n_c_e_n_t_r_a_t_i_o_n_s!!
+                 _p_l_e_a_s_e _p_i_c_k _1, _2 _o_r _3 [_2] :
+        _P_e_a_k _D_o_p_i_n_g _C_o_n_c_e_n_t_r_a_t_i_o_n [_1_e+_1_8] :
+        _P_e_a_k _D_o_p_i_n_g _L_o_c_a_t_i_o_n [_0] :
+        _J_u_n_c_t_i_o_n _D_e_p_t_h [_0._2_5] : _0._3_5
+_D_r_a_i_n _D_o_p_i_n_g
+        _N/_P/_0(_n_o_n_e) _t_y_p_e _d_o_p_i_n_g? [_N]
+        _Y_o_u _c_a_n _e_n_t_e_r _d_o_p_i_n_g _i_n_f_o_r_m_a_t_i_o_n _i_n _3 _w_a_y_s:
+                 _1) _p_e_a_k _c_o_n_c., _p_e_a_k _c_o_n_c. _l_o_c_a_t_i_o_n, _s_t_d. _d_e_v
+                 _2) _p_e_a_k _c_o_n_c., _p_e_a_k _c_o_n_c. _l_o_c_a_t_i_o_n, _j_u_n_c. _d_e_p_t_h
+                 _3) _p_e_a_k _c_o_n_c., _p_e_a_k _c_o_n_c. _l_o_c_a_t_i_o_n, _d_o_s_e
+                         _t_h_i_s _o_n_e _i_s _n_o_t _g_o_o_d _f_o_r _h_i_g_h _c_o_n_c_e_n_t_r_a_t_i_o_n_s!!
+                 _p_l_e_a_s_e _p_i_c_k _1, _2 _o_r _3 [_2] :
+        _P_e_a_k _D_o_p_i_n_g _C_o_n_c_e_n_t_r_a_t_i_o_n [_1_e+_2_0] :
+        _P_e_a_k _D_o_p_i_n_g _L_o_c_a_t_i_o_n [_0] :
+        _J_u_n_c_t_i_o_n _D_e_p_t_h [_0._1] : _0._2_5
+_M_a_x_i_m_u_m _D_r_a_i_n _S_u_b_s_t_r_a_t_e _R_e_v_e_r_s_e _B_i_a_s [_0._1] :
+_M_a_x_i_m_u_m _S_o_u_r_c_e _S_u_b_s_t_r_a_t_e _R_e_v_e_r_s_e _B_i_a_s [_0] :
+_d_r_a_i_n _v_o_l_t_a_g_e [_0._1_0_0_0_0_0] :
+_s_t_a_r_t_i_n_g _g_a_t_e _v_o_l_t_a_g_e [_0._0_0_0_0_0_0] : -_1._0
+_s_w_e_e_p _g_a_t_e _v_o_l_t_a_g_e _t_o [_2._0_0_0_0_0_0] :
+_g_a_t_e _b_i_a_s _i_n_c_r_e_m_e_n_t [_0._1_0_0_0_0_0] :
+
+
+Most of these questions are self  explanatory  and  defaults
+are  given in brackets.  If a new value is not entered, then
+the default value is taken.
+
+
+
+
+
+
+
+                     September 15, 1988
+
+
+
+
+
+                           - 5 -
+
+
+_F_i_l_e_s
+
+
+     MOSMESH produces an output file and reads in a  default
+file.  The default file contains the inputs used in the pre-
+vious run along with matching tags to  describe  the  entry.
+To perform modifications to only a few parameters, one could
+edit the defaults file and rerun MOSMESH in batch mode.  The
+default file generated by the above example is shown below.
+
+
+
+
+_t_i_t_l_e _M_O_S_M_E_S_H _a_u_t_o_m_a_t_i_c _m_e_s_h - _V_e_r_s_i_o_n _8_8_2_2
+
+$_s_t_a_r_t_i_n_g _m_e_s_h _c_a_r_d
+_m_e_s_h _n_x=_4_5 _n_y=_2_2 _r_e_c_t _o_u_t_f=_n_m_e_s_h
+
+$_x _m_e_s_h _l_o_c_a_t_i_o_n_s
+_x._m_e_s_h _n_o_d_e=_1 _l_o_c_a_t_i_o_n=-_3._1 _r_a_t=_1
+_x._m_e_s_h _n_o_d_e=_2 _l_o_c_a_t_i_o_n=-_3 _r_a_t=_1
+_x._m_e_s_h _n_o_d_e=_8 _l_o_c_a_t_i_o_n=-_1._5_9_2_6_5 _r_a_t=_1._2_5
+_x._m_e_s_h _n_o_d_e=_9 _l_o_c_a_t_i_o_n=-_1._3_7_1_3_3 _r_a_t=_1._2_5
+_x._m_e_s_h _n_o_d_e=_1_0 _l_o_c_a_t_i_o_n=-_1._1_5 _r_a_t=_0._8
+_x._m_e_s_h _n_o_d_e=_1_1 _l_o_c_a_t_i_o_n=-_1 _r_a_t=_0._8
+_x._m_e_s_h _n_o_d_e=_1_3 _l_o_c_a_t_i_o_n=-_0._7_2 _r_a_t=_0._6_4
+_x._m_e_s_h _n_o_d_e=_3_3 _l_o_c_a_t_i_o_n=_0._7_2 _r_a_t=_1
+_x._m_e_s_h _n_o_d_e=_3_5 _l_o_c_a_t_i_o_n=_1 _r_a_t=_1._3_3
+_x._m_e_s_h _n_o_d_e=_3_6 _l_o_c_a_t_i_o_n=_1._1_5 _r_a_t=_2._5_1
+_x._m_e_s_h _n_o_d_e=_3_7 _l_o_c_a_t_i_o_n=_1._3_7_1_3_3 _r_a_t=_1._2_5
+_x._m_e_s_h _n_o_d_e=_3_8 _l_o_c_a_t_i_o_n=_1._5_9_2_6_5 _r_a_t=_0._8
+_x._m_e_s_h _n_o_d_e=_4_4 _l_o_c_a_t_i_o_n=_3 _r_a_t=_0._8
+_x._m_e_s_h _n_o_d_e=_4_5 _l_o_c_a_t_i_o_n=_3._1 _r_a_t=_1
+
+$_y _m_e_s_h _l_o_c_a_t_i_o_n_s
+_y._m_e_s_h _n_o_d_e=_1 _l_o_c_a_t_i_o_n=-_0._0_2_5 _r_a_t=_1
+_y._m_e_s_h _n_o_d_e=_3 _l_o_c_a_t_i_o_n=_0 _r_a_t=_0._8
+_y._m_e_s_h _n_o_d_e=_4 _l_o_c_a_t_i_o_n=_0._0_1 _r_a_t=_1
+_y._m_e_s_h _n_o_d_e=_1_4 _l_o_c_a_t_i_o_n=_0._3_5 _r_a_t=_1._2_4
+_y._m_e_s_h _n_o_d_e=_1_9 _l_o_c_a_t_i_o_n=_1._0_5_8_9_6 _r_a_t=_1._2_5
+_y._m_e_s_h _n_o_d_e=_2_2 _l_o_c_a_t_i_o_n=_2 _r_a_t=_1._2_5
+
+$_e_l_i_m_i_n_a_t_e _s_o_m_e _n_o_d_e_s _t_h_a_t _a_r_e_n'_t _n_e_e_d_e_d
+_e_l_i_m _y._d_i_r _i_x._l=_1_1 _i_x._h=_3_5 _i_y._l=_5 _i_y._h=_2_2
+_e_l_i_m _y._d_i_r _i_x._l=_1 _i_x._h=_4_5 _i_y._l=_1_4 _i_y._h=_2_2
+
+$_r_e_g_i_o_n _d_e_f_i_n_i_t_i_o_n_s
+_r_e_g_i_o_n _n_u_m=_1 _i_x._l=_1 _i_x._h=_4_5 _i_y._l=_1 _i_y._h=_3 _o_x_i_d_e
+_r_e_g_i_o_n _n_u_m=_2 _i_x._l=_1 _i_x._h=_4_5 _i_y._l=_3 _i_y._h=_2_2 _s_i_l_i_c_o_n
+
+$_G_a_t_e = _1 _S_o_u_r_c_e = _2 _D_r_a_i_n = _3 _B_u_l_k = _4
+_e_l_e_c_t_r_o_d_e _n_u_m=_1 _i_x._l=_1_1 _i_x._h=_3_5 _i_y._l=_1 _i_y._h=_1
+_e_l_e_c_t_r_o_d_e _n_u_m=_2 _i_x._l=_1 _i_x._h=_2 _i_y._l=_3 _i_y._h=_3
+_e_l_e_c_t_r_o_d_e _n_u_m=_3 _i_x._l=_4_4 _i_x._h=_4_5 _i_y._l=_3 _i_y._h=_3
+
+
+
+                     September 15, 1988
+
+
+
+
+
+                           - 6 -
+
+
+_e_l_e_c_t_r_o_d_e _n_u_m=_4 _i_x._l=_1 _i_x._h=_4_5 _i_y._l=_2_2 _i_y._h=_2_2
+
+$_D_o_p_i_n_g _I_n_f_o_r_m_a_t_i_o_n
+$ _j_u_n_c_t_i_o_n _d_e_p_t_h _i_s _0._3_5_u_m
+_d_o_p_i_n_g _r_e_g=_2 _u_n_i_f_o_r_m _x._l_e_f=-_3._1 _x._r_i_g=_3._1
++       _y._t_o_p=_0._0 _y._b_o_t=_2 _c_o_n_c=_1._0_0_0_0_0_0_e+_1_5 _p._t_y_p_e
+
+$ _C_h_a_n_n_e_l _D_o_p_i_n_g _R_e_g_i_o_n
+_d_o_p_i_n_g _r_e_g=_2 _g_a_u_s_s _c_h_a_r=_0._5_6_4_1_9_1 _p_e_a_k=_0._1 _c_o_n_c=_2._0_0_0_0_0_0_e+_1_6 _p._t_y_p_e
++       _x._l_e_f=-_3._1 _x._r_i_g=_3._1 _r_a_t_i_o._l_a=_0._8
+
+$ _L_i_g_h_t_l_y _D_o_p_e_d _S_o_u_r_c_e
+_d_o_p_i_n_g _r_e_g=_2 _g_a_u_s_s _c_h_a_r=_0._1_3_3_1_6_8 _p_e_a_k=_0 _c_o_n_c=_1._0_0_0_0_0_0_e+_1_8 _n._t_y_p_e
++       _x._l_e_f=-_3._1 _x._r_i_g=-_1 _r_a_t_i_o._l_a=_0._8
+
+$ _L_i_g_h_t_l_y _D_o_p_e_d _D_r_a_i_n
+_d_o_p_i_n_g _r_e_g=_2 _g_a_u_s_s _c_h_a_r=_0._1_3_3_1_6_8 _p_e_a_k=_0 _c_o_n_c=_1._0_0_0_0_0_0_e+_1_8 _n._t_y_p_e
++       _x._l_e_f=_1 _x._r_i_g=_3._1 _r_a_t_i_o._l_a=_0._8
+
+$ _H_e_a_v_i_l_y _D_o_p_e_d _S_o_u_r_c_e
+_d_o_p_i_n_g _r_e_g=_2 _g_a_u_s_s _c_h_a_r=_0._0_7_3_6_7_9_6 _p_e_a_k=_0 _c_o_n_c=_1._0_0_0_0_0_0_e+_2_0 _n._t_y_p_e
++       _x._l_e_f=-_3._1 _x._r_i_g=-_1._1_5 _r_a_t_i_o._l_a=_0._8
+
+$ _H_e_a_v_i_l_y _D_o_p_e_d _D_r_a_i_n
+_d_o_p_i_n_g _r_e_g=_2 _g_a_u_s_s _c_h_a_r=_0._0_7_3_6_7_9_6 _p_e_a_k=_0 _c_o_n_c=_1._0_0_0_0_0_0_e+_2_0 _n._t_y_p_e
++       _x._l_e_f=_1._1_5 _x._r_i_g=_3._1 _r_a_t_i_o._l_a=_0._8
+$ _d_r_a_i_n _c_h_a_r_a_c_t_e_r_i_s_t_i_c_s. _V_d _i_s _0._1_0_0_0_0_0, _m_i_n_V_g _i_s -_1._0_0_0_0_0_0 _m_a_x_V_g _i_s _2._0_0_0_0_0_0
+_s_y_m_b _g_u_m_m_e_l _c_a_r_r_i_e_r_s=_1 _e_l_e_c_t_r_o_n_s
+_m_e_t_h_o_d _i_c_c_g _d_a_m_p_e_d
+_m_o_d_e_l_s _s_r_f_m_o_b
+$ _c_h_a_n_g_e _t_h_e _b_e_l_o_w _l_i_n_e _i_f _a_n_o_t_h_e_r _g_a_t_e _m_a_t_e_r_i_a_l _i_s _u_s_e_d
+_c_o_n_t_a_c _n_u_m=_1 _n._p_o_l_y
+$ _s_o_l_v_e _f_o_r _t_h_e _i_n_i_t_i_a_l _s_t_e_p.  _s_a_v_e _i_n _f_i_l_e _i_n_i_t_i_a_l
+_s_o_l_v_e _i_n_i_t_i_a_l _v_1=-_1._0_0_0_0_0_0 _o_u_t_f_i_l_e=_i_n_i_t_i_a_l
+$ _s_a_v_e _I-_V _i_n_f_o_r_m_a_t_i_o_n _i_n _d_r_a_i_n_I_V._l_o_g
+_l_o_g _i_v_f_i_l_e=_d_r_a_i_n_I_V._l_o_g
+_r_e_g_r_i_d _p_o_t_e_n_t_i_a_l _s_t_e_p=_0._2
+_s_o_l_v_e _v_1=-_1._0_0_0_0_0_0 _v_3=_0._1_0_0_0_0_0 _v_s_t_e_p=_0._1_0_0_0_0_0 _n_s_t_e_p_s=_3_0  _e_l_e_c_t_r_o_d_e=_1
+$ _p_l_o_t _s_t_a_t_e_m_e_n_t _i_n _a_s_c_i_i _f_o_r_m_a_t _i_n _f_i_l_e _i_v._a_s_c_i_i
+_p_l_o_t._1_d _x._a_x_i_s=_v_1 _y._a_x_i_s=_i_3 _a_s_c_i_i _o_u_t_f_i_l_e=_i_v._a_s_c_i_i
+_e_n_d
+
+
+_W_A_R_N_I_N_G_S
+
+
+     To maintain flexibility of MOSMESH, a limited amount of
+error checking on user input has been done.  The best way to
+determine correct input  is  to  examine  the  .defaultsmesh
+file.   In this file user input are tagged with strings.  If
+a problem is found, the program must be rerun in interactive
+mode  or  the  .defaultsmesh  file can be edited and MOSMESH
+rerun in batch mode.  Although the mesh generation seems  to
+work  well  in many cases, convergence problems with MOSMESH
+
+
+
+                     September 15, 1988
+
+
+
+
+
+                           - 7 -
+
+
+associated input decks have been occasionally seen.  Usually
+the  problem  is  caused by using an excessively large drain
+voltage step.  By reducing the step via the drain  increment
+prompt, convergence improves.
+
+Features not included in this release are the poisson solver
+and  contour gridding capabilities. Since the poisson solver
+is not included, it is very important to regrid the  initial
+mesh  during  the  solution phase whenever current begins to
+flow within the device.  As an  example  of  regridding  for
+determining the gate characteristics of a MOS device, assume
+that you have run MOSMESH with the -t  option  with  a  gate
+sweep from 0 to 1.0V.  From the Pisces output, you determine
+that current begins to flow through the device at 0.6V.  You
+should then _r_e_r_u_n Pisces but substitute the gate bias card
+
+     solve v1=0 v3=0.1 nsteps=10 vstep=0.1
+
+with the following cards
+
+     solve v1=0 v3=0.1 nsteps=5 vstep=0.1
+     regrid potential step=0.2
+     symb gummel carriers=1 electrons
+     method iccg damped
+     solve v1=0.6 v3=0.1 nsteps=4 vstep=0.1
+
+In this manner you should obtain more accurate results.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                     September 15, 1988
+
+

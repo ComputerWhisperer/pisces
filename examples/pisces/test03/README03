@@ -1,0 +1,50 @@
+
+	A SHORT CHANNEL MOSFET WITH OXIDE UNDER DRAIN AND SOURCE
+			(PSUEDO-SOI STRUCTURE)
+
+This example simulates a short channel mosfet with oxide under both drain
+and source regions.  This example is a part of a three step process in 
+which the oxide region under the drain and source is made larger until 
+a Silicon-on-Insulator (SOI) device is obtained.  In the next two examples
+the oxide region will be made larger.  The advantage of the oxide is that 
+the source and drain depletion regions are small since they cannnot grow 
+into the oxide.  This allows for lower electric fields and smaller 
+capacitance which results in better device performance.
+
+The device is defined by the file called nbLgrid.p2.  The device is 3 microns
+by 2 microns.  A grid is generated for this device and eliminate statements
+are used to remove unnecessary points.  The grid is then distorted using
+spread statements so that the grid follow more closely the surface and 
+junction contours.  Both left and right side of the grid is distorted.
+
+This device consists of two regions; one is oxide and the other is silicon.
+The electrodes are defined for gate, substrate, drain and source in the 
+silicon region.  The doping for the drain and source regions are gaussian
+with concentration of 2e19.  The substrate is doped uniformly at 1e15.
+The grid, doping profiles, and junctions are then plotted.
+
+The initial solution is obtained using the file called nbLsolve.p2.  This 
+file imports the mesh file (nmeshb), and specifies the Gummel method with a
+single carrier to solve for the initial solution.  The material card
+specifies the mobility reduction at the surface to be .75 times the 
+mobility of the bulk region.  The contact card defines the gate contact
+to be of n-type polysilicon.  The models used for this simulation are 
+field and concentration dependent mobilities at 300 degrees kelvin.
+
+The first solve statement solves finds the initial solution and creates an 
+outfile called nbiasbinit.  Then a one carrier Newton solution is used
+to solve for drain voltage set to .1 volt and the result is stored in 
+an outfile called nbiasb15a.  The gate voltage is then ramped from -0.5
+to 2.0 volts.  The results are stored in a log file called nIVb15.IV.
+A plot of Id versus Vgs is generated.
+
+To solve for the Ids versur Vds characteristics, a file called nbLdrain.p2 
+is used.  Similar to the previous file, this file imports the mesh, specifies
+the method, the surface mobility and the gate contact.  Initially, the 
+gate voltage is incremented in half volts steps from .5 to 2.5 volts.  The 
+solution for gate bais at 3 volts is also obtained and its stored in a file
+called nbiasb15b.  A log file is started to store the IV data generated
+for the stepping of Vds.  The drain voltage is stepped from 0.2 to 3 volts
+and a solution is found using a one carrier Newton method.  The drain
+current is then plotted against the drain to source voltage.
+

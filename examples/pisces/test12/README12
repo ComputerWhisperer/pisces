@@ -1,0 +1,40 @@
+
+		ISOLATION STRUCTURE FOR PIN DIODE
+
+
+The structure in this example is an isolation structure that basically 
+is supposed to stand off up to 110 volts.  Such a capability is obtained
+by having a series of reverse biased pn junctions that drop part of the
+voltage each such that the total voltage drop is shared.  This structure
+is large (450um x 300um) and as such requires a large number of grid
+points for an accurate solution.  
+
+The mesh is produced by a file called pinmesh.p2 and is written to a file
+called isol13.mesh.  As usual, the unnecessary points are eliminated from
+the grid.  The appropriate electrodes are defined.  The background doping
+is p-type of concentration of 1e12.  First an n-type diffusion is defined, 
+and then the p-type several p-type diffusions are added.  These pn junctions
+will be used to stand off the voltage.  After the pn junctions are defined,
+a regrid is done to ensure more grid points around the junctions for better
+resolution and more accurate results.
+
+The simulation of this structure is done by a file called pin.p2.  This file
+loads in the mesh and then uses the two carrier newton method to solve for
+the initial solution.  Please note that the impact ionization model is 
+used here since in this simulation it is critical to determine where the
+structure breaksdown and more important to make sure it doesn't breakdown
+before 110 volts.  The iteration limit has also been raised from its 
+default value of 15 to 25 to guarantee convergence.  In order to keep
+consistency with the semiconductor chosen for this simulation, the SRH
+lifetimes have been increased from their default value of 100ns to 1ms.
+With a couple of parameter changes, the initial solution is again obtained.
+A log file called IVisol13 is started to save the large quantity of  
+simulation data.  The substrate in this example is grounded and the 
+electrodes 1 and 2 are supposed to be connected together, as such, in this
+simulation they are both maintained at the same potential.  Outfiles at
+10, 20, 30, 42, 50, 62, 70, 82, 90, 102, and 110 volts are saved for
+possible post processing.  Due to the large number of nodes and several
+solve statements, this simulation is quite lengthy.  Appropriate quantities
+are then plotted, but in this case its best to do post processing.
+
+

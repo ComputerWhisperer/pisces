@@ -1,0 +1,46 @@
+
+               
+	        PISCES Surface Mobility Model Implementation
+
+                              Jeffrey T. Watt
+                       Center for Integrated Systems
+                            Stanford University
+                            Stanford, CA 94305
+
+
+	This document describes the modifications to be made to the PISCES
+two-dimensional device simulator to implement an effective field based
+surface mobility model [1].  The model is based on the universal electron and
+hole mobility-field curves reported by Watt and Plummer [2].  The PISCES
+implementation accounts only for phonon scattering at room temperature at
+present, restricting it to effective fields of less than 0.5 MV/cm.  The
+model is invoked by specifying srfmob=y in the models card.
+
+	The parameter g.surf which was used in the original PISCES mobility
+model to account for surface mobility reduction is retained in the present
+model to allow a constant mobility reduction.  Since the new model is based
+on universal curves, this parameter should not be required (its default
+value is one).  It does, however, give the user the ability to make minor
+adjustments to the mobility model.
+
+	The tangential field dependent mobility reduction model which is
+specified using fldmob=y in the models card operates on both the surface
+and bulk mobility.  This model accounts for carrier heating and the eventual
+saturation of the carrier drift velocity.  Time-of-flight measurements
+have indicated very little difference between surface and bulk drift
+velocity saturation effects, validating the use of the same model for both
+cases.
+
+
+
+[1] J. T. Watt, "Improved Surface Mobility Models in PISCES," presented
+    at Computer-Aided Design of IC Fabrication Processes, Stanford 
+    University, August 6, 1987.
+
+[2] J. T. Watt and J. D. Plummer, "Universal Mobility-Field Curves for
+    Electrons and Holes in MOS Inversion Layers," presented at 1987
+    Symposium on VLSI Technology, Karuizawa, Japan.
+
+	The only known bug is the incorrect calculation of effective
+field at an interface where fixed charge is present.  In the present
+version the fixed charge is ignored.

@@ -1,0 +1,2 @@
+set editing-mode vi
+Control-h:	backward-delete-char

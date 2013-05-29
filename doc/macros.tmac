@@ -1,0 +1,108 @@
+.\" -------------------------------------------------------------------
+.ds IG \s-2IGGI\s+2
+.ds PI \s-2PISCES-II\s+2
+.ds P0 \s-2PISCES\s+2
+.ds P1 \s-2PISCES-I\s+2
+.ds SU \s-2SUPREM-III\s+2
+.\"
+.in 0
+.EQ 
+delim @@
+.EN
+.if n .ta 5 10 15 20 25 30 35 40 45 50 55 60
+.if t .ta .3i .6i .9i 1.2i 1.5i 1.8i
+.nr H2 0
+.nr H3 0
+.nr H4 0
+.nr H5 0
+.\" -------------------------------------------------------------------
+.\"
+.\"   Input deck macro - start
+.\"
+.nr PS 11
+.nr VS 12
+.in 0
+.ds CH "\-\|\\n(PN\|\-
+.de P1
+.br
+.sp
+.nf
+.na
+.if \\n(.$ .DS I \\$1   \" Indentation is 5 unless given
+.if !\\n(.$ .DS I 5
+.\"  .ss +12
+..
+.\"   Input deck macro - end
+.de P2
+.br
+.sp
+.fi
+.ad
+.DE
+.\"  .ss -12
+..
+.\"   Input deck macro - end # 2
+.de P3
+.br
+.fi
+.DE
+.\"  .ss -12
+..
+.\" ----- Save an index ---
+.de In
+.if t .sy toc-page t \\$1 \\n(PN
+.if n .sy toc-page n \\$1 \\n(PN	\" Note Nroff does not have .sy ...
+.\" .da Sv
+.\" .ev 2
+.\" .po |0
+.\" .in |0
+.\" .nf
+.\" \\$1 \\n(PN
+.\" .br
+.\" .ev
+.\" .da
+..
+.\"
+.\" ----- Output the Raw Index Page(s) ----
+.de Ix
+.\" .br
+.\" ____INDEX_START____
+.\" .br
+.\" .ev 2
+.\" .po |0
+.\" .nf
+.\" .Sv
+.\" .br
+.\" .ev
+.\" .br
+.\" ____INDEX_END____
+..
+.\" ----- Start a card ----
+.de bC
+.in 0
+.sp 2
+.SH
+The \\$1 card
+.In \\$1
+.if \\n(.$=2 \{\
+.SH
+The \\$2 card
+.In \\$2
+.\}
+.PP
+.sp 2
+..
+.\" ----- End a card ----
+.de eC
+.bp
+..
+.\" ----- Add Change bar -----
+.de +B
+.ps +2
+.mc \(br
+.ps -2
+..
+.\" ----- End Change bar -----
+.de -B
+.mc
+..

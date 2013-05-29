@@ -1,0 +1,8 @@
+Compile Warning:
+---------------
+
+gcc with the Optimizer does not work.  However gcc alone and
+cc -O do work.
+
+
+

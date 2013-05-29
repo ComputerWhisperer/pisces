@@ -1,0 +1,21 @@
+title pn diode (fig 9a)
+$
+$ AC analysis
+$
+mesh	in=pn.msh
+symb	newton carr=2
+method	rhsnorm xnorm autonr
+models	temp=300 srh auger conmob fldmob print
+
+load	inf=pn2a0-r.slv
+log	acfile=AC.log
+solve	local v1=-3 ac freq=1e3
+solve	vstep=0.25 nsteps=12 elect=1 ac freq=1e3
+solve	vstep=0.1  nsteps= 5 elect=1 ac freq=1e3
+
+$ FIGURE 9b
+$plot.1d x.ax=v1 y.ax=c12 points
+$ FUGURE 9c
+$plot.1d x.ax=v1 y.ax=g12 log abs points
+
+end

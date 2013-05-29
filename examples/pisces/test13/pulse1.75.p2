@@ -1,0 +1,17 @@
+title	transient latchup simulation
+$
+mesh	inf=mesh2a.msh
+models	temp=300 analyt fldmob srh auger bgn conmob
+$
+symbol	carr=2 newton
+method	autonr rhsnorm 
+$
+solve	init
+solve	local v3=5 v4=5 v5=5
+$
+method  2ndorder tauto l2norm extrapolate 
+log ivfile=IV1.75ns.log
+solve	v2=-2.5 tstep=1.e-11 tstop=1.75e-9 
+solve	v2=0 tstep=1e-11 tstop=8e-9 
+$
+end

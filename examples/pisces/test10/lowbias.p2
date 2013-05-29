@@ -1,0 +1,20 @@
+
+title Mosaic-III bipolar device
+
+mesh inf=mosaic.msh
+
+contact num=1 neutral
+contact num=2 neutral
+contact num=3 neutral
+
+symb newton carr=2
+method rhsnorm xnorm autonr 
+
+models temp=300 srh auger conmob fldmob fermi print consrh bgn
+
+solve init
+
+log outf=lowbias.log
+solve vstep=-0.1  nsteps=9 elect=1 outf=bip.1 
+end
+

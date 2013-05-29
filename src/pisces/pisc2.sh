@@ -1,0 +1,34 @@
+#!/bin/sh
+# Thu Feb  1 17:18:17 PST 1990 (pisces--stanford)
+# "pisc2.sh":  Run pisces where ever it is...
+#
+# Where is it?
+
+VERS=9009
+PROG=pisces2
+PISC2DIR=/usr/local/icl/pisces/9009
+PISC_DIR="`echo $PISC2DIR | awk  -F/ '{ for (i=2; i<NF; i++) D=D "/" $i; print D}'`"
+
+
+# -----------
+
+case $1 in
+-v)	VERS=$2
+	shift
+	shift
+	;;
+-*)	# special case: run "special versions"
+	PROG=$PROG$1
+	shift
+	;;
+esac
+
+DIR=$PISC_DIR/$VERS
+
+# If no in the default location, set this to where the unformed key file is.
+if test "$PISC2UKY" = "" ; then
+	PISC2UKY=$DIR/pisc.uky ;  export PISC2UKY
+fi
+
+exec $DIR/$PROG $*
+exit 0

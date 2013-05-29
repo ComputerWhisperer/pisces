@@ -1,0 +1,38 @@
+/* date: 16 dec 86 (mje) 
+ * all the cursors for the X version of dplot-tool.
+ */
+
+
+/* GENERAL CURSOR */
+#define curs_width 16
+#define curs_height 16
+#define curs_x_hot 8
+#define curs_y_hot 7
+static short curs_bits[] = {
+   0x0100, 0x0100, 0x07c0, 0x0920,
+   0x1110, 0x2108, 0x2108, 0xffff,
+   0x2108, 0x2108, 0x1110, 0x0920,
+   0x07c0, 0x0100, 0x0100, 0x0100};
+
+/* LOCATOR CURSOR */
+#define loc_width 16
+#define loc_height 16
+#define loc_x_hot 8
+#define loc_y_hot 7
+static short loc_bits[] = {
+   0x0100, 0x0100, 0x0100, 0x0100,
+   0x0100, 0x0100, 0x0000, 0xfc7e,
+   0x0000, 0x0100, 0x0100, 0x0100,
+   0x0100, 0x0100, 0x0100, 0x0000};
+
+
+/* ALL-DONE (END) CURSOR */
+#define end_width 16
+#define end_height 16
+#define end_x_hot 7
+#define end_y_hot 6
+static short end_bits[] = {
+   0x03c0, 0x07f0, 0x0630, 0x0c18,
+   0x0c18, 0x0600, 0x0600, 0x0300,
+   0x0380, 0x01c0, 0x00c0, 0x00c0,
+   0x0000, 0x0000, 0x00c0, 0x00c0};

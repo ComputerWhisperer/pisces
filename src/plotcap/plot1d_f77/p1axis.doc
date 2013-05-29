@@ -1,0 +1,18 @@
+c
+c "p1axis": Sedan-III plot axis routine.
+c
+c Calling sequence:
+c	 call P1AXIS(titl, xlog, xlab,
+c	+                  ylog, ylab )
+c
+c Where:
+c	titl	- character*(*). Use given title, trailing blanks
+c                 stipped.
+c	xlog	- integer.  1::logarithmic data (take the log of each
+c		  X value before plotting), 0::Linear.
+c	xlab	- character*(*) The X axis label.
+c	ylog	- integer.  1::logarithmic data (take the log of each
+c		  Y value before plotting), 0::Linear.
+c	ylab	- character*(*) The Y axis label.
+c
+c Original: Michael Eldredge -- Stanford (apr 88)

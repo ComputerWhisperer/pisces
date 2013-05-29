@@ -1,0 +1,12 @@
+ADD_LIBRARY(sysf77lib
+xdate_bsd.f
+xexit_bsd.f
+xgeten_bsd.f
+xgtarg_bsd.f
+xmktmp_bsd.c
+xtimer_bsd.f
+#xtest.f
+#xtimer_def.f
+#xtimer_sgi.c
+#xtimer_vms.for
+)

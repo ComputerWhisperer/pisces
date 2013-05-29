@@ -1,0 +1,30 @@
+title  NMOS  Ids-Vgs & Ids-Vds characteristics :n4b.i
+$
+$options plotdev=stout
+mesh infile=nmesh.msh
+contac num=2 n.poly
+symb  gummel carriers=1 electrons
+method iccg damped 
+models temp=300 print fldmob
+$
+$  find intial solution
+$
+solve  init outf=n4slv0.slv
+$
+$ solve for gate characteristics 
+$
+solve  v1=0.1
+log   outf=ivgs.log
+solve   vstep=0.10 nstep=15 elect=2
+$plot.1d x.axis=v2 y.axis=i1 abs log points unch
+$
+$  solve for drain characteristics
+$
+symb  newton carriers=1 electrons
+method  autonr
+solve   v2=2  
+log   outf=ivds.log
+solve    vstep=0.1 nstep=20 elect=1
+$plot.1d x.axis=v1 y.axis=i1 abs log points unch
+$
+end

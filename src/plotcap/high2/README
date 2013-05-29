@@ -1,0 +1,11 @@
+
+	*** HIGH2 higher level (2d) library code. ***
+
+ The function symbl2() has an include file that describes the "drawn-font".
+ The character descriptions were compiled from the symb2.defs file.  This
+ file can be modified and re-made with the program mksym.  The distributed
+ Makefile has be modified to not re-make symb2.h if symb2.defs changes,
+ but can be remodified back by removing the comment before each line
+ between #%TMP and #%end.  The file example.defs is similar but contains
+ some ``fun'' defs (some Japanese kanji, for example).  Read the header
+ in the source for mksym.

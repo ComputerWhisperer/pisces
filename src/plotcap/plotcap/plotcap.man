@@ -1,0 +1,1430 @@
+.de PC
+.nf
+.RS
+.HP
+..
+.de PE
+.RE
+.fi
+.PP
+..
+.TH PLOTCAP 5L "STANFORD UNIVERSITY"
+.SH NAME
+plotcap \- Plot capability data base for the gplot library.
+.SH SYNOPSIS
+/usr/local/lib/plotcap
+.br
+/usr/local/lib/plotcap.std
+.br
+.SH "RELEASE 7035"
+.SH DESCRIPTION
+.B plotcap
+is a data base which describes plotting devices.  Each
+device is described by an entry in a
+.B plotcap
+file, consisting
+of a list of the capabilities which it has and
+the operations required to preform a set of functions (which
+are, in general, the commands used by
+.BR gplot(3L) ).
+.PP
+The
+.B gplot
+library is able to plot to many different devices (both vector and
+raster types).  It has a small set of allowed graphics primatives.
+These are either handled by the device, if possible, otherwise by
+.B gplot
+internally. Capabilities include moving, drawing, clearing,
+changing line types, filling an area, etc.
+The
+.B plotcap
+data base describes which capabilities a device has and
+how to implement the primatives that it can do.
+.PP
+The
+.B plotcap
+file may contain
+certain special commands,
+device entries,
+and comments (delimited by a pound sign (`#') and the end of line).
+The special commands are directives to the
+.B plotcap
+file reading functions. Special commands, which may be between entries only,
+are marked by a percent sign (`%'), the command word and any
+parameters. For example,
+.PP
+.RS
+%next \0 "/usr/local/lib/plotcap.std"
+.RE
+.PP
+indicates that the reading routines should continue on from the current
+file to one called '/usr/local/lib/plotcap.std' if the requested
+graphics device cannot be found.
+.PP
+Each device entry consists of a series of names for the device separated
+by vertical bars (`|')  and ending with a colon (`:') and then
+the capabilities for the device.
+Each capability is separated by colons and the
+entry terminated by a null capability.
+.PP
+Capabilities are of several types.  Some are boolean values \- the
+associated capability does or does not exist.   Others have numeric
+values (ie: number of pixels) and are given as the capability, an
+equals sign (`=') and the number.  Numbers can be integers given
+in decimal, octal or hex (according to the standard C conventions), or
+in some cases a floating point number may be required (ie: an initial scale
+factor).  Some capabilities have string values (ie: a default
+output file name).
+In this case the
+the string value is given as a quoted string.  Either the single or
+the double quotes may be used, but the closing quote must be the same
+as that which began the string.
+Note that some
+interpretation of the string is done (ie: converting "\en" notation
+to a new line character).
+.PP
+The final type of capability gives the operations required to
+perform a task (ie: drawing).  These can be thought of as small
+``programs'' that can output characters and manipulate values
+(ie: the (x,y) point values).
+.PP
+For a more detailed discussion of the values for the different
+capability types, read on.  The section labeled
+.B CAPABILITIES
+is a reference guide to the capabilities, while
+the section entitled
+.B DISCUSSION
+goes into detail about the format of each type of capability.
+There is also a discussion on how to write an entry for a device.
+.PP
+Any capability may be made to appear non-existent by notting it (ie: preceding
+it with an exclamation point (`!')).  This is useful when using
+the
+.B LIKE
+capability and it is desired to turn off a capability
+that is in the
+.BR LIKE 'd
+device. Note that this notted capability does match (thus stopping the search
+for it), but it matches negatively.
+.SH CAPABILITIES
+One and only one of following device ``types'' must be given for
+each entry to indicate the basic device type.
+.TP
+.B NAME
+.B DESCRIPTION
+.PD 0
+.IP VECT
+A vector type plot device.
+.B gplot
+will output move and draw commands describing vectors.  The device
+is responsible for actually drawing the given vector.
+.IP RAST
+A raster type plot device.
+.B gplot
+will do all the drawing in an internal raster map and when the plot
+is finished, it will output the raster map to the device.
+.IP SAVE
+A pseudo-type.  All calls are to be saved to a file
+with no interpretation done. These calls are saved in the
+.B gplot
+meta-file format that can be reread and replotted (say by the
+.B dplot(1L)
+program).
+.PD
+.PP
+For each capability given below, the following letters, enclosed in
+parentheses or brackets, indicate its context.
+.RS
+.nf
+(R)	indicates a raster plot capability only.
+(V)	indicates a vector plot capability only.
+(S)	indicates a save capability only.
+(b)	indicates a boolean (flag) capability.
+(i)	indicates an integer value.
+(f)	indicates a floating point values.
+(s)	indicates a string value.
+(p)	indicates a \fI``program''\fP value.
+.fi
+.RE
+.PP
+Thus: (V i) means the capability is only used for vector type plot
+devices and it has an associated integer value. Capabilities shown
+as
+.I (...)
+are required, while those shown as
+.I [...]
+are optional.
+.TP
+.B NAME
+.B DESCRIPTION
+.PD 0
+.IP ANGLE
+[f] Initial angle (in degrees) of rotation.
+.IP AREA
+[p] Define and fill in a polygonal area.
+.B gplot
+will generally output vectors as if it were drawing, but it will
+call this capability when it is trying to define and fill an area.
+.IP ATOG
+[V p] Switch contexts from alpha mode to graphics mode.
+Many graphics terminals have a distinct graphics mode and
+alpha mode, escape sequences used in one are generally incompatible
+with those for the other.
+This is used after a
+.B GTOA
+to get back to plotting.
+Usually, after a setup call the device is in graphics mode.
+.IP BFCL
+[p] A sequence of characters appended to each buffer
+before it is sent to the plot device.
+This is often used for raster devices where each raster row
+is sent in a separate buffer and there is some set of characters
+that tells the device that it just got a row of raster data.
+.IP BFOP
+[p] A sequence of characters prepended to each buffer
+before it is sent to the plot device.
+Again, this is often used for raster devices before each
+raster row is output, indicating that raster data will follow.
+.IP BFSZ
+[i] [VS i] Total number of characters to buffer before
+outputting to the device (file).  This is used instead of the
+default value, useful, for example, when the device can
+only handle a limited number of characters at a time.  (The
+HP2648 graphics terminal has an internal 80 character buffer
+that is very easily overrun.  In this case,
+.B BFSZ
+should
+be 80). But, this is seldom used except with devices and/or
+operating systems that cannot do flow control (XON/XOF).
+.IP CLOC
+[V p] Sequence to get the current cursor position from the plot device
+(Cursor LOCation). This sequence should fill in the I and J variables
+with the current cursor location and (by convention) the S variable
+with the key that was hit to give the location.
+.IP CLPHX
+[i] Initial value, in pixels, of the high X clip bounds.
+Must be less than
+.BR PIXX .
+.IP CLPHY
+[i] Initial value, in pixels, of the high Y clip bounds.
+Must be less than
+.BR PIXY .
+.IP CLPLX
+[i] Initial value, in pixels, of the low  X clip bounds.
+Must be greater than or equal to zero.
+.IP CLPLY
+[i] Initial value, in pixels, of the low  Y clip bounds.
+Must be greater than or equal to zero.
+.IP DRAW
+[V p] Description of how to draw to a given point. This
+is the standard drawing mode, setting pixels to draw.
+This is the most frequently used
+.I program
+and the one that you must always write for a vector device.
+.IP DRWCL
+[V p] Like
+.B DRAW
+but for clearing a vector.  If
+clear-mode drawing is selected with
+.BR gplot ,
+this sequence
+is used instead of
+.BR DRAW .
+If not given, however, selection
+of clear-mode drawing will continue to use the
+.B DRAW
+sequence.
+.IP DRWCM
+[V p] Like
+.B DRAW
+but for complementing the pixels
+in the vector.  If complement-mode drawing is selected
+with
+.BR gplot ,
+this sequence is used instead of
+.BR DRAW .
+If not given, however, selection
+of complement-mode drawing will continue to use the
+.B DRAW
+sequence.
+.IP FILE
+[s] A default file name for all output.  This file is
+used if no call to
+.B setpfil(3L)
+is given before
+plotting begins.  If this is not given the standard output
+is used. This can also be used to create a unique file each
+time by including the template of the 6 characters "??????".
+The "??????" are replaced each time by a set of characters that
+are certain to be a unique file name.
+If the first character of a file name is a plus sign (`+') then
+the file is opened in append mode.
+Also (wow!!) if the first character of the file name is a
+vertical  bar (`|'), then the file name field is taken as
+a command (program) into which
+.B gplot
+output should be piped.
+(NOTE: This is operating system dependent, since
+not all operating systems allow piping between programs).
+Thus instead
+of writing to a file, a pipe will be created and output
+is directed to the standard input of the given command.
+If the first two characters are vertical bars (`||'), the the remainder
+of the name field is taken as a command (program) into which
+.B gplot
+output should be piped AND input (e.g. from a G_CLOC) command can
+be read.  In this case the plot library will execute the command with
+its standard input connected to the plot file output; its standard output
+will be the normal standard output (to allow writing to the terminal);
+and the standard error will be connected to the input plot file.
+This is used by the window drawing tools: xgplot, sunviewgplot.
+.IP FILS
+[V p] Select a new area fill pattern for subsequent area
+fills.
+.IP GTOA
+[V p] Switch contexts from graphics mode to alpha mode. This
+would be used, for example,
+to suspend plotting and (say) prompt for some
+user input.
+.RB ( gplot
+uses
+.B ATOG
+to get back from alpha mode).
+.IP ICLR
+[V b] Allow an initial clearing of the ``screen''.
+The clear command generally will clear and then
+prepare for the next plot (ie: by doing a page eject).
+So that if a program has a clear command as the very first plot command
+it would get a blank page on some devices.
+However, an initial clear command is sometimes needed, such as
+on a terminal in order to clear the last plot.
+.IP IGPO
+[V b] Ignore post commands.  All output
+is buffered to increase speed and posting is sometimes needed.
+In some cases it may be desired to disallow posting commands to
+.BR gplot .
+For example, if the output is always directed to a file, posting
+will only slow throughput.  (NOTE: this is not needed any longer. The
+.BR GTOA / ATOG
+sequences handle posting now.  (Just don't define them and posting
+will not happen). This is included in the documentation in case
+you are trying to read older
+.B plotcap
+files.)
+.IP INIT
+[p] Sequence to initialize the device for plotting.  This
+sequence is used once at the very beginning of all plotting.
+It should leave the device in graphics mode.
+.IP INSZ
+[V i] Size to use other than the default for the input buffer size.
+This is used when reading from a device (i.e. for finding the current
+cursor location).
+.IP LIKE
+[s] Some devices are similar except for a few capabilities.
+In this case, LIKE gives the name of the device which the
+current devices is like. This must be the last capability
+for an entry.  There is a limit on the number of likes
+to prevent recursive use of LIKE. When the
+.B plotcap
+file is being read, the entry will be collected and then any
+LIKE'd entries will be appended.  Searching for a capability will
+then find the first one in the concatenated list.
+Note that in specifying a device, as can be done with
+.BR setpdev(3L) ,
+the device name may explicitly name the
+.B plotcap
+file to search by appending an at sign (`@') and file name
+to the device, as:
+.RS
+.RS
+LIKE = "some_device@/u/home/lib/special_pcap":
+.RE
+.RE
+.IP LINE
+[V p] A sequence for setting line types for drawing (see gplot).
+The subcommand (the S variable) will contain the desired line type and
+this sequence should switch the device to draw with the new line-type.
+.IP MCLR
+[V p] A sequence to begin clear-mode plotting.
+This will be done when
+.B gplot
+is called with the
+.B G_DMODE
+command and
+.B G_MCLR
+sub-command. Subsequent
+.B gplot
+calls to draw will actually execute the
+.B DRWCL
+program if defined, otherwise the
+.B DRAW
+sequence will continue to be used.
+.IP MCMP
+[V p] A sequence, like
+.BR MCLR ,
+to begin complement-mode plotting when
+selected by
+.BR gplot .
+.IP MOVE
+[V p] Description of how to move to a given point. This is used
+just before drawing, but is often not required.
+Since there is the understanding of the last point, a
+.B DRAW
+sequence will often contain an initial move to the previous point.
+.IP MSET
+[V p] A sequence to return to set-mode plotting.
+.IP NFILS
+[V i] Maximum number of fill patterns supported by the hardware.  This
+will be returned by gpmisc(G_FILS, G_GET, ...) calls.
+.IP NLINE
+[V i] Maximum number of line types supported by the hardware.
+.IP NPEN
+[V i] Maximum number of pen styles supported by the hardware.
+.IP ORGX
+[i] The origin in pixels for the X-axis.  This is simply
+an offset added to the X-value pixel location. Useful for
+plot devices that want to begin at pixel one (vs pixel
+zero or an offset needed to not plot in a
+.I `dead'
+zone \- say where a roller moves the paper).
+.IP ORGY
+[i] Like
+.B ORGX
+but for the Y-value pixel location.
+.IP PCLR
+[V p] How to clear a plot ``screen''. This can mean really clear or
+do a page eject operation.
+.IP PEN
+[p] Sequence to change the pen with which we are drawing. If the
+device supports different pen sizes, for example, this can be used to
+change pen sizes.
+.B gplot
+passes the requested pen type in the subcommand.
+.IP PEND
+[p] Sequence to ``close'' a plot device.  This is used once
+at the very end of all plotting (triggered by a
+.B G_PEND
+command to
+.IR gplot .
+All internal buffers are automatically posted and the output file closed.
+.IP PIVL
+[R i] Initial values for bytes used in outputting each
+pixel row to the device. For example, if only the lower 5 bits of
+each byte in a raster row contain pixel information and the raster
+information is being sent over character communication lines (e.g. RS\-232)
+it is often necessary to set the 6th bit of each byte so that
+the value is always a printable character.  In this case,
+.B PIVL
+would be set to
+.B 040
+(octal 40 \- bit 6 is set).
+.IP PIXX
+(i) Total number of pixels in the X direction.
+.IP PIXY
+(i) Total number of pixels in the Y direction.
+.IP PLCL
+[p] `plot close'. Sequence to close/end each plot (after a
+clear).
+.IP PLOP
+[p] `plot open'. Sequence to begin each plot.
+.IP PUNX
+(i) Number of pixels in the X direction per basic device
+unit (ie: pixels per inch).
+.IP PUNY
+(i) Number of pixels in the Y direction per basic device
+unit (ie: pixels per inch).
+.IP ROTAX
+[f] Initial X-point about which to rotate (in basic plot units, e.g. inches).
+.IP ROTAY
+[f] Initial Y-point about which to rotate (in basic plot units, e.g. inches).
+.IP RPXB
+[R i] Number of pixels to output in each byte.  The internal
+pixel map may be (say) 1024 pixels wide, but when outputting
+the map a row at a time to the device, the pixels are mapped
+into a byte array RPXB pixels per byte (and ORed with PIVL).
+.IP RREV
+[R b] 'Raster: reverse'.  Reverse order of bits in each
+byte used in outputting each pixel row. For example, if you think of
+a raster row as a left to right list of pixels which for now we'll label
+.I a
+through
+.IR j ,
+then the row would look like:
+.RS
+.RS
+abcdefghij...
+.RE
+.RE
+.IP
+But if
+.B RPXB
+is (say) 5, then only 5 bits from this row will be output in each byte.
+This can be done as follows (where each set of brackets
+.B [...]
+represents a byte with the above pixels mapped in).  The left (high order)
+bit is #7 and the right (low order) bit is #0.
+.RS
+.RS
+[000abcde] [000fghij] ...
+.RE
+.RE
+.IP
+or
+.RS
+.RS
+[000edcba] [000jihgf] ...
+.RE
+.RE
+.IP
+In other words, some devices think that the
+.I next
+bit goes in the next (left to right) bit position, while others
+think it goes in the next (lowest order) bit position.
+The second style is used when
+.B RREV
+is set true.
+.IP SCALX
+[f] Initial scaling factor for the X direction.
+.IP SCALY
+[f] Initial scaling factor for the Y direction.
+.IP SFORM
+[S p] Format for saves.  Thus when a
+.B save
+type device is selected with
+.BR setpdev(3L) ,
+this is the format for
+each record output.  If not given, then the default
+.B gplot
+meta file format is used.
+.IP TRANX
+[f] Initial translation (offset) factor for the X direction
+(in basic plot units, e.g. inches).
+.IP TRANY
+[f] Initial translation (offset) factor for the Y direction
+(in basic plot units, e.g. inches).
+.IP UNKN
+[p] Sequence to be executed when an unknown
+.B gplot
+command is given (normally,
+.B gplot
+ignores unknown commands).
+.IP USCAL
+[f] Unit scale factor.  The number that each X,Y value is
+multiplied by to convert to the basic unit for the device.
+If, for example, the device to be
+defined gives pixels per centimeter, but local software expects
+plotting in inches, a scale of 2.54 can be given.
+.IP USR1
+[p] A user definable sequence executed by a
+.B G_USR1
+command to
+.BR gplot .
+.IP USR2
+[p] A user definable sequence executed by a
+.B G_USR2
+command to
+.BR gplot .
+.IP _SENT
+[i] Special internal command.  Create the internal
+.B plotcap
+parsing routine's symbol table with this many entries (used only if
+an entry runs out of parsing symbol table space).  You should never
+need this, but......
+.IP _STAB
+[i] Like
+.B _SENT
+but create the symbol table with this many total characters.
+.PD
+.SH "SPECIAL COMMANDS"
+Each
+.B plotcap
+file may contain special commands.  These commands may come between
+entries and are indicated by a percent sign (`%'), the command
+and any parameters. Currently there is only one special command.
+.TP
+%next
+The
+.B next
+command takes a quoted file name as its argument.
+If an entry has not been found by the end of the current
+.B plotcap
+file, then the file specified by the
+.B %next
+command will become the current
+.B plotcap
+file.
+This is useful in two cases. The first is when a user without access to the
+system
+.B plotcap
+file wishes to add or tailor a device entry. The user
+can create his own
+.B plotcap
+file and set the
+.B PLOTCAP
+environment variable with this name.  To avoid duplicating the system
+file, the user's local file would contain a
+.B %next
+command pointing
+to the system file. For example:
+.RS
+.RS
+.nf
+# This is my own Plotcap file
+
+# If not here, continue the search in the system file ...
+%next "/usr/local/lib/plotcap"
+
+my_entry:	# my own entry
+.RS
+...
+:
+
+.RE
+my_hp | xhp2648 :	# my altered version.....
+PIXX = 1000:		# Wow this is high res!
+PIXY = 1000:
+LIKE = "hp2648":	# Get the rest from the regular entry.
+.RS
+:
+.RE
+.fi
+.RE
+.RE
+.RS
+So if the user tried to set a device 'my_entry', the entry in the
+local file would be found and used.  If he wants 'my_hp', that too
+would be found in the local file, but the
+.B LIKE="hp2648"
+will cause a search for a device called "hp2648".
+This will not be found in the
+current file, so searching will switch to the
+.B %next
+file (here, the
+system
+.B plotcap
+file). Note that this is a switch,
+.I not
+a push.  Once the reader has switched to the
+.B %next
+file, there is no way back to the previous file.
+Also note that the switch does
+not happen at the point of the
+.B %next
+command, but only once the
+current file has been searched for an entry without success.
+Therefore, the
+.B %next
+command can be anywhere in the file,
+although it is usually at the beginning where it is easily noticed.
+.PP
+The other usual case for the use of the
+.B %next
+command is in a situation where some master machine sends out
+updates to subscriber machines at night (say,
+.I \`a la
+.BR rdist ).
+The default
+.B plotcap
+file, which is not distributed,
+can contain all the local machine definitions and have a
+.B %next
+command to the version which has been distributed.
+.RE
+.SH DISCUSSION
+Now it's time to take a look at each of the capability types and
+their associated values, and what it takes to write a definition
+for a plot device.
+.PP
+.B A Device Entry
+.br
+When specifying a plot device with
+.BR setpdev(3L) ,
+the
+.B plotcap
+file is searched for the named device.  The entry is collected into
+an internal buffer for future interpretation.  If the entry
+ends with the capability
+.BR LIKE ,
+the file is again searched for
+the device entry named, and the new definition is appended to
+the current entry.  This continues until all
+.BR LIKE s
+are resolved.
+(Note that there is a limit on the total number of
+.BR LIKE s
+that
+can be used for a definition.  This is to prevent an infinite loop
+of references. The current limit is 10.)
+.PP
+Each entry is defined as a list of character names for the device
+separated by a vertical bar  (`|')
+and terminated with a colon.
+These are the names matched against the device name given to
+.BR setpdev(3L) .
+Note that all spaces and tabs are removed so that
+a device name
+.I 'new   device  '
+will actually match
+.IR 'newdevice' .
+.PP
+Following the list of device names, are the capabilities for the
+the device. An entry is terminated by a null capability.  Each
+capability is defined as 1) white space and/or comments, 2) the
+capability name, 3) optionally, the associated value for the
+capability, 4) finally a closing colon (`:').
+A null capability
+is simply the white-space/comment and a closing colon.
+.PP
+Capability types which take values (numbers, strings or programs)
+are followed by an equals sign (`='), the value
+and the closing colon.
+.PP
+A comment is defined as everything between and including
+a pound sign (`#') and a newline.
+.PP
+.B Capabilities
+.br
+All capabilities are searched for from the beginning of the definition
+and searching ends when the capability is found.  Thus if a
+capability is given more than once within a definition, the
+first one found is used.  Thus if two devices are similar
+except for one capability, the following entry for
+.I my_device
+would make it just like
+.I device
+except the buffer size for
+the first device would be overridden by that given for the second.
+.PC
+my_device: BFSZ=80:	# a new buffer size
+LIKE="device": :
+.PE
+To turn off a capability that is in the LIKEed entry, the capability
+can be immediately preceded by an exclamation point (`!').
+So to
+use the default buffer size instead of the one given by the LIKE'd
+device:
+.PC
+device:	# just like other but undo buffer size, to use default
+!BFSZ:	# back to default.
+LIKE = "other" : :
+.PE
+.B Boolean Type Capabilities
+.br
+This type of capability is indicated by presence within a definition.
+It can also be turned off, (as all capabilities can) by preceding
+it with the exclamation mark. Thus to indicate that posting calls
+should be ignored for some device:
+.PC
+device: IGPO: .... : :
+.PE
+.B Numeric Type Capabilities
+.br
+This type takes a numeric value.  There are two types of numeric
+capabilities: integer and floating point.
+.PP
+Integer values can be specified in one of three ways: 1) decimal
+(the default), 2) octal \- all numbers beginning with a leading
+`0' (zero) are interpreted as octal numbers, or 3). hexadecimal \-
+all numbers beginning with a leading `0x' (zero exs)
+are interpreted as hex numbers.  Thus some values are easier
+thought of as bit masks, for example
+.I PIVL
+\- the initial
+byte value for raster row is usually a certain bit set within
+each byte.  While pixels per unit are usually given in decimal.
+As examples of integer numbers:
+.PC
+device :               # to use integers
+PIXX=1024:	# decimal
+PIXY = 1024 :	#  ditto
+PIVL=0100:	# octal (or 64 decimal)
+JUNK=0xff:	# hex (or 255 decimal) (or 0377 octal)
+.PE
+Floating point values can be given as in the C programming
+language (or Fortran E-format for that matter). Thus to set the initial
+scaling factor:
+.PC
+device:	# to show how to use floats
+SCALX= 2.0:	# scaling in X
+SCALY= 2:	# scaling in Y (same as X)
+JUNK = 2e0 :	# same as above, a 2.
+LITTLE= \-12.3e\-4 :
+:
+.PE
+.B String Type Capabilities
+.br
+String values are given as quoted strings.  The string may be
+delimited with either single or double quotes, but the opening
+quote must be the same as the closing quote.  If you need to include
+a quote within a string, either delimit the string with the other
+or you can escape the quote character.
+Some interpretation is done when gathering the
+string.  Most (if not all) of the standard C language escapes
+are allowed with several additions.  This allows entering
+non-printable characters withing the string.  The following
+sets of characters are mapped as shown.
+.RS
+.IP \eE
+033 (octal). An escape.
+.PD 0
+.IP \en
+012 (octal). A new line.
+.IP \er
+015 (octal). A return character.
+.IP \et
+011 (octal). A tab.
+.IP ^\fIx\fP
+Control
+.IR x ,
+where
+.I x
+is any character.
+.IP \e\e
+A backslash itself.
+.IP \e^
+An caret itself.
+.IP \e'
+A single quote.
+.IP \e"
+A double quote.
+.IP \e\fInnn\fP
+An octal constant. Where
+.I nnn
+is up to
+three digits interpreted as an octal constant
+of one byte. Thus
+.B \e012
+is a new line, and
+.B \e0
+is a null.
+.PD
+.RE
+.PP
+So, to give a default file name for output:
+.PC
+device:		# showing how to use a string
+FILE = "plot.out" :	# simple !
+JUNK = "A string\en with \eE escapes" :
+HI   = "This isn't hard, with no \e"'s, huh?" :
+BYE  = 'This is "about" the same, isn\e't it?'  :
+:
+.PE
+.B Program Type Capabilities
+.br
+This is the most difficult of the capabilities to use.  It is intended to
+be a compact notation for describing how to manipulate data
+values to be output to the plot device.
+The language has enough power and flexibility to get the correct
+data to plot devices, but, it wasn't designed to be a great
+programming language.  The compiled code is small and
+simple (as is the compiler for that matter).
+It is terse to encourage terseness.
+These so called programs drive an internal finite state machine
+which has several working registers
+.RB ( r0
+to
+.BR r9 )
+and several special purpose internal registers.
+Each time, for example, gplot wants to do the sequence for drawing, it
+schedules the state machine with the program for
+.BR DRAW .
+.PP
+A program consists of statements separated by semicolons (`;')
+(actually commas (`,') are ok also).
+As with other capabilities, a colon ends the program.
+The final semicolon is optional.
+.PP
+A statement is either a null statement (i.e. ;;), a quoted string,
+a code sequence, an intrinsic function name, or a
+.I subroutine
+name. Below is a simple description of the language and then
+a discussion of each element of the syntax.
+.RS
+.IP prog: .75i
+list
+.PD 0
+.IP list:
+statement  ';'  |  list
+.IP statement:
+null  |  string  |  expr  |  func  |  intrin  |  label  |  test
+.sp
+.IP func:
+name  |  '*'  name
+.IP intrin:
+\&'.'  name
+.IP label:
+int  '$'
+.IP expr:
+lhs  '='  rhs
+.IP lhs:
+outform  |  reg  |  var
+.IP rhs:
+val  |  rhs  oper  val
+.IP val:
+reg  |  int  |  rhsvar  |  format
+.IP rhsvar:
+var  |  var  '['  range  ']'
+.IP range:
+int  |  int  '\-'  int
+.IP test:
+reg  '?'  test_list  |  goto_label
+.IP test_list:
+compare  goto_label  |  test_list  '|'  compare goto_label
+.IP compare:
+\&'=='  |  '!='  |  '>'  |  '>='  |  '>'  |  '<='
+.IP goto_label:
+\&'$' int
+.IP outform:
+format  |  format  '@'  reg
+.IP format:
+\&'%'  formchar  |  '%'  int  formchar
+.IP oper:
+\&'+'  |  '\-'  |  '*'  |  '/'  |  '>'  |  '<'  |  '|'  |  '&'  |  '^'  |  '%'
+.IP reg:
+\&'r0'  \-  'r9'
+.IP var:
+rwvar  |  rovar
+.IP rwvar:
+\&'X'  |  'Y'  |  'I'  |  'J'  |  'C'  |  'S'
+.IP rovar:
+\&'OB'  |  'BC'
+.PD
+.RE
+.PP
+.B Strings
+are used just as they are in string type capabilities.
+They are inserted in the output at the point where they are encountered.
+.PP
+.B Functions
+are called by other program type capabilities written by the
+user.  For example, the
+.BR MOVE ,
+.B DRAW
+and
+.B AREA
+capabilities will all usually use the same point drawing sequence.
+Therefore, they can each reference a function to draw the points.
+Then you must write the point drawing function.  For example:
+.PC
+device:                # see how subroutines/functions work.
+DRAW = "Begin Draw: "; *pnts;  "End Draw.\en":
+MOVE = "Move to: ";  pnts; "\en":
+pnts = "(a point)":
+:
+.PE
+So when
+.B MOVE
+is called, the string "Move to: " will be output, then the function
+.B pnts
+will be called which outputs the string "(a point)". Finally, a string
+with only a newline will be output.
+In the case of a
+.B DRAW
+command, notice that the
+.B pnts
+function is
+.IR starred .
+This has special meaning.  It means that this function will be called
+for every consecutive
+.B DRAW
+command. Thus, for the first
+.B DRAW
+command, the string "Begin Draw: " will be output.  Then, the
+function
+.B pnts
+will be called. And the
+.B DRAW
+function will then return.
+If the next
+.B gplot
+command is again a
+.B DRAW
+command, it will enter into the
+.B pnts
+function and then return.  This continues until the last
+consecutive call to
+.BR DRAW .
+At this time, the
+.B pnts
+function is again done, and then the string "End Draw.\en" string is output.
+(Actually, when the new command is called, before it is done the previous
+command is finished up.)
+There can only be one
+.I starred
+function in a program sequence.
+So, in general, if there is a
+.I starred
+function, at the first call to the capability (i.e.:
+.BR DRAW )
+everything before the
+.I starred
+function AND one call to that function are done.
+Then for each call to the same capability thereafter, the
+.I starred
+function is called.  Finally, when the last consecutive call to
+the capability is done, the function is called and everything after the
+function is then done.
+.PP
+.B Intrinsic functions
+are built into the state machine.  These are
+functions that don't fit the simple machine concept so nicely, but
+are needed to get things done.  They are called just like a user
+written function, except that they are preceded by a period (`.').
+The intrinsics most often used are
+.BR .P0 ,
+.B .P1
+and
+.BR .READ .
+Most of the others are used only when debugging a new entry.
+.IP .P0
+Change from current point reference to previous point reference.
+Thus, when referencing the
+.B gplot
+registers (e.g.: I, J, X, Y, S, C), the values from the current
+call to
+.B gplot
+are accessed.  But if a call to
+.B .P0
+is made, then all subsequent references will be to the values from the
+.I previous
+call to
+.BR gplot .
+.PD 0
+.IP .P1
+Reset the point reference to use the current values.
+.IP .READ
+Read from the input device into an internal buffer up to a record
+terminator (eg: cr-lf or cr).  All subsequent inputs are done from
+this (internal) buffer.  This probably should have been done differently,
+say, automatically when an input was done, but ...
+.IP ._DUMP
+Print to the standard error all internal registers, etc. for the
+machine. For debugging.
+.IP ._ABORT
+Do a _DUMP and then call the abort function, dumping core on the way out.
+For debugging.
+.IP ._TRACE
+Turn on alu tracing.  This echos each alu instruction just before
+it is executed.  Tracing may not be compiled into all versions of the
+code.
+.IP ._NOTRACE
+Turn off alu tracing. Tracing may not be compiled into all versions of the
+code.
+.IP .POST
+Post the internal buffer now.
+.PD
+.PP
+.B Expressions
+really are the main point of all this.
+Many devices like to have data input as printable ascii characters
+and therefore require breaking a pixel location into bytes
+and then setting a high order bit to ensure that the character
+is printable.  The primary rule to remember in using
+.BR plotcap 's
+expressions is that all operators have the same precedence.
+Thus addition and multiplication have the same precedence.
+This means that all operators are evaluated in order, from left
+to right.
+.PP
+Value holding entities are variables and registers.  Some of the
+registers are read only; this means that they can only appear on the
+right hand side of an equation. The internal registers are
+.B r0
+through
+.BR r9 .
+They maintain assigned values between
+.B gplot
+calls, but are generally used as scratch variables during a single call.
+The readable and writable variables correspond to the
+.B gplot
+subroutine parameters. They are:
+.IP C
+(Integer) The value of the
+.B gplot
+command parameter.  This is seldom used since each
+.I program
+is scheduled in response to a call for a specific command.
+.PD 0
+.IP S
+(Integer) The sub-command to the
+.B gplot
+subroutine call.  For example, when
+.B gplot
+is called to change line types, the sub-command contains a integer
+new line type.
+.IP I
+(Integer) The X-value from the
+.B gplot
+call; except this has been transformed and converted from the user given
+plot units (eg: inches) to an integer pixel location between zero
+and
+.BR PIXX .
+.IP J
+(Integer) Like
+.B I
+except for the Y-direction.
+.IP X
+(Floating point) The actual (unscaled, unconverted)
+.B gplot
+X-value parameter.  The converted form (ie:
+.BR I )
+is generally used; this is most often used for
+.B SAVE
+type entries.
+.IP Y
+(Floating point) Like
+.B X
+except for the Y-direction.
+.PD
+.PP
+The internal read-only registers are:
+.IP OB
+(Integer) The current output buffer location. This is used to remember
+a location where a value not yet known will need to be written.
+.PD 0
+.IP BC
+(Integer) The current count of bytes output to the plot device.
+.PD
+.PP
+The left hand side (lhs) of an expression can be any writable variable or
+a register. It can also be the output pseudo-register which will be discussed
+in shortly.
+The right hand side of an expression can be a register, variable, constant
+or the input pseudo-register
+separated by operations.
+The exception to this is that floating point variables cannot be operated on.
+So the right hand side of a floating
+point expression can only have a numeric constant or one of the
+floating point variables. So operations are only for integers (pixels).
+The available operations are:
+.IP +
+Addition.
+.PD 0
+.IP \-
+Subtraction.
+.IP *
+Multiplication.
+.IP /
+Division.
+.IP %
+Modulus.
+.IP |
+Bit-wise OR.
+.IP ^
+Bit-wise Exclusive OR.
+.IP &
+Bit-wise AND.
+.IP >
+Bit-wise shift right. The value shifted is the left operand; the number
+of bits to shift is the right operand.
+.IP <
+Bit-wise shift left.
+.IP \-
+(Unary) Minus. Negation. There can also be a leading plus sign (`+').
+.IP "[\fIrange\fR]"
+(Unary) subfield bit extraction. This is short hand for extraction of a subset
+of bits from an integer. The range can be a single integer in which
+case the single bit will be returned in the low order bit of the result.
+It can also be a range (indicated by two integers separated by a dash (`\-')
+in which case the range of bits are returned in the lower order bits
+of the result. In the following examples, the one using the subfield
+notation is quicker and easier to read, but returns the same result
+as the other.
+.RS
+.RS
+r0  =  I[9\-5] ;
+.br
+r0  =  I & 01740 > 5 ;
+.br
+.RE
+Bits are counted from zero to 15, zero being the least significant
+(right most).  If the first bit is
+less than the last bit, the bit field is loaded in reverse order
+(why this would want to be done is certainly open to question, but...)
+The subfield operation can be performed on any register or variable.
+.RE
+.PD
+.PP
+.B Input and Output
+may take a little getting used to. Unlike most languages, input and
+output are not done through subroutines.  More like the APL quad, there
+are input and output pseudo-registers.  These are indicated by the
+percent sign (`%') (it is called the quad in APL and looks like a square).
+So to output a value, you need only assign it to the output register.
+The output register can also be modified to indicate how you would
+like the value to be formatted. This is done in one of two ways.
+For binary output, a binary specification follows the percent sign.
+For formatted (ie: ascii) output, there can be possibly a number
+indicating the desired field width, and then the ascii format.
+The available formats are:
+.IP %B
+Output only the low order byte to the output stream.
+.PD 0
+.IP %W
+Output the lower two bytes of the value (higher first).
+.IP %L
+Output the lower four bytes of the value (highest first).
+.IP % or %R
+Output the value (4 bytes) in its raw format.  On many systems this
+is the same as the
+.B %L
+format. But on systems where the bytes are numbered from high to low
+(ie: a Vax), the byte order will be lowest first in the raw form.
+This is generally used to make save files where the values
+written are to be read by the another program
+on the system and no byte swapping is desired. The normal order of
+bytes output in the
+.B %W
+and
+.B %L
+formats is always highest order byte first.
+.IP %d
+Formatted decimal. (Like in the C language.) There can
+also be a field width specification, for example:
+.B %4d
+will output an integer that takes up four characters (space padded).
+.IP %f
+Formatted floating point. Again like in the C language.
+.IP %g
+Ditto. In fact just about any C printf format can be used.
+.PD
+.PP
+Input is the same.  Except that the inputting is done from
+an internal buffer filled by a call to the
+.B .READ
+intrinsic. So a reference to the input pseudo-register of the form:
+.PC
+r0 = %B + 1 ;
+.PE
+will input the next byte from the stream and add one, assigning the
+final result to register zero.
+.PP
+Output can also be done indirect off of a register.  This is used, for
+example, when a sequence needs to be preceded by a byte count
+which you can't know until the sequence has been output.  This is
+best illustrated by example:
+.PC
+DRAW = "Bytes "; {
+r4 = OB ;	# remember where in the output buffer we are.
+r5 = BC ;	# and the current byte count.
+%2d = 0 ;	# save room for byte count. 2 bytes.
+.P0; pnts ; .P1	# previous point, move to.....
+* pnts ;	# each drawn to point....
+%2d@r4 = BC \- r5 ;	# output byte count to r4-indirect.
+}
+:
+.PE
+Zow! What happened here? We save the current location in the output
+buffer in register 4 and the current number of bytes output in register
+5.  Then we output 2 characters to save space for the byte count
+when we finish.  The two calls to the
+.B pnts
+subroutine are the usual way to draw, putting drawing information
+to the output buffer. And finally, the number of bytes used by this
+drawing sequence (BC \- r5) is output as 2 formatted characters to
+the location in the output buffer pointed to by r4 (the remembered
+location before outputting began).
+But since
+.B gplot
+buffers all output data, what happens if the buffer fills and is posted
+after we save the OB location but before we output indirect?  Big
+problems is what happens.  So there are the curly braces.  These
+indicate that the stuff in between must be kept together. So if there
+isn't room for the bracketed information, post the buffer early.
+This works for me, but I have had non-reproducible bug reports of
+its not working, so be careful.
+.PP
+.B Labels
+are quite simple.  They are used as destinations for test condition
+branches.  A label is a small integer followed by a dollar sign (`$').
+There is a limited number of labels (currently 10) that can be used
+in a single capability definition.
+.PP
+.B Testing
+is very strange looking, but is not used very often.
+(Again, it was designed to be easy to parse and to be a little hard
+to use to discourage its overuse. Sorry.)
+In a test, a register is tested against its relationship with zero.
+The format is: the register, a question mark (`?'), the relation
+to be tested for, and finally a destination label to which to jump
+if the test is true.  It is also possible to have several comparisons
+in the same test.  Each additional compare is indicated with a
+vertical bar (`|'), the next comparison and destination label.
+The destination label is local to the current capability definition.
+For example:
+.PC
+LINE = "\eE*m" ;	# opening sequence
+    r0 = S ;		# get the subcommand (line type)
+    r0 ? != $1 ;	# if non-zero jump over next stuff.
+    r0 = 1 ;		#  always non-zero....
+1$; %2d = r0 ;		# output it.
+    "b":		#  finish....
+.PE
+.PC
+DRAW = .P0; r2 = I; r3 = J ; .P1 ;	# get prev values....
+    r0 = I \- r2 ;		# compare I's
+    r1 = J \- r3 ;		# and J's
+    r0 ? != $1;			# No change in I? then...
+	vert ;			#  just move vertically.
+	r0? == $3;		#  bra 3$, weird, huh?
+1$; r1 ? != $2 ;		# No change in J? then...
+	horiz ;			#  just move horizontally.
+	$3 ;
+2$;	draw ;			# draw diagonally.
+3$;	#done......
+    :
+.PE
+The second example is strange but illustrates some of the
+possibilities.
+Note that the goto is a dollar sign then the label number and that the label
+itself is defined by the label number and then the dollar sign.
+In the second example, after the call to the function
+.IR vert ,
+a goto is done by testing r0 again (in a test certain to pass).  But
+after the call to
+.IR horiz ,
+there is a call to goto label 3.
+.SH EXAMPLES
+.B So What?
+.br
+Well having listed this with all too brief descriptions, what
+the does it mean?  First let's look at a simple (if not silly) definition.
+This is the
+.B sumv
+fake device. Something very similar to this is included in the standard
+.B plotcap
+file.  It is actually useful for debugging user written plot software.
+.PC
+sumv:		# summary in verbose....
+VECT:
+PIXX = 10: PIXY = 10:	# need something...
+PUNX =  1: PUNY =  1:
+INIT = "init\en":
+PEND = "done\en":
+PCLR = "\enclear\en\en":
+PLOP = "\enstart one plot\en" :
+PLCL = "\enend   one plot\en" :
+DRAW = "Drawing:\en";
+	r0 = 0 ;
+	.P0 ; pnts ; .P1 ;
+	*pnts ;
+	"\et(total "; %d = r0; ")\en"
+	:
+pnts = "\et"; %d = I; "\et"; %d = J; "\en";
+	r0 = r0 + 1:		# count them.
+:
+.PE
+It is declared as a vector type device with some arbitrary sizes.
+Before any plotting is done, the word "init" will be printed. At the
+start of each plot "start one plot" will be printed.  Each drawing
+sequence will print "Drawing" followed by lines showing the I and J
+values and finally a line printing the total number of
+consecutive draw commands done. After each plot, the string "end  one plot"
+will be printed, then "clear".  When plotting is finished, "done"
+is output.
+.PP
+The definition for the HP 2648 graphics terminal
+should illustrate many of the features of
+.B plotcap
+for vector devices.
+.PC
+hp2648 | 2648 :		# the 48 graphics tty.
+VECT:
+BFSZ = 80: 		# need a small buffer.
+PIXX = 720:	# total pixels in X.
+PIXY = 360:	# total pixels in Y.
+PUNX = 72:	# pixels per inch.
+PUNY = 72:
+DRAW =  "\E*pia"; .P0; pnts; .P1 ; *pnts :
+pnts = %B= I[9\-5]+040; %B= I[4\-0]+040;
+       %B= J[9\-5]+040; %B= J[4\-0]+040:
+ICLR:			# initial clearing is OK.
+INIT = "\eE*r4a":	# r defaults for hp, 4a for 'jam' mode.
+PEND = "\eEZ" :
+GTOA = "\eEZ" :
+PCLR = "\eE*da":	# clear screen.
+BFCL = "\eEZ":		# last thing in each buffer.
+MCLR = "\eE*m1a" :	# Go to clear drawing mode.
+MCMP = "\eE*m3a" :	# Go to complement drawing mode.
+MSET = "\eE*m4a" :	# Go(back)to set drawing mode.
+CLOC = "\e*s4\e^\e021";  .READ; I = %d; J = %d; S = %d :
+:
+.PE
+The
+.B DRAW
+sequence could also have been given as:
+.RS
+MOVE = "\eE*pia";  pnts:
+DRAW = "\eE*pa" ; *pnts:
+.RE
+In the full example, any calls to
+.B gplot
+for a move would be ignored.  The point
+value to which to move will, however, be remembered.  Thus the
+next call to perform a draw will output the
+.B "\eE*pia"
+followed by
+the value for the previous (to this draw call) point and then followed
+by any draw-to values.
+In the second, the move is done when it is called from
+.B gplot
+and the draws as they are called.
+There is a capability for returning the curser location, as well
+as entries to change the drawing move to clear or complement pixels
+as it draws.
+.PP
+The Printronix dot-matrix line printer is a simple example of
+a raster device.  For raster devices, the plot software
+will do all drawing in an internal raster map.  At the end of a plot,
+the raster map will be output to the device one raster row at a time with
+.B BFOP
+and
+.B BFCL
+bracketting each row.
+.PC
+printronix | lp :
+RAST:
+PIXX = 720: PIXY = 720:
+PUNX =  60: PUNY =  72:
+PEND = "\e014\e014" :
+PCLR = "\e014" :
+RPXB = 6 :		# Use only 6 bits(pixels) per byte.
+PIVL = 0100 :		# and set the 7th in each byte.
+BFCL = "\e005\e012" :	#  and append this to each row on output.
+FILE = "| lpr \-Plp \-v":	# Output "file" is pipe to spooler.
+:
+.PE
+.SH FILES
+.IP /usr/local/lib/plotcap
+System wide local version of the
+.B plotcap
+file. This usually contains a
+.B %next \"/usr/local/lib/plotcap.std\"
+command allowing access to the full standard
+.B plotcap
+file. Note that this may be in "/usr/lib/plotcap" on some systems.
+.PD 0
+.IP /usr/local/lib/plotcap.std
+System wide
+.B plotcap
+capabilities data base file.
+.PD
+.SH ENVIRONMENT VARIABLES
+.IP PLOTCAP .75i
+User given
+.B plotcap
+file.
+.PD 0
+.IP DEFPDEV
+Default plot device to use if
+.B setpdev(3L)
+is never called.
+.IP DEFPFIL
+Default plot output file to use if
+.B setpfil(3L)
+is never called.
+.PD
+.SH "SEE ALSO"
+gplot(3L), gplot2(3L), high2(3L), plotcap(5L), dplot(1L)
+.SH AUTHOR
+Michael Eldredge (dredge@oasis.stanford.edu)

@@ -1,0 +1,21 @@
+title pn diode (fig 8a - ramp example)
+$
+$ Transient analysis - voltage ramp
+$
+mesh	in=pn.msh
+contac 	num=1 resis=1e5
+symb	newton carr=2
+method	rhsnorm xnorm autonr
+models	temp=300 srh auger conmob fldmob print
+$
+load	inf=pn2a2-r.slv
+log	outf=IV-ramp.log
+solve	v1=-2 tstep=10e-12 tstop=10e-8 endramp=2.5e-9
+$
+$ FIGURE 8b
+$plot.1d x.ax=time y.ax=i1 x.max=10e-9 points
+$ FUGURE 8c
+$plot.1d x.ax=time y.ax=va1 x.max=10e-9 points
+$plot.1d x.ax=time y.ax=v1 x.max=10e-9 points unch
+$
+end

@@ -1,0 +1,111 @@
+TITLE	PISCES input mesh
+COMMENT	Specify a rectangular mesh
+COMMENT MOTOROLA PMOS (Tox=175A)
+$
+MESH    Rectang nx=79   diag.fli ny=36  OUTF=MESH098.msh
+$
+x.mesh  n=1     l=0     r=1
+x.mesh  n=6     l=0.5  r=1
+x.mesh  n=11    l=0.65 r=1
+X.MESH  N=20    L=0.68  R=1
+X.MESH  N=32    L=0.695  R=1
+X.MESH  N=48    L=1.650  R=1
+X.MESH  N=60    L=1.665  R=1
+X.MESH  N=69    L=1.695  R=1
+X.MESH  N=74    L=1.845  R=1
+X.MESH  N=79    L=2.345  R=1
+y.mesh  n=1     l=-0.0170     r=1
+y.mesh  n=9     l=0.00  r=1
+y.mesh  n=10    l=0.0002  r=1
+y.mesh  n=13    l=0.0015  r=1
+y.mesh  n=14    l=0.0025 r=1
+y.mesh  n=15    l=0.0040 r=1
+y.mesh  n=16    l=0.0060 r=1
+y.mesh  n=17    l=0.0080 r=1
+y.mesh  n=18    l=0.0100 r=1
+y.mesh  n=19    l=0.0130   r=1
+y.mesh  n=20    l=0.0160  r=1
+y.mesh  n=21    l=0.0200   r=1
+y.mesh  n=22    l=0.0300   r=1
+y.mesh  n=23    l=0.0500   r=1
+y.mesh  n=24    l=0.1000   r=1
+y.mesh  n=25    l=0.1500   r=1
+y.mesh  n=26    l=0.2000   r=1
+y.mesh  n=30    l=0.3000    r=1
+y.mesh  n=31    l=0.3500    r=1
+y.mesh  n=32    l=0.4500    r=1
+y.mesh  n=33    l=0.6500    r=1
+y.mesh  n=34    l=1.0000    r=1
+y.mesh  n=36    l=2.0    r=1
+comment	eliminate some unnecessary substrate nodes
+elimin  ix.lo=33  ix.hi=47 iy.lo=24  iy.hi=36  y.dir
+elimin  ix.lo=21  ix.hi=31  iy.lo=24  iy.hi=36  y.dir
+elimin  ix.lo=49  ix.hi=59  iy.lo=24  iy.hi=36  y.dir
+elimin  ix.lo=12  ix.hi=31  iy.lo=25  iy.hi=36  y.dir
+elimin  ix.lo=49  ix.hi=68  iy.lo=25  iy.hi=36  y.dir
+elimin  ix.lo=12  ix.hi=31  iy.lo=26  iy.hi=36  y.dir
+elimin  ix.lo=49  ix.hi=68  iy.lo=26  iy.hi=36  y.dir
+elimin  ix.lo=12  ix.hi=31  iy.lo=30  iy.hi=36  y.dir
+elimin  ix.lo=49  ix.hi=68  iy.lo=30  iy.hi=36  y.dir
+elimin  ix.lo=7  ix.hi=31  iy.lo=31  iy.hi=36  y.dir
+elimin  ix.lo=49 ix.hi=73  iy.lo=31  iy.hi=36  y.dir
+elimin  ix.lo=7  ix.hi=73  iy.lo=32  iy.hi=36  y.dir
+elimin  ix.lo=1  ix.hi=79  iy.lo=33  iy.hi=36  y.dir
+elimin  ix.lo=1  ix.hi=79  iy.lo=34  iy.hi=36  y.dir
+elimin  ix.lo=1  ix.hi=79  iy.lo=35  iy.hi=36  y.dir
+elimin  ix.lo=1 ix.hi=5 iy.lo=2  iy.hi=8 x.dir
+elimin  ix.lo=1 ix.hi=4 iy.lo=2  iy.hi=8 x.dir
+elimin  ix.lo=1 ix.hi=3 iy.lo=2  iy.hi=8 x.dir
+elimin  ix.lo=75 ix.hi=79 iy.lo=2  iy.hi=8 x.dir
+elimin  ix.lo=76 ix.hi=79 iy.lo=2  iy.hi=8 x.dir
+elimin  ix.lo=77 ix.hi=79 iy.lo=2  iy.hi=8 x.dir
+elimin  ix.lo=1 ix.hi=10 iy.lo=10  iy.hi=20 x.dir
+elimin  ix.lo=70 ix.hi=79 iy.lo=10  iy.hi=20 x.dir
+elimin  ix.lo=1 ix.hi=9 iy.lo=10  iy.hi=20 x.dir
+elimin  ix.lo=71 ix.hi=79 iy.lo=10  iy.hi=20 x.dir
+elimin  ix.lo=1 ix.hi=8 iy.lo=13  iy.hi=13 x.dir
+elimin  ix.lo=72 ix.hi=79 iy.lo=13  iy.hi=13 x.dir
+comment	specify oxide and silicon regions
+region  num=1   ix.lo=1 ix.hi=79 iy.lo=1 iy.hi=9 oxide
+region  num=2   ix.lo=1  ix.hi=79 iy.lo=9  iy.hi=36  SILICON
+comment	electrode definition
+electr  num=1   ix.lo=6 ix.hi=74 iy.lo=1 iy.hi=1
+electr  num=2   ix.lo=1 ix.hi=79 iy.lo=36 iy.hi=36
+electr  num=3   ix.lo=1 ix.hi=1   iy.lo=9 iy.hi=26
+electr  num=4   ix.lo=79 ix.hi=79 iy.lo=9 iy.hi=26
+comment specify impurity profiles and fixed charge
+doping  reg=2 ascii inf=depthcon x.r=0.5
++       ratio=0.75 outfil=DOP232
+$
+Doping  reg=2 ascii inf=depthcon x.l=1.845
++       ratio=0.75
+$
+doping  reg=2 UNIFORM n.TYPE CONC=2.5E16
+interf  qf=1e10
+title	Example 07 - initial Grid
+$plot.2d no.fill boundary grid no.top no.tic junction
+comment	specify contacts, materials, and models
+contact num=1 WORKFUNC=5.28
+materia reg=2 g.surf=0.75
+$
+models   arora  CONMOB fldmob srh  print BGN FERMI 
++   TFLDMB ACC.SF=0.87 INV.SF=0.75 OX.L=0.5 OX.R=1.845 OX.B=0.0
+$
+$COMMENT IMPURITY PROFILE PLOTS
+$title   Example 07 - Si/SiO2 interface Impurity Profile
+$plot.1d doping x.start=0 x.end=3.2 y.start=0.0 y.end=0.0
+$+        points  pause 
+$plot.1d doping x.start=0 x.end=3.2 y.start=0.0 y.end=0.0
+$+        LOG ABS points  pause 
+$+       MIN=14 MAX=21
+$title   Example 07 - Source Impurity Profile
+$plot.1d doping x.start=0.4 x.end=0.4 y.start=0 y.end=3.0
+$+       log abs points  pause 
+$+       min=14 max=21
+$title   Example 07 - Gate Impurity Profile
+$plot.1d doping x.start=1.0 x.end=1.0 y.start=0.0 y.end=3.0
+$+       log abs points pause  min=14 max=18 
+$title   Example 07 - Impurity Profiles
+$plot.2d boundary no.fill JUNCTION no.tic
+$contour doping log abs min=15 max=21 del=1  
+END

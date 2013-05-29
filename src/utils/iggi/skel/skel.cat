@@ -1,0 +1,66 @@
+
+
+
+SKEL()            UNKNOWN SECTION OF THE MANUAL            SKEL()
+
+
+
+SKEL
+     skel - generate grid skeletons
+
+SYNOPSIS
+     skel [-s] [-a] [files]
+
+IGGI-II
+     Level:    IGGI
+
+     Author:   Conor S. Rafferty
+
+     Version:  %I% %G% %U%
+
+DESCRIPTION
+     Skel is an interactive grid  editor.  It  generates  outline
+     files which can be read and triangulated by tri(1). The out-
+     put of tri can be used as the initial grid in  PISCES-II  or
+     SUPREM-IV.
+
+     -a   ("Axis") Turns off drawing axes.
+
+     -s   ("Short") Make all messages short. Speeds up  the  menu
+          display.
+
+     files
+          Files to be edited.
+
+BUGS
+     Regions must be simply connected (no holes)
+     Some commands do not fix the screen if they abort early.
+     Graphics input must not be typed ahead.
+     When moving a block or a region around, the  error  checking
+     can  get  obstreperous.  There is a secret option (-n) which
+     turns checking off.
+
+SEE ALSO
+     _G_r_i_d _e_d_i_t_i_n_g _w_i_t_h skel
+     tri(1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Sun Release 3.5           Last change:                          1
+
+
+

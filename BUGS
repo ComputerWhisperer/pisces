@@ -1,0 +1,12 @@
+PISCES and the included utilities have all been compiled.  The 
+graphical viewing facilities which are part of plotcap have not been 
+tested.
+
+This software is written in both C and Fortran, and it is likely that 
+parameter mismatches in their interfaces may cause the program to 
+crash.  Please report these issues on our site:
+
+http://www.github.com/devsim/pisces
+
+There is currently not a test suite that is part of the build system, 
+but this is a work in progress.

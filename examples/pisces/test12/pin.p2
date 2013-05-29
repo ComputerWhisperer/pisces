@@ -1,0 +1,110 @@
+$Title  pin diode vs well
+$
+$ ************************
+$ *** file = isol13.sim ***
+$ ************************
+$
+$ *** load mesh ***
+$
+mesh infile=isol13.msh
+$
+$ *** definition of contacts ***
+$
+$ default ohmic contacts 
+$
+$ *** symbolic factorization ***
+$
+symb newton carr=2
+method itlimit=25
+$
+$ *** models ***
+$
+models temp =300 print consrh 
+impact crowell lamdae=6.2e-7 lamdah=3.8e-7
+$ 
+$ *** change the lifetimes to one millisecond ***
+$
+material number=1 taup0 = 1.e-3 taun0=1.e-3
+$
+$
+solve init v1=0 v2=0 v3=0 v4=0
+$
+$ *** switch to two carriers straight away ***
+$ *** the convergence is easy then for the high biases. ***
+$ 
+symb newton carrier=2
+method itlimit=40
+$
+solve prev v1=0 v2=0 v3=0 v4=0
+$
+symb newton carrier=2 
+method itlimit=40
+$
+log outfile=IVisol13
+$
+solve prev v1=0 v2=0 v3=0 v4=0
+$
+$ *** next bias point ***
+$
+solve prev v1=.1 v2=.1 v3=0  
+$
+$ *** continue stepping ***
+$
+solve v3=0 v1=.2 v2=.2
+solve v3=0 v1=.3 v2=.3
+solve v3=0 v1=.5 v2=.5
+solve v3=0 v1=.7 v2=.7
+solve v3=0 v1=0.9 v2=.9
+solve v3=0 v1=1.1 v2=1.1
+solve v3=0 v1=1.3 v2=1.3
+solve v3=0 v1=1.6 v2=1.6
+solve v3=0 v1=1.9 v2=1.9
+solve v3=0 v1=2.2 v2=2.2
+solve v3=0 v1=2.6 v2=2.6
+solve v3=0 v1=3.0 v2=3.0
+solve v3=0 v1=3.5 v2=3.5
+solve v3=0 v1=4.0 v2=4.0
+solve v3=0 v1=5.0 v2=5.0
+solve v3=0 v1=6.5 v2=6.5 
+solve v3=0 v1=8.0 v2=8.0
+solve v3=0 v1=10.0 v2=10 outfile=isol13_10.slv
+solve v3=0 v1=12.0 v2=12 
+solve v3=0 v1=14.0 v2=14
+solve v3=0 v1=16.0 v2=16
+solve v3=0 v1=18.0 v2=18
+solve v3=0 v1=20.0 v2=20 outfile=isol13_20.slv
+solve v3=0 v1=23.0 v2=23
+solve v3=0 v1=26.0 v2=26
+solve v3=0 v1=30.0 v2=30 outfile=isol13_30.slv
+solve v3=0 v1=34.0 v2=34
+solve v3=0 v1=38.0 v2=38
+solve v3=0 v1=42.0 v2=42 outfile=isol13_42.slv
+solve v3=0 v1=46.0 v2=46
+solve v3=0 v1=50.0 v2=50 outfile=isol13_50.slv
+solve v3=0 v1=54.0 v2=54
+solve v3=0 v1=58.0 v2=58
+solve v3=0 v1=62.0 v2=62 outfile=isol13_62.slv
+solve v3=0 v1=66.0 v2=66
+solve v3=0 v1=70.0 v2=70 outfile=isol13_70.slv
+solve v3=0 v1=74.0 v2=74
+solve v3=0 v1=78.0 v2=78
+solve v3=0 v1=82.0 v2=82 outfile=isol13_82.slv
+solve v3=0 v1=86.0 v2=86
+solve v3=0 v1=90.0 v2=90 outfile=isol13_90.slv
+solve v3=0 v1=94.0 v2=94
+solve v3=0 v1=98.0 v2=98
+solve v3=0 v1=102.0 v2=102 outfile=isol13_102.slv
+solve v3=0 v1=106.0 v2=106
+solve v3=0 v1=110.0 v2=110 outfile=isol13_110.slv
+$
+$ plotting the solutions
+$     
+$plot.1d pot a.x=0 b.x=450 a.y=2 b.y=2
+$plot.1d E.Field a.x=0 b.x=350 a.y=.1 b.y=.1
+$plot.1d elect a.x=0 a.y=0 b.x=350 b.y=0
+$plot.2d bound no.tic no.fill junction
+$contour.2d poten ncont=15
+$
+end  
+ 
+

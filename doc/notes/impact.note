@@ -1,0 +1,71 @@
+README                                 Nov.23,1987   A.Yabuta
+
+********************* Model ****************************
+
+Impact ionization model:
+ For many devices, including impact ionization model for continuity equations
+allows the accurate prediction of avalanche breakdown.
+Ionization rates are expressed as the function of electric field by 
+following equations.
+    (alpha)n=An exp(-Bn/E)
+    (alpha)p=Ap exp(-Bp/E)
+ So generation of electron-hole pairs due to impact ionization is given by
+     G=(alpha)n*Jn/q  + (alpha)p*Jp/ q
+ The coefficients for ionization rates (An,Bn,Ap,Bp) are taken from [1],
+and basic implementaion idea follows [2] but using Scharfetter-Gummel
+current discritization formula without weighting scheme.
+
+ To use this model, simply add the model card "impact". For example model
+card can be defined as
+      model temp=300 conmob srh auger impact
+ Also newton method with 2-carrier in the method card must be used, 
+because impact ionization is 2-carrier process.
+
+ Besides the empirical expression for impact ionization,
+Baraff introduced much more rigorous model[3] and his model has been
+approximated with compact formulae by Crowell and Sze[4] so that the 
+application of the simulation is facilitated. For this formulae,
+the new card "impact" can be defined as follows.
+      impact crowell lamdae=6.2e-7 lamdah=3.8e-7 
+
+ In this example, 'crowell' defines to use Crowell and Sze formulae,
+and lamdae and lamdah are specified as the mean free path for electron
+and hole in cm which have default values 6.2e-7cm and 3.8e-7cm
+respectively. If 'crowell'i is not specified, the previous expression
+presented by Grant[1] is taken. So Grant's model can be defined as
+either of model card or impact card.
+ Currently impact ionization model is for Si only.
+
+
+
+********************* Plot ****************************
+  Plotting capabilities for valiables related impact ionization model
+ are available. In contour card, following plotted quantities are added.
+
+The CONTOUR card
+
+  <plotted quantity>
+
+   ALPHAN  = <logical>  Ionization rate for electrons(/cm) 
+   ALPHAP  = <logical>  Ionization rate for holes    (/cm)
+   IMPACT  = <logical>  Generated carrier density due to impact ionization(/cm2)
+
+   To use these capabilities, 'impact' in model card or impact card 
+   should be specified.
+
+
+
+
+References:
+[1] W.N.Grant, "Electron and hole ionization rates in epitaxial silicon at 
+    high electric fields," Solid-State Electronics, Vol.16, pp.1189-1203, 1973
+[2] S.E.Laux, "A general control-volume formulation for modeling impact
+    ionization in semiconductor transport," IEEE Trans. Computer-Aided Design,
+    vol.CAD-4,no.4,pp.520-526,Oct.1985
+[3] Baraff,G.A., "Distribution functions and ionization rates for hot
+    electrons in semiconductors," Physical Review 128, pp.2507-2517, 1962
+[4] Crowell,C.R., Sze,S.M., "Temperature dependent of avalanche multiplication  
+    in semiconductors," Applied Physics Letters 9, pp242-244, 1966
+
+
+

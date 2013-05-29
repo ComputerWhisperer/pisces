@@ -1,0 +1,40 @@
+This package has been successfully compiled on Ubuntu 12.04 64 bit.
+Packages required include
+cmake gfortran gcc libncurses5-dev libx11-dev
+
+If there are any issues building this program please contact us through:
+http://www.github.com/devsim/pisces
+
+To begin compiling start from the top level directory containing CMakeLists.txt:
+1. mkdir cmake
+2. cd cmake
+3. cmake -DCMAKE_BUILD_TYPE=DEBUG ..
+4. make 
+
+The programs in this distribution will then build with debugging symbols.
+
+The -jN option, where N is a number can be used to invoke the make command in parallel.  This is not recommended unless you are able to get a clean build.
+
+To debug build issues, you may also use:
+make VERBOSE=1
+
+Once the build has finished, pisces as well as other utilities from the Stanford distribution will be in the bin directory.  Run pisces once in the bin directory in order to be able to generate a necessary key file, PISC2UKY.
+1. cd ../bin
+2. ./pisces genkey.p2 
+
+It is then possible to run the examples in the test suite:
+1. cd examples/pisces/test01
+2. ../../../bin/pisces nmos.p2
+3. ../../../bin/pisces mosIV.p2
+
+There is currently not a test suite that is part of the build system, but this is a work in progress.
+
+Other binaries from the distribution include:
+bipmesh
+ig2image
+mosmesh
+pisces
+skel
+tri
+
+These utilities may or may not work correctly.  Please see the BUGS file for more information.

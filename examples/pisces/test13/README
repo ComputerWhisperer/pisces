@@ -1,0 +1,67 @@
+
+		Example of Triggered Latchup
+                ----------------------------
+
+This is a latchup example of a cmos device in which the input to two
+pulses is simulated, one that causes latchup (2ns), and the other that
+recovers (1.75ns).  The cmos device used is a gaussian mock-up of the
+old twin tubs structure.  A triangulation program called "tri" is used
+to take the boundaries and grid them.  This griddig is fully geometric
+based since no dopings have been specified.
+
+
+What you will learn
+-------------------
+This example will teach you:
+	1)  how to use tri to triangulage a region for simulation
+	2)  the use of the smoothing parameter in the mesh and regrid
+	     cards.
+	3)  the effect of pulse width on latchup characteristics.
+
+assumed Knowledge:
+	This example assumes that you know about the use of UNIX shell
+	scripts and have run the other examples to get a feel of the
+	use of general PISCES commands.
+
+Assumed Programs:
+	This example assumes that PISCES has been installed such that the
+	command
+
+	pisc2
+
+	will execute the program.
+
+	The program tri, which is included in the utilities tape,
+	must be installed such that the command
+
+	tri
+
+	executes the program.
+
+
+A file called makegrid.p2 is used to generate the mesh.  The initial mesh
+is generated using the "tri" program.  The doping is specified by the use
+of analytic functions.  A regrid on doping is performed to generate the
+mesh and is saved as mesh2a.   Appropriate dopings and junction are plotted.
+
+
+Once we have the mesh, it's time to run the pulse simulations.
+Two cases will be included - one that sustains latch-up and one
+that does not. Note that EACH of these runs take about 3 CPU
+hours on a CONVEX C1, a 6 MFlop machine.
+
+
+The first case, a 2ns pulse, is performed in pulse2ns.p2.  The file
+uses a two carrier newton method to solve for the transient latchup
+condition.   With this pulse the latchup occurs.  If the make command
+is used, the results will be plotted.
+
+
+The second case, a 1.75ns pulse, is performed in pulse1.75.p2.
+This case recovers.  This simulation is setup similar to the previous
+simulation.
+
+
+Please note that a Makefile is present for this example and as such the
+simulation can be done by typing make in this directory.
+

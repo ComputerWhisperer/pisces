@@ -1,0 +1,45 @@
+Title 1.5 um Channel MOSFET with substrate doping of 1e15 [Linear + Saturation Regions]
+$
+$ * * * Load Mesh * * *
+$
+mesh    inf=nmeshsoi.msh
+$
+$ * * * Materials/Contacts * * *
+mater   num=2 g.surf=0.75
+contact num=1 n.poly
+$
+$ * * * Models * * *
+$
+models  conmob temp=300 fldmob print
+$
+$ * * * Plot Grid  * * *
+$
+$options plotdev=garfield
+$
+$plot.2d grid no.top bound pause
+$
+$ * * * Plot Doping Contours and 1d.slices * * *
+$
+$load inf=soi.slv
+$plot.2d no.top bound junction depl.edge outfile=n4tsd15pot2d
+$contour potential min=-1 max=1 del=.2
+$plot.1d potential min=-1.2 max=1.2 a.x=1.5 a.y=0 b.x=1.5 b.y=2 points outfile=n4pot
+$
+$
+$
+$load inf=soibias.1.slv
+$plot.2d no.top bound junction depl.edge
+$contour doping absolute log min = 15 max = 20 del = .5 pause
+$
+$plot.2d no.top bound junction depl.edge
+$contour doping absolute log min = 15 max = 20 del = .5 pause
+$
+$
+$
+$ * * * Plot the Subthreshold Operation * * *
+$
+$ > > > Plot Ids vs Vgs (Log and Linear Scale) < < <
+$plot.1d inf=soiIV.log x.ax=v1 y.ax=i4 absolute logarithm points pause
+$plot.1d inf=soiIV.log x.ax=v1 y.ax=i4 points pause
+$
+end

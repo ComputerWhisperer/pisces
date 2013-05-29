@@ -1,0 +1,21 @@
+#
+# Copyright c 1990 The board of trustees of the Leland Stanford
+#                  Junior University. All rights reserved.
+#
+#
+#	Imakefile		Version 1.1		
+#	Last Modification:	3/27/90 14:46:27	
+
+#
+# Makefile for  bipmesh 
+#
+
+DIRS	= example1 example2 example3 example4 
+
+Subdirs($(DIRS), )
+
+#ifdef STANFORD
+MakeReleaseSubdirs( , , $(DIRS))
+#endif
+
+

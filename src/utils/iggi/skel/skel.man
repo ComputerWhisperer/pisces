@@ -1,0 +1,44 @@
+.TH SKEL
+.ad b
+.SH SKEL
+skel \- generate grid skeletons
+.SH SYNOPSIS
+.B skel
+[-s] [-a] [files]
+.SH IGGI-II
+.TP 10
+Level:
+IGGI
+.TP
+Author:
+Conor S. Rafferty
+.TP
+Version:
+%I% %G% %U%
+.SH DESCRIPTION
+\fBSkel\fR is an interactive grid editor. It generates outline files which
+can be read and triangulated by \fBtri\fR(1). The output of \fBtri\fR 
+can be used as the initial grid in \s-2PISCES-II\s+2 or \s-2SUPREM-IV\s+2.
+.TP
+\-a
+("Axis") Turns off drawing axes. 
+.TP
+\-s
+("Short") Make all messages short. Speeds up the menu display.
+.TP
+files
+Files to be edited.
+.SH BUGS
+Regions must be simply connected (no holes)
+.br
+Some commands do not fix the screen if they abort early.
+.br
+Graphics input must not be typed ahead.
+.br
+When moving a block or a region around, the error checking can get
+obstreperous. There is a secret option (-n) which turns checking off.
+.SH SEE ALSO
+.IR "Grid editing with \fBskel\fR"
+.br
+tri(1)
+

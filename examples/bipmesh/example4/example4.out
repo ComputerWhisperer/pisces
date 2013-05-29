@@ -1,0 +1,77 @@
+0  2  0		!no debug, ILU-CGS, no scale Jacobi of Poisson
+1  2  2  1	!scaled Slotboom, 2 carriers, psi/p/n
+1  -1  0.0  0.0	!MSP, no block, bipolar defaults
+1  2		!Gummel-Scharfetter, field dependent mobility(psi)
+1  1  1		!Bandgap Narrowing, SRH, Auger
+0  1.0		!no zero-sum error, def. diag. modification
+0  0  0		!partitioning allowed in all directions
+1  11  10  5  2.0	!format, #x-planes, #y-planes, #z-planes
+-8  1  1	!x-loc, node-x, ratio-x
+-6  4  1	!x-loc, node-x, ratio-x
+-4  4  1	!x-loc, node-x, ratio-x
+-1.5  5  1	!x-loc, node-x, ratio-x
+-1  2  1	!x-loc, node-x, ratio-x
+1  8  1	!x-loc, node-x, ratio-x
+3  8  1	!x-loc, node-x, ratio-x
+5  8  1	!x-loc, node-x, ratio-x
+5.5  2  1	!x-loc, node-x, ratio-x
+6  2  1	!x-loc, node-x, ratio-x
+8  6  1	!x-loc, node-x, ratio-x
+-4  1  1	!y-loc, node-y, ratio-y
+-3  2  1	!y-loc, node-y, ratio-y
+-2  2  1	!y-loc, node-y, ratio-y
+-1  2  1	!y-loc, node-y, ratio-y
+0  2  1	!y-loc, node-y, ratio-y
+1  2  1	!y-loc, node-y, ratio-y
+2  2  1	!y-loc, node-y, ratio-y
+2.5  1  1	!y-loc, node-y, ratio-y
+3  1  1	!y-loc, node-y, ratio-y
+4  2  1	!y-loc, node-y, ratio-y
+0  1  1	!z-loc, node-z, ratio-z
+0.1  4  1	!z-loc, node-z, ratio-z
+0.5  16  1	!z-loc, node-z, ratio-z
+1  14  1	!z-loc, node-z, ratio-z
+2  18  1	!z-loc, node-z, ratio-z
+3		!number of regions
+0  0  11.8  1.45e+10	!regtyp, nplane, eps, ni0
+1 11 1 10 1 10	!xlo xhi ylo yhi zlo zhi
+0  0  3.9  0	!regtyp, nplane, eps, ni0
+1 10 1 10 1 2	!xlo xhi ylo yhi zlo zhi
+0  0  11.8  1.45e+10	!regtyp, nplane, eps, ni0
+5 6 4 6 1 2	!xlo xhi ylo yhi zlo zhi
+0		!flat interface
+3		!# of electrodes
+1 1 0		!elecnt, eletyp, eleshp
+5 6 4 6 1 1	!xlo,xhi,ylo,yhi,zlo,zhi
+1 1 0		!elecnt, eletyp, eleshp
+7 8 4 6 1 1	!xlo,xhi,ylo,yhi,zlo,zhi
+1 1 0		!elecnt, eletyp, eleshp
+2 3 4 6 1 1	!xlo,xhi,ylo,yhi,zlo,zhi
+0		!v(1)
+0		!v(2)
+0.1		!v(3)
+4		!number of doping specifications
+2 1e+20		!idope, conc
+-1 1 -2 2 0 0	!xlo,xhi,ylo,yhi,zlo,zhi
+0.0294718 0 0	!xdev,ydev,zdev
+0 0 0			!ierfcx, ierfcy, ierfcz
+2 -1e+18		!idope, conc
+-1.5 5.5 -4 4 0 0	!xlo,xhi,ylo,yhi,zlo,zhi
+0.19024 0 0	!xdev,ydev,zdev
+0 0 0			!ierfcx, ierfcy, ierfcz
+2 1e+16		!idope, conc
+-6 6 -6 6 0 0	!xlo,xhi,ylo,yhi,zlo,zhi
+0.65901 0 0	!xdev,ydev,zdev
+0 0 0			!ierfcx, ierfcy, ierfcz
+2 -5e+19		!idope, conc
+1.5 5 -2 2 0 0	!xlo,xhi,ylo,yhi,zlo,zhi
+0.0912036 0 0	!xdev,ydev,zdev
+0 0 0			!ierfcx, ierfcy, ierfcz
+0		!nout
+1		!nbias
+7		!bias steps
+0.0 0.1 0.0	!bias increments
+0		!ivth
+0		!ncur
+1		!hout
+3 1 2		!z-varies,x-varies,y-varies

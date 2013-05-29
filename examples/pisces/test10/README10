@@ -1,0 +1,36 @@
+
+			Mosaic-III Bipolar Device
+
+
+This is an example on an npn transistor with the base contact on the 
+top of the device instead of the side.  This example also shows how to
+put in a buried collector to lower the resistance of collector current.
+Because this is a vertical device and the base contact is from the top,
+there is an extrinsic base region through which only the base current
+flows and the intrinsic base region through collector and base current
+flow.
+
+The device measures 1.1 x 1.0 microns.  The device is defined by a file
+called mosaic.msh.  A simple mesh is generated to grid the device.  The 
+electrodes are defined for the emitter, base and collector.  The collector
+is n-type and is epitaxially grown and doped at 2e16.  There is a buried
+collector region which is a half gaussian doped at 2e19 at the bottom of
+the device.  The intrinsic base region is doped at 1.25e18 and is p-type.
+The extrinsic base region is doped at 5e19 to lower resistance.  The emitter
+is n-type and is doped at 2e20.  Except for the epitaxially grown collector,
+the rest of the diffusion profiles are gaussian.
+
+A file called highbias.p2 is used generate the curve for the collector
+current versus collector to emitter voltage.  This is done by solving
+first for an initial starting point where the collector and base are
+biased at 0.1 volts.  That solution is stored in a file called mosaic1.
+The collector voltage is then ramped upto 6 volts.  The base voltage is
+then incremented and the collector is again ramped upto 6 volts.  This
+way a family of collector current curves are obtained at various base
+voltages.  The contacts in this example were defined to be charge neutral
+so that they act ohmic.  This is actually a default condition and as such
+is optional.  The base contact was defined to have a resistance of 1e3 so 
+that a 'hard' voltage is not put on the base emitter junction.  Using the
+resistance, the amount of current can be controlled going into the base.
+This example uses a two carrier newton method with the appropriate models.
+The collector characteristics are plotted.

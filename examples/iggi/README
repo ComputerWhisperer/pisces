@@ -1,0 +1,53 @@
+
+This is a simple example of how to use skel and tri.
+
+
+1)  To use skel just type the command
+
+bbc:conor > ../skel/skel
+
+You'll get a menu on the left hand margin.
+
+
+2)  Click the Create button.  You'll see a submenu to the right.
+
+3)  Click the Node button since you need to enter points for your
+	struture.
+
+4)  At the top of the grid you see the words "Where".  This is your
+	cue to click at a point inside the axis area.  When you have
+	clicked the point, you'll see the "Where" prompt again asking
+	you for another point.  When you are done click a point
+	outside the axis area. The "Where" prompt will go away.
+
+5)  Click Region button in the Create submenu.  The prompt will change to
+	"Node".  This is your signal to point at the nodes created in
+	step 4.  Note that as you select points, segments are drawn
+	to connect the first point with the current point and the
+	current point to the previous point(these will be triangles).
+	When you have selected all of the points, click outside the
+	axis area.
+
+6)  Click Quit button in the Create submenu.  This brings you back to
+	the main menu.
+
+7)  Click File button.  You'll see a submenu to the right.
+
+8)  Click Write button.  In the window which you invoked skel, you'll
+	be asked for a filename.  Use skel.demo.
+
+9)  Click Quit button in the File submenu.  This brings you back to
+	the main menu.
+
+10) Click Quit button.  You'll see a submenu to the right.
+
+11) Click Yes button.  You've finished using tri and now you can
+	use tri.
+
+12)  To triangulate the region use the command
+
+bbc:conor > ../tri/tri skel.demo -o tri.demo
+
+13)  If you are creating input for pisces use the command
+
+bbc:conor > ../tri/tri skel.demo -p tri.pisces

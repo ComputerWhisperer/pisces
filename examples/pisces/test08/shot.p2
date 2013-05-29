@@ -1,0 +1,39 @@
+$
+$ Schottky diode example to test charge conservation
+$
+mesh nx = 2 ny=59 rect outf=shot.msh
+
+x.mesh n=1 loc=0
+x.m    n=2 loc=1
+
+y.mesh n=1 loc=0
+y.m    n=51 loc=0.5
+y.m    n=59 loc=1 ratio=1.5
+
+region ix.lo=1 ix.hi=2 iy.lo=1 iy.hi=59 silicon num=1
+
+elec   ix.lo=1 ix.hi=2 iy.lo=1 iy.hi=1  num=1
+elec   ix.lo=1 ix.hi=2 iy.lo=59 iy.hi=59  num=2
+
+doping unif conc=5e19 p.type
+
+contact num=1 work=0.8
+
+symb    carr=2 gummel
+log     outf=shotIV.log
+solve   init
+symb    carr=2 newton
+solve   v1=0 vstep=0.05 nsteps=15 electrode=2
+
+
+extract net.charge
+
+extract metal.charge contact=1
+extract metal.charge contact=2
+
+
+plot.1d x.ax=v2 y.ax=i2 points
+plot.1d x.ax=v2 y.ax=i2 log abs points
+
+end
+

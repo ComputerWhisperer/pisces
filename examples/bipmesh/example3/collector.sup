@@ -1,0 +1,15 @@
+title suprem3 file for collector for bjtmesh
+initialize silicon <100> thickness=2.0 spaces=200 dx=0.02 
++ boron concentration=1.0e15
+
+implant  phosphorus dose=4e13 energy=15
+diffusion time=15 temp=1200
+
+
+
+print layer
+savefile structure filename=collector.str
+savefile export filename=collector.exp
+
+$ plot chemical  net cmax=1e17 cmin=1e15
+stop

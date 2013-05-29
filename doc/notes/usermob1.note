@@ -1,0 +1,20 @@
+User-Customizable Mobility Model.
+
+New in PISCES 9009 is a user-customizable concentration-dependent
+mobility subroutine.  The mobility routine itself and a parameter
+initialization routine are contained in the file "usrmob1.F."  The
+user specifies the use of the user-defined model by setting the 
+logical parameter user1 on the models card. 
+
+The initialization routine INITUM1 is called once when PISCES starts
+up; data from INITUM1 is passed to the actual mobility model routine
+USERMOB1 through the common block /user1/ contained in the include
+file "usrmob1.h."  USERMOB1 is implemented as a real function which
+returns the carrier mobility as a function of total impurity
+concentration and temperature.  
+
+Use of these subroutines should be straightforward.  It is intended
+that users should customize these routines to try out their own 
+models.  (Don't forget to re-compile after making a change!)
+
+Good luck!

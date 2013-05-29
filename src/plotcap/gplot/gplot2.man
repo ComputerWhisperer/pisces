@@ -1,0 +1,1062 @@
+.ds f. gplot2.tbl-man
+.TH  GPLOT2 3L "STANFORD UNIVERSITY"
+.SH  NAME
+gplot2 \- General device independent plotting library.
+.SH  SYNOPSIS
+.nf
+.ft B
+#include <local/gplot.h>
+.sp
+gplot2(cmd, sub, x, y)
+    int	cmd, sub;
+    float	x, y  ;
+.sp
+int
+gpmisc(cmd, sub, iv, fv, str)
+    int	cmd, sub ;
+    int	iv[ ];
+    float	fv[ ];
+    char	str[ ] ;
+.ft R
+.fi
+.SH "RELEASE 8832"
+.SH  DESCRIPTION
+.B gplot2
+is used to create plotted output.  It is intended to be
+a generalization of possible plotting actions.  This means that
+.B gplot2
+cannot do some more complicated actions such as cursor tracking.
+It does, however, mean that a few general actions
+can be implemented on ``any'' plot device.
+The
+.BR gplot2 ()
+entry is used most often (for moving and drawing, etc.);
+while the
+.B gpmisc()
+has a larger and more complex calling sequence allowing some miscellaneous
+interfacing to the library (e.g. setting the plot device or output file or
+returning the cursor location).
+.PP
+Some of the basic actions that
+.B gplot2
+allows are:
+.I clear/next-plot, move-to,
+and
+.IR draw-to .
+Also built into
+.B gplot2
+is the ability to manipulate the plot
+before actually plotting to the device.  Thus there are pseudo-actions
+of
+.IR scaling ,
+.IR rotating ,
+.IR translating ,
+and
+.I clipping
+the plot in two
+dimensions.
+.PP
+This manual is the description of the raw gplot2() and gpmisc()
+function calls; it is intended to be the reference manual to the gplot
+library.
+For an introduction and a simpler-to-use interface see the manual
+.BR gplot(3L) ,
+which describes most of gplot2() commands as functions calls (macros) and
+includes some discussion of the other support functions for the library.
+.PP
+The calling sequences are:
+.RS
+(void)gplot2(cmd, sub, xval, yval)
+.RS
+int	cmd,  sub ;	/* input only */
+.br
+float	xval, yval ;	/* input only */
+.RE
+.sp
+int gpmisc(cmd, sub, iv, fv, str)
+.RS
+int	cmd,  sub ;	/* input only */
+.br
+int	iv[ ] ;		/* output or input */
+.br
+float	fv[ ] ;		/* output or input */
+.br
+char*	str ;		/* output or input */
+.RE
+.RE
+The return from gpmisc() is greater than or equal to 0
+if the operation worked without error
+or \-1 if there was an error.  In general, gpmisc() only touches the
+output values that it needs and leaves others alone.
+.PP
+The
+.B gplot2()
+commands (and sub-commands) are simple integers given
+a mnemonic in the header file
+.BR gplot.h .
+While some commands
+do not take a sub-command, all those that do are designed so that
+a sub-command of 0 (zero) will give the default operation.
+The file gplot.h contains macros that are generally used instead of directly
+calling gpmisc().  These are indicated in the [ ]'s.
+.PP
+The first commands that may be used set the plot device and output file.
+If these are not explicitly set, defaults will be used.
+.IP "gpmisc(G_PDEV, G_SET, &ijunk, &fjunk, devname)"
+[ setpdev(devname) ]  Set the plot device.
+The given name is searched for in the system plotcap data base.
+If the environment variable PLOTCAP is set,
+then its value will be taken as the plotcap to search.  If plotting
+begins before a device is set, the library will use the default plot device.
+It first trys the environment variable DEFPDEV.  If this is not set it trys
+the variable TERM.  If that is not set, it will use the device "default".
+If the device cannot be found or there is some error with the plotcap entry,
+\-1 will be returned and the library will be set to plot to a null device.
+.PD 0
+.IP "gpmisc(G_PFIL, G_SET, &ijunk, &fjunk, filename)"
+[ setpfil(filename) ]  Set the output file name.
+If the output file is
+never set, then the environment variable DEFPFIL will be used.  If this
+is not set the plotcap FILE variable will be used.  If the file name is
+simply "." then output will go to the terminal.  If the file name begins
+with a plus (`+') then the file will be opened in append mode.
+.PD
+.PP
+The first simple gplot2() commands are:
+.IP G_CLEAR
+[ gclear() ]
+Output current plot (if there is one) and clear the ``screen''.
+.PD 0
+.IP G_DRAW
+[ gdraw(x,y) ]
+Draw a line from the current position to the
+given point (given by
+.I x
+and
+.IR y ).
+.I x
+and
+.I y
+are real numbers (floating points) in plot units (say inches).  If any
+scaling is done these are then in the new scaled units.
+.IP G_MOVE
+[ gmove(x,y) ]
+Move from the current position to the
+given point (given by
+.I x
+and
+.IR y ).
+.IP G_GTOA
+[ ggtoa() ]
+Post the current plot buffer to the device and switch from graphics mode
+to alpha mode (if necessary).  This should be used in all programs before
+printing messages.  The plot library will handle getting back to graphics
+mode when it needs to; therefore, (even though it exits) the call to G_ATOG
+is not needed.
+.IP G_PEND
+[ gpend() ]
+End plotting to the current device.  This must always be given and
+must be the last
+.B gplot2
+command.
+.PD
+.PP
+The following commands are used to manipulate the plot output.
+.B gplot2
+maintains an idea of transformation in
+each direction (x and y). Thus, for example, the scaling factor
+in each direction can be set to different values.
+A transformation matrix is maintained that is sequentially updated by
+these calls.  Therefore, order is important.  A call to scale then translate
+will translate on the scaled coordinates, for example.
+The plot manipulation commands are:
+.IP G_SCALE
+[ gscale(x,y) ]
+Adjust the plot scaling factors. Undoing a scaling can be done by
+calling G_SCALE as: gplot2(G_SCALE,0, 1./scalex, 1./scaley).
+.PD 0
+.IP G_TRANS
+[ gtrans(x,y) ]
+Adjust the plot translation factors. All future
+point locations from move or draw commands will be
+offset by the new translation values. To undo:
+gplot2(G_TRANS,0,\-transx,\-transy).
+.IP G_ROTATE
+[ grotat(x,y,angle) ]
+Change the point about which rotation will
+occur to that given by
+.I x
+and
+.IR y ).
+To undo use: gplot2(G_ROTATE,0,\-rotax,\-rotay).
+.IP G_ANGLE
+[ grotat(x,y,angle) ]
+Adjust the angle of rotation (given in degrees)
+through which the the plot should be rotated.
+To undo: gplot2(G_ANGLE,0,\-angle,0.).
+.PD
+.PP
+Clipping can be done on any rectangular boundary.
+Line segments and areas will be clipped.
+The commands to adjust the clipping use the sub-commands
+G_ONLOG (the default), G_ONPHS.
+Clipping may be done on the logical axis \- G_ONLOG \-
+(after the scaling, rotation, etc.) or done on the physical axis \- G_ONPHS.
+The original default values can be reset with the G_RESET command and
+G_CLIPH or G_CLIPL as the subcommand.
+The commands to adjust the clipping values are:
+.IP G_CLIPL
+[ gclipl(x,y,sub) ]
+Adjust the lower bounds of clipping using
+the given
+.I x
+and
+.I y
+values.
+.PD 0
+.IP G_CLIPH
+[ gcliph(x,y,sub) ]
+Adjust the higher bounds of clipping as above.
+.PD
+.PP
+There are several commands that will alter the style in which drawing is done.
+These will change line type, pen style, drawing mode or area fill pattern.
+.IP G_LINE
+[ gnline(sub) ]
+The style of the line used for drawing can be changed with the G_LINE
+command. If the hardware does not support lines styles (either with
+dashed or colored lines) then the library will simulate line types
+using dashed line patterns.
+.PD 0
+.IP G_PEN
+[ gnpen(sub) ]
+The pen style is changed.  Pen style 1 is the default, 2 is different
+(often bigger), etc.
+Note that not all devices will support different pen styles; in this case
+the G_PEN call will be a no-op.
+.IP G_DMODE
+Normally, drawing is done by setting bits on the plot device (sub-command
+G_MSET).  The D_MODE command can set the drawing mode to clear bits
+instead (sub-command G_MCLR) or to compliment (toggle) each bit (sub-command
+G_MCMP).
+.IP G_FILS
+[ gnfill(sub) ]
+Fill pattern/color select.  The subcommand specifies the new area fill
+pattern/color to use on subsequent area fills (G_AREA).  If the plot device
+does not support area fills, the library will simulate area fills with
+software line types \- giving a cross-hatched area.
+.IP G_AREA
+[ garea(x,y,sub) ]
+Define and fill a polygonal area.  The first call should have the sub-command
+G_BEGIN which will move to the given point and mark it as the beginning
+of the polygon definition.  The subsequent commands should have the sub-command
+G_ON indicating that the given point is part of the polygon definition.
+Any command other than G_AREA or the sub-command G_STOP (or G_OFF),
+will finish the definition and fill the given polygon. Note that if the
+final point is not the same as the initial point, the library will
+connect the final segment.
+.PD
+.PP
+The gpmisc() function can also be used to return the maximum size of the plot
+device, current cursor location and the current
+.B gplot
+revision code. It can also return the current clip bounds or
+transformation matrix.
+The request is made by calling gpmisc() with the command, a possible
+subcommand and integer, floating point and character destination arrays.
+The required size of the integer and floating point arrays is
+determined by the information requested, but 8 elements each should always
+be plenty.  For the exact calling sequence see the summary section
+at the end of this manual.
+.IP G_PSIZE
+Return the maximum X and Y sizes of the devices.  This information can
+be used to scale plots to the full device size, for example.
+.PD 0
+.IP G_CLOC
+For devices that support locators. Enable the graphics cursor allowing
+the user to move it to some location.  When a key is hit or button pushed
+(this is very device dependent), return the current cursor location
+(x in fv[0], y in fv[1]) and some indication of the key that was struck
+(in iv[0]).
+.IP G_REVCO
+Return (in iv[0]) the revision code of this version of the gplot library.
+.IP G_CLIPL
+.IP G_CLIPH
+Return the current low (or high) clipping bounds.
+.IP G_SCALE
+or G_ROTATE, G_TRANS, or G_ANGLE.
+With sub-command G_GET, return the current transformation matrix.
+This is not stored in any useful manner (fv[0] through fv[6] and iv[0]),
+but with sub-command G_SET and the same arrays, the matrix can be reset.
+This allows the user to pop and then push the matrix.
+.PD
+.PP
+There are also several miscellaneous functions available which can establish
+a concurrent save file (meta-file), disable some hardware functions, reset
+some commands, mark locations in the command stream or execute some user
+defined plot function.
+.IP G_ASAVE
+With gpmisc(G_ASAVE,G_SET,ijunk,rjunk,filename), the given file name
+will be opened for auto saving of all gplot2() commands.  These will be
+saved in the gplot-meta file format that can be replayed with (say) dplot(1L).
+With gplot2(G_ASAVE,G_OFF,0.,0.) saving will be suspended; G_ON will resume
+saving again and G_STOP will finish up, closing the current auto-save file.
+.PD 0
+.IP G_RESET
+This command is used to reset parameters for various calls back to there
+default values.  Given the following sub-commands:
+.RS
+.IP G_ROTATE
+or G_ANGLE or G_SCALE or G_TRANS will reset the transformation matrix
+back to the default for the current device.  Any one will cause a full
+reset.
+.IP G_CLIPH
+Reset the upper clip bounds to those of the device.
+.IP G_CLIPL
+Reset the lower clip bounds to those of the device.
+.IP G_LINE
+Reset the line type to the default.
+.IP G_FILS
+Reset the fill pattern to the default.
+.IP G_PEN
+Reset the pen style to the default.
+.IP G_DMODE
+Reset the drawing mode to the default.
+.RE
+.IP G_DABLE
+Disable some hardware functions and use the internal software versions.
+The sub-commands can be G_AREA or G_LINE.
+.IP G_USR1
+Do the user defined  sequence given by the capability
+.B USR1
+in the
+.I plotcap
+entry
+for the current device (see
+.BR plotcap(5L) ).
+.IP G_USR2
+Do the user defined  sequence given by the
+capability
+.B USR2
+in the
+.I plotcap
+entry
+for the current device (see
+.BR plotcap(5L) ).
+.PD
+.PP
+A typical sequence, as an example, could be as follows.  Here
+we will draw scaling the plot by 2 in the X-direction.
+.PP
+.RS
+if (argc > 1) error =
+.B "setpfil( argv[1] ) ;"
+.br
+if (argc > 2) error =
+.B "setpdev( argv[2] ) ;"
+.sp
+.B gplot2(G_CLEAR, 0      , 0.0, 0.0);
+.br
+.B "gplot2(G_SCALE, 0, 2.0, 1.0);"
+.br
+.PP
+cmd = G_MOVE;   /* first call will move to point */
+.br
+while (\-\-pointcnt) {
+.br
+.RS
+getpoint(&xval, &yval);
+.br
+.B "gplot2(cmd, 0, xval, yval);"
+.br
+cmd = G_DRAW;
+.br
+}
+.br
+.RE
+.B "gpend() ;"
+.br
+.RE
+.SH  "GPLOT2 COMMAND SUMMARY"
+Following is a full summary of each command for gplot2().  Also if there
+is a related macro defined in gplot.h, it is shown in [ ]'s.
+...\"
+...\"
+...\" ******************
+...\"
+.IP G_ANGLE
+[ grotat(x,y,a) \- this macro is both G_ROTATE and G_ANGLE ]
+Adjust the angle (degrees) of rotation.
+.RS
+.IP x
+Angle in degrees.
+.RE
+.PD 0
+.IP G_AREA
+[ garea(x,y,sub) ]
+Define and fill a polygonal area with the current fill color/pattern.
+The first point (x,y) should use the subcommand G_BEGIN and each subsequent
+point in the polygon should use G_ON.  Any command other that G_AREA or
+the subcommand G_STOP or G_OFF will close the polygon (if the last given
+point isn't the same as the first) and fill the polygon with the current
+fill pattern (or color) as set with the G_FILS command.
+.RS
+.IP sub
+.RS
+.IP G_BEGIN
+Start a new polygon definition. (x,y) is the first point in the new polygon.
+.IP G_ON
+The given point (x,y) is added to the current polygon definition.
+.IP G_STOP
+Finish the polygon definition (closing the polygon if needed) and fill in the
+polygon.
+.IP G_OFF
+The same as G_STOP.
+.RE
+.IP x,y
+Points in the polygon definition.
+.RE
+.IP G_ASAVE
+After a call to gpmisc(G_ASAVE, ...) [ or setsfil() ] has established an
+autosave file, suspend, resume or terminate saving.  While plotting to the
+device selected with setpdev(), all gplot2() calls will also be saved to the
+autosave file.  These files can be replayed (or edited) later.
+.RS
+.IP sub
+Action to be take on the open save file.
+.RS
+.IP G_OFF
+Suspend saving, but do not close the save file.
+.IP G_ON
+Resume saving to the currently open file.
+.IP G_STOP
+Finish the current file and close it.  No more saving can be done until
+setsfil() is called with a new file.
+.RE
+.RE
+.IP G_ATOG
+[ gatog() ]
+Context switch from alpha mode back to graphics mode.  In general, this
+command is not used, since the library always knows its mode and will
+switch back to graphics if it needs to.
+.IP G_CLEAR
+[ gclear() ].
+Clear the `screen' and prepare for a new plot.
+.IP G_CLIPH
+[ gcliph(x,y) ]
+Adjust the higher bound clipping factor.
+.RS
+.IP sub
+How to do the adjustment. One of:
+.RS
+.IP G_ONLOG
+(default) Values are assumed to be on the logical (transformed) axis.
+.IP G_ONPHS
+Values are assumed to be on the physical (non\-transformed) axis.
+.IP G_DOBREAK
+For all clipping (high or low), do not connect the point where the image
+left the visible screen with the point where it returns.
+.IP G_NOBREAK
+For all clipping (high or low),        connect the point where the image
+left the visible screen with the point where it returns.
+.RE
+.IP x,y
+Factors for each direction (the new values).
+.RE
+.IP G_CLIPL
+[ gclipl(x,y) ]
+Adjust the lower bound clipping factor.
+.RS
+.IP sub
+How to do the adjustment. One of:
+.RS
+.IP G_ONLOG
+(default) Values are assumed to be on the logical (transformed) axis.
+.IP G_ONPHS
+Values are assumed to be on the physical (non\-transformed) axis.
+.IP G_DOBREAK
+For all clipping (high or low), do not connect the point where the image
+left the visible screen with the point where it returns.
+.IP G_NOBREAK
+For all clipping (high or low),        connect the point where the image
+left the visible screen with the point where it returns.
+.RE
+.IP x,y
+Factors for each direction (the new values).
+.RE
+.IP G_DABLE
+Disable certain hardware functions and use the internal software versions.
+.RS
+.IP sub
+The function to be disabled.
+.RS
+.IP G_AREA
+Use software area fills.
+.IP G_LINE
+Use software line patterns.
+.RE
+.RE
+.IP G_DRAW
+[ gdraw(x,y) ]
+Draw to point (x,y). (Plot w/ pen down).
+.RS
+.IP x,y
+Destination point (in plot units).
+.RE
+.IP G_DMODE
+Change the drawing mode.  The default mode is to set bits while drawing.
+The mode can also be changed to clear bits or to complement bits.
+Note that not all devices support the various modes.
+.RS
+.IP sub
+The new mode is one of:
+.RS
+.IP G_MSET
+Draw mode to set bits during drawing.
+.IP G_MCLR
+Draw mode to clear bits during drawing.
+.IP G_MCMP
+Draw mode to complement bits during drawing.
+.RE
+.RE
+.IP G_FILS
+[ gnfill(sub) ]
+Change the fill pattern (or color) for subsequent G_AREA commands.
+The default is pattern 1.  If the hardware does not support area filling,
+it will be simulated in software with cross-hatching (NOTE: the software
+patterns leave a lot to be desired \- better defined patterns are always
+welcome).  Patterns will wrap around after the maximum available.
+.RS
+.IP sub
+The new pattern to use.
+.RE
+.IP G_GTOA
+[ ggtoa() ]
+Context switch from graphics mode to alpha mode and post the current
+buffered plot to the device.  When the device is setup it is in graphics
+mode.  To post a partial plot or to prompt for user input or write
+error messages it is necessary to switch to alpha mode.  The library
+will automatically switch back to graphics mode before it does its
+next operation, so it is not necessary to call gatog(), (but it doesn't
+hurt either).
+.IP G_LINE
+[ gnline(sub) ]
+Change line type (or color). If the device does not support line types,
+software dashed lines will be used.
+.RS
+.IP sub
+New line type.  1 is the default solid line.  Values greater than the
+maximum that the device will support will wrap around and begin counting
+again.
+.RE
+.IP G_MARK
+A no\-operation useful for marking locations with a save (meta) file.
+The marks can then be used by a graphics editor to operate on the picture.
+The marks could, for example, indicate segments within a plot.  The use
+of the subcommand and (x,y) values is up the the user of the MARK command.
+By convention, the subcommand is the segment number \- possitive to indicate
+the start of the segment and negative to indicate the end.  There are several
+predefined marks in the file gpmarks.h. These include GM_AXIS, GM_STRING,
+GM_CURVE, etc...  Instead of marking types of entities, you can also use
+marks to number segments.  For example, the first data curve could be 
+segment 100, the second 101, etc...  User segment numbers (those not in
+gpmarks.h should be large (i.e.: greater than 100).
+.IP G_MOVE
+[ gmove(x,y) ]
+Move to point (x,y). (Plot w/ pen up).
+.RS
+.IP x,y
+Destination point (in plot units).
+.RE
+.IP G_PEN
+[ gnpen(sub) ]
+Change the pen style.  If the device does not support pens, this does
+nothing.
+.RS
+.IP sub
+New pen style.  1 is the default.
+.RE
+.IP G_PEND
+[ gpend() ]
+Post internal buffers and cleanup.
+.B Must always be the last call.
+.IP G_RESET
+Reset certain parameters to the original default value(s).  The subcommand
+is one of a few gplot commands.  This command allows clipping to be turned
+off or many layers of transformations to be reset, for example.
+.RS
+.IP sub
+A gplot command indicating which parameters to reset.
+.RS
+.IP G_CLIPH
+Reset the upper clip bounds to those of the device.
+.IP G_CLIPL
+Reset the lower clip bounds to those of the device.
+.IP G_DMODE
+Reset the drawing mode to the default (G_MSET).
+.IP G_FILS
+Reset the fill pattern to the default (type 1).
+.IP G_LINE
+Reset the line type to the default (type 1).
+.IP G_PEN
+Reset the pen style to the default (type 1).
+.IP G_ROTATE
+Any of G_ROTATE, G_ANGLE, G_SCALE or G_TRANS will reset the entire
+transformation matrix to the device default.
+.RE
+.RE
+.IP G_ROTATE
+[ grotat(x,y,a) \- this macro is both G_ROTATE and G_ANGLE ].
+Adjust the point about which rotation takes place
+.RS
+.IP x,y
+Location for each direction (the new values).
+.RE
+.IP G_SCALE
+[ gscale(x,y) ]
+Adjust scaling factors.
+.RS
+.IP x,y
+Factors for each direction (the new values).
+.RE
+.IP G_TRANS
+[ gtrans(x,y) ]
+Adjust translation (offset) factors.
+.RS
+.IP x,y
+Factors for each direction (the new values).
+.RE
+.IP G_USR1
+Execute the user defined sequence from the plotcap entry for USR1.  The
+subcommand and x and y values will be used as defined in the USR1 entry.
+.IP G_USR2
+Like G_USR1, but execute the plotcap entry for USR2.
+.PD
+.SH  "GPMISC COMMAND SUMMARY"
+Following is a full summary of each command for gpmisc().  Also if there
+is a related macro defined in gplot.h, it is shown in [ ]'s.
+gpmisc() can be used to set values (with the subcommand G_SET) in which
+case it is used like gplot2() but with a larger number of parameters or
+a string parameter.  It is also used to return values (with the subcommand
+G_GET).  This information can be cursor locations or current internal
+parameters.  In general, parameters not used are not accessed on any
+individual call.  gpmisc() returns \-1 on error or some number
+greater than or equal to 0 if ok.  If there are returns in iv[] or fv[]
+the return value will indicate how many elements of each were accessed by:
+iv-elements = return-value & 0xf; fv-elements = (return-value >> 4) & 0xf ;
+...\"
+...\"
+...\" ******************
+...\"
+.IP G_ASAVE
+[ setsfil(str) ]
+Open the named file for autosaving.  Regardless of the device set, all
+gplot2() calls will then be saved to the named file in the binary gplot
+meta format.  This format is accessible with the library functions
+discussed below in the section META FILE FORMAT.
+Saving can be toggled on or off or stopped with the gplot2 G_ASAVE command
+(see above).
+.PD 0
+.IP G_CLIPH
+Retrieve the current upper clip values.
+.RS
+.IP sub
+G_GET \- get the values.
+If iv[0] is G_ONPHS return physical clip bounds else the logical bounds.
+.IP "fv[ ]"
+fv[0] \- upper x clip value.  fv[1] \- upper y clip value.
+.RE
+.IP G_CLIPH
+Retrieve the current upper clip values.
+If iv[0] is G_ONPHS return physical clip bounds else the logical bounds.
+.RS
+.IP sub
+G_GET \- get the values.
+.IP "fv[ ]"
+fv[0] \- upper x clip value.  fv[1] \- upper y clip value.
+.RE
+.IP G_CLOC
+Return the cursor location.  This is generally implemented as: post the
+current plot, display a cross hair, allow the user to move the cross hair
+and when a key (or mouse button) is struck return the cursor location
+and some indication of the key that was struck (often the ascii code for
+the key).
+.RS
+.IP "iv[ ]"
+Return key and location (in pixels).  iv[0] \- Horizontal location in
+pixels.  iv[1] \- Vertical location in pixels.  iv[2] \- Key that
+was struck.
+.IP "fv [ ]"
+Return location in plot units (transformed).  fv[0] \- X location.
+fv[1] \- Y location.
+.RE
+.IP G_FILS
+Return the current fill pattern style and the maximum fill pattern code.
+.RS
+.IP "iv[ ]"
+iv[0] \- The current fill pattern code.
+iv[1] \- The maximum code for the current device.
+.RE
+.IP G_LINE
+Return the current line type and the maximum line type code.
+.RS
+.IP "iv[ ]"
+iv[0] \- The current line type code.
+iv[1] \- The maximum code for the current device.
+.RE
+.IP G_NULL
+Indicate where plotting has begun for the current plot.  If the return
+is 0 then plotting has begun (there is something on the plot).
+If the return is less than zero, plotting has not begun.
+.IP G_PDEV
+[ setpdev(str) ]
+Select a plot device to which to plot.
+The given name is searched for in the system plotcap data base.
+If the environment variable PLOTCAP is set,
+then its value will be taken as the plotcap file to search.  If plotting
+begins before a device is set, the library will use the default plot device.
+It first trys the environment variable DEFPDEV.  If this is not set it trys
+the variable TERM.  If that is not set, it will use the device "default".
+If a device is already in use, plotting will be finished to that device and
+its output file will be closed (a
+.BR gpend ()
+will be done) before setting the new device.
+.RS
+.IP str
+The name of the device to try and set.
+.RE
+.IP G_PFIL
+[ setpfil(str) ]
+Select a file for plot output.
+If the output file is
+never set, then the environment variable DEFPFIL will be used.  If this
+is not set the plotcap FILE variable will be used.  If the file name is
+simply "." then output will go to the terminal.  If the file name begins
+with a plus (`+') then the file will be opened in append mode.
+If the file name begins with a pipe symbol (`|') then the remainder of the
+string will be taken as a command into which gplot will pipe its output.
+If a device is already in use, plotting will be finished to that device and
+its output file will be closed (a
+.BR gpend ()
+will be done) before setting the new file.
+.RS
+.IP str
+The name of the new output file.
+.RE
+.IP G_PEN
+Return the current pen style and the maximum pen style code.
+.RS
+.IP "iv[ ]"
+iv[0] \- The current pen style code.
+iv[1] \- The maximum code for the current device.
+.RE
+.IP G_PSIZE
+Return the current device plot dimensions.
+.RS
+.IP "iv [ ]"
+Values given in pixels.
+iv[0] \- Maximum pixels in X.
+iv[1] \- Maximum pixels in Y.
+iv[2] \- Pixels per unit in X.
+iv[3] \- Pixels per unit in Y.
+.IP "fv [ ]"
+Values given in plot units.
+fv[0] \- Maximum size in X.
+fv[1] \- Maximum size in Y.
+fv[2] \- X pixel spacing.
+fv[3] \- Y pixel spacing.
+.RE
+.IP G_REVCO
+Return current gplot revision code.  The revision number is returned
+in iv[0].
+.IP G_SCALE
+or G_ROTATE, G_TRANS, or G_ANGLE.  Get or set the current internal
+transformation values.  This can be used to push (save) the values and
+then later pop (restore) them.  The values are scaling, translation and
+rotation parameters extracted from the internal transformation matrix.
+Since order is important (scale by 2 then translate 1 is different than
+translate 1  then scale by 2), an order is assumed and the matrix is
+decoded as if that order had been used.
+The order is given in iv[0] where each octal digit represents 01 \-
+rotation, 02 \- scaling, 03 \- translation; the highest order digit
+being the first set.  Thus if the values are returned for translation THEN
+rotation THEN scaling, iv[0] = 0312 (octal).  There will always be 3
+places used.  It is important when resetting the values that
+iv[0] be the same as was given with the get.
+.RS
+.IP sub
+If sub == G_GET then return the values in iv[ ]  and fv[ ].  If it is
+equal to G_SET then set the values from the given arrays back in.
+Be careful that the values being set were gotten from a previous call to
+gpmisc()!
+.IP "iv[ ]"
+iv[0] \- An internal indication of the ordering used in the value decoding.
+.IP "fv[ ]"
+fv[0] through fv[6] contain the saved transformation values.
+.RE
+.IP G_XMAT
+Get, set, or modify the internal transformation matrix itself.  This call
+differs from G_SCALE(et.al.) getting and setting in that this involves
+the actual internal matrix while the other returns actual scale, translation,
+and rotate parameters extracted from the matrix.  The matrix format for
+transforming an old point to a new point is:
+.RS
+.ie t \{\
+.TS
+.if \n+(b.=1 .nr d. \n(.c-\n(c.-1
+.de 35
+.ps \n(.s
+.vs \n(.vu
+.in \n(.iu
+.if \n(.u .fi
+.if \n(.j .ad
+.if \n(.j=0 .na
+..
+.nf
+.nr #~ 0
+.if n .nr #~ 0.6n
+.ds #d .d
+.if \(ts\n(.z\(ts\(ts .ds #d nl
+.fc
+.nr 33 \n(.s
+.rm 80 81 82 83 84 85 86 87
+.nr 80 0
+.nr 38 \w[ New-X New-Y 1 ]
+.if \n(80<\n(38 .nr 80 \n(38
+.80
+.rm 80
+.nr 81 0
+.nr 38 \w = 
+.if \n(81<\n(38 .nr 81 \n(38
+.81
+.rm 81
+.nr 82 0
+.nr 38 \w[ Old-X Old-Y 1 ]
+.if \n(82<\n(38 .nr 82 \n(38
+.82
+.rm 82
+.nr 83 0
+.nr 38 \w/
+.if \n(83<\n(38 .nr 83 \n(38
+.nr 38 \w|
+.if \n(83<\n(38 .nr 83 \n(38
+.nr 38 \w|
+.if \n(83<\n(38 .nr 83 \n(38
+.nr 38 \w|
+.if \n(83<\n(38 .nr 83 \n(38
+.nr 38 \w\e
+.if \n(83<\n(38 .nr 83 \n(38
+.83
+.rm 83
+.nr 84 0
+.nr 38 \wfv[0]
+.if \n(84<\n(38 .nr 84 \n(38
+.nr 38 \wfv[2]
+.if \n(84<\n(38 .nr 84 \n(38
+.nr 38 \wfv[4]
+.if \n(84<\n(38 .nr 84 \n(38
+.84
+.rm 84
+.nr 85 0
+.nr 38 \wfv[1]
+.if \n(85<\n(38 .nr 85 \n(38
+.nr 38 \wfv[3]
+.if \n(85<\n(38 .nr 85 \n(38
+.nr 38 \wfv[5]
+.if \n(85<\n(38 .nr 85 \n(38
+.85
+.rm 85
+.nr 86 0
+.nr 38 \w0
+.if \n(86<\n(38 .nr 86 \n(38
+.nr 38 \w0
+.if \n(86<\n(38 .nr 86 \n(38
+.nr 38 \w1
+.if \n(86<\n(38 .nr 86 \n(38
+.86
+.rm 86
+.nr 87 0
+.nr 38 \w\e
+.if \n(87<\n(38 .nr 87 \n(38
+.nr 38 \w|
+.if \n(87<\n(38 .nr 87 \n(38
+.nr 38 \w|
+.if \n(87<\n(38 .nr 87 \n(38
+.nr 38 \w|
+.if \n(87<\n(38 .nr 87 \n(38
+.nr 38 \w/
+.if \n(87<\n(38 .nr 87 \n(38
+.87
+.rm 87
+.nr 38 1n
+.nr 79 0
+.nr 40 \n(79+(0*\n(38)
+.nr 80 +\n(40
+.nr 41 \n(80+(3*\n(38)
+.nr 81 +\n(41
+.nr 42 \n(81+(3*\n(38)
+.nr 82 +\n(42
+.nr 43 \n(82+(3*\n(38)
+.nr 83 +\n(43
+.nr 44 \n(83+(3*\n(38)
+.nr 84 +\n(44
+.nr 45 \n(84+(3*\n(38)
+.nr 85 +\n(45
+.nr 46 \n(85+(3*\n(38)
+.nr 86 +\n(46
+.nr 47 \n(86+(3*\n(38)
+.nr 87 +\n(47
+.nr TW \n(87
+.if t .if \n(TW>\n(.li .tm Table at line 812 file gplot2.tbl-man is too wide - \n(TW units
+.fc  
+.nr #T 0-1
+.nr #a 0-1
+.eo
+.de T#
+.ds #d .d
+.if \(ts\n(.z\(ts\(ts .ds #d nl
+.mk ##
+.nr ## -1v
+.ls 1
+.ls
+..
+.ec
+.ta \n(80u \n(81u \n(82u \n(83u \n(84u \n(85u \n(86u \n(87u 
+.nr 31 \n(.f
+.nr 35 1m
+\&\h'|\n(40u'\h'|\n(41u'\h'|\n(42u'\h'|\n(43u'/\h'|\n(44u'\h'|\n(45u'\h'|\n(46u'\h'|\n(47u'\e
+.ta \n(80u \n(81u \n(82u \n(83u \n(84u \n(85u \n(86u \n(87u 
+.nr 31 \n(.f
+.nr 35 1m
+\&\h'|\n(40u'\h'|\n(41u'\h'|\n(42u'\h'|\n(43u'|\h'|\n(44u'fv[0]\h'|\n(45u'fv[1]\h'|\n(46u'0\h'|\n(47u'|
+.ta \n(80u \n(81u \n(82u \n(83u \n(84u \n(85u \n(86u \n(87u 
+.nr 31 \n(.f
+.nr 35 1m
+\&\h'|\n(40u'[ New-X New-Y 1 ]\h'|\n(41u' = \h'|\n(42u'[ Old-X Old-Y 1 ]\h'|\n(43u'|\h'|\n(44u'fv[2]\h'|\n(45u'fv[3]\h'|\n(46u'0\h'|\n(47u'|
+.ta \n(80u \n(81u \n(82u \n(83u \n(84u \n(85u \n(86u \n(87u 
+.nr 31 \n(.f
+.nr 35 1m
+\&\h'|\n(40u'\h'|\n(41u'\h'|\n(42u'\h'|\n(43u'|\h'|\n(44u'fv[4]\h'|\n(45u'fv[5]\h'|\n(46u'1\h'|\n(47u'|
+.ta \n(80u \n(81u \n(82u \n(83u \n(84u \n(85u \n(86u \n(87u 
+.nr 31 \n(.f
+.nr 35 1m
+\&\h'|\n(40u'\h'|\n(41u'\h'|\n(42u'\h'|\n(43u'\e\h'|\n(44u'\h'|\n(45u'\h'|\n(46u'\h'|\n(47u'/
+.fc
+.nr T. 1
+.T# 1
+.35
+.TE \}
+.if \n-(b.=0 .nr c. \n(.c-\n(d.-8
+.el \{
+.nf
+                                       /                 \e
+                                       | fv[0]  fv[1]  0 |
+[ New-X New-Y 1 ] = [ Old-X Old-Y 1 ]  | fv[2]  fv[3]  0 |
+                                       | fv[4]  fv[5]  1 |
+                                       \e                 /
+.fi
+\}
+.RE
+If the sub\-command is G_MUL then the internal matrix M will be
+multiplied by the given values, as: M-new = New * M.
+If the sub\-command is G_SET then the internal matrix M will be set
+to the given values, as: M-new = New.
+.PD
+...\"
+...\"
+...\" ******************
+...\"
+.SH "META FILE FORMAT"
+The autosave files and those for devices declared as type SAVE without an
+explicit SFORM program will save gplot calls the the binary
+.IR "gplot meta\-file format" .
+This format is a binary write of parameters to gplot2() as if the following
+had been done (it is done much more efficiently).
+.RS
+.br
+write(lu, (char*)&cmd, sizeof(int)) ;
+.br
+write(lu, (char*)&sub, sizeof(int)) ;
+.br
+write(lu, (char*)&x, sizeof(float)) ;
+.br
+write(lu, (char*)&y, sizeof(float)) ;
+.br
+The first record in the file must be a header record which is like a call to
+gplot2() was made with a command containing a file code and the subcommand
+containing a date code.  Access to these files is done internally with
+the following functions which are in the library with user callable entry
+points.
+.IP gpopen(name, mode)
+Name is a null terminated string with is the file to try and open.  Mode is
+an integer which is set to GPO_RD, GPO_WR or GPO_RW indicating that the
+file should be opened for reading only, writing only or both reading and
+writing (respectively).  It may also have GPO_AP or-ed in to
+open the file in append mode.  Or-ing in GPO_HD will add the header on
+a new file and check for the header when opening an old file for reading.
+The return value is less then 0 on an error or greater than or equal to zero
+corresponding to an open file descriptor (as if from open).  Note that
+gpclose(lu) must be used to close the file.
+.IP gpclose(lu)
+Close the file opened by gpopen().  Posts any buffers before closing.
+.IP gpread(lu, &cmd, &sub, &x, &y)
+Read in the next record from the open file.  cmd and sub are integers and
+x and y are floats.  Return is 1 if read was ok and < 0 if error.
+.IP gpwrite(lu, cmd, sub, x, y)
+Like gpread(), but write the parameters as the next record.  Return is 1
+if ok else -1 if write error.
+.IP gpwrhed(lu)
+Write the header record.  This should only be used if gpopen() was not
+used to create the header (with GPO_HD).
+.RE
+.SH  DIAGNOSTICS
+.BR gplot2 ()
+does its work very quietly, in other words it does not
+complain about anything.  A funny looking plot will indicate that
+something was done wrong.
+.br
+.BR gpmisc ()
+may print an error and will return \-1 on error or 0 on no error.
+.SH  FILES
+.B gplot.h
+\- Macros and constants.
+.br
+.B gplotF77.h
+\- F77 form of
+.B gplot.h
+.br
+.B /usr/local/lib/plotcap
+\- Device capability data base.
+.br
+.B /usr/local/lib/libgplot.a
+\- Plot library
+.br
+.SH  "ENVIRONMENT VARIABLES"
+.TP
+.B DEFPDEV
+Use as the default plot device if no call to
+.B setpdev
+is given.
+.TP
+.B DEFPFIL
+Use as the default output file if no call to
+.B setpfil
+is given.
+.TP
+.B TERM
+If new plot device has been set and
+.B DEFPDEV
+is not
+set, then use the terminal as the default plot device.
+.TP
+.B PLOTCAP
+Use as
+.I plotcap
+file instead of the system wide
+plotcap file. Useful for debugging new device definitions or if
+you would like to use a slightly modified definition for some
+device.
+.SH  "SEE ALSO"
+plotcap(5L), gplot(3L), high2(3L), dplot(1L)
+.SH  AUTHOR
+Michael Eldredge (dredge@Oasis.Stanford.Edu)

@@ -1,0 +1,1320 @@
+
+
+
+PLOTCAP(5L)       UNKNOWN SECTION OF THE MANUAL       PLOTCAP(5L)
+
+
+
+NAME
+     plotcap - Plot capability data base for the gplot library.
+
+SYNOPSIS
+     /usr/local/lib/plotcap
+     /usr/local/lib/plotcap.std
+
+RELEASE 7035
+DESCRIPTION
+     plotcap is a data base  which  describes  plotting  devices.
+     Each device is described by an entry in a plotcap file, con-
+     sisting of a list of the capabilities which it has  and  the
+     operations  required  to  preform  a set of functions (which
+     are, in general, the commands used by gplot(3L)).
+
+     The gplot library is able to plot to many different  devices
+     (both  vector  and  raster  types).   It  has a small set of
+     allowed graphics primatives.  These are  either  handled  by
+     the  device,  if  possible,  otherwise  by gplot internally.
+     Capabilities include  moving,  drawing,  clearing,  changing
+     line  types,  filling  an  area, etc.  The plotcap data base
+     describes which capabilities a device has and how to  imple-
+     ment the primatives that it can do.
+
+     The plotcap file may contain certain special commands,  dev-
+     ice  entries,  and comments (delimited by a pound sign (`#')
+     and the end of line).  The special commands  are  directives
+     to  the  plotcap  file  reading functions. Special commands,
+     which may be between entries only, are marked by  a  percent
+     sign  (`%'),  the command word and any parameters. For exam-
+     ple,
+
+          %next   "/usr/local/lib/plotcap.std"
+
+     indicates that the reading routines should continue on  from
+     the  current file to one called '/usr/local/lib/plotcap.std'
+     if the requested graphics device cannot be found.
+
+     Each device entry consists of a series of names for the dev-
+     ice  separated  by  vertical  bars  (`|')  and ending with a
+     colon (`:') and then the capabilities for the device.   Each
+     capability  is  separated by colons and the entry terminated
+     by a null capability.
+
+     Capabilities are of several types.  Some are boolean  values
+     - the associated capability does or does not exist.   Others
+     have numeric values (ie: number of pixels) and are given  as
+     the  capability,  an  equals  sign  (`=')  and  the  number.
+     Numbers can be integers  given  in  decimal,  octal  or  hex
+     (according  to the standard C conventions), or in some cases
+     a floating point number may  be  required  (ie:  an  initial
+     scale  factor).  Some capabilities have string values (ie: a
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY                1
+
+
+
+
+
+
+PLOTCAP(5L)       UNKNOWN SECTION OF THE MANUAL       PLOTCAP(5L)
+
+
+
+     default output file name).  In  this  case  the  the  string
+     value is given as a quoted string.  Either the single or the
+     double quotes may be used, but the closing quote must be the
+     same  as  that  which  began  the  string.   Note  that some
+     interpretation of the string is done  (ie:  converting  "\n"
+     notation to a new line character).
+
+     The final type of capability gives the  operations  required
+     to perform a task (ie: drawing).  These can be thought of as
+     small ``programs'' that can output characters and manipulate
+     values (ie: the (x,y) point values).
+
+     For a more detailed discussion of the values  for  the  dif-
+     ferent capability types, read on.  The section labeled CAPA-
+     BILITIES is a reference guide to the capabilities, while the
+     section  entitled DISCUSSION goes into detail about the for-
+     mat of each type of capability.  There is also a  discussion
+     on how to write an entry for a device.
+
+     Any capability may be made to appear non-existent by notting
+     it (ie: preceding it with an exclamation point (`!')).  This
+     is useful when using the LIKE capability and it  is  desired
+     to  turn off a capability that is in the LIKE'd device. Note
+     that this notted capability does match  (thus  stopping  the
+     search for it), but it matches negatively.
+
+CAPABILITIES
+     One and only one of following device ``types'' must be given
+     for each entry to indicate the basic device type.
+
+     NAME DESCRIPTION
+     VECT A vector type plot device.  gplot will output move  and
+          draw   commands  describing  vectors.   The  device  is
+          responsible for actually drawing the given vector.
+     RAST A raster type plot device.  gplot will do all the draw-
+          ing in an internal raster map and when the plot is fin-
+          ished, it will output the raster map to the device.
+     SAVE A pseudo-type.  All calls are to be  saved  to  a  file
+          with  no  interpretation done. These calls are saved in
+          the gplot meta-file  format  that  can  be  reread  and
+          replotted (say by the dplot(1L) program).
+
+     For each capability  given  below,  the  following  letters,
+     enclosed in parentheses or brackets, indicate its context.
+          (R)  indicates a raster plot capability only.
+          (V)  indicates a vector plot capability only.
+          (S)  indicates a save capability only.
+          (b)  indicates a boolean (flag) capability.
+          (i)  indicates an integer value.
+          (f)  indicates a floating point values.
+          (s)  indicates a string value.
+          (p)  indicates a ``_p_r_o_g_r_a_m'' value.
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY                2
+
+
+
+
+
+
+PLOTCAP(5L)       UNKNOWN SECTION OF THE MANUAL       PLOTCAP(5L)
+
+
+
+     Thus: (V i) means the capability is  only  used  for  vector
+     type  plot  devices  and it has an associated integer value.
+     Capabilities shown as (...) are required, while those  shown
+     as [...] are optional.
+
+     NAME DESCRIPTION
+     ANGLE
+          [f] Initial angle (in degrees) of rotation.
+     AREA [p] Define and fill in a polygonal  area.   gplot  will
+          generally  output vectors as if it were drawing, but it
+          will call this capability when it is trying  to  define
+          and fill an area.
+     ATOG [V p] Switch contexts from alpha mode to graphics mode.
+          Many  graphics  terminals have a distinct graphics mode
+          and alpha mode, escape sequences used in one  are  gen-
+          erally  incompatible with those for the other.  This is
+          used after a GTOA to get back  to  plotting.   Usually,
+          after a setup call the device is in graphics mode.
+     BFCL [p] A sequence of characters appended  to  each  buffer
+          before  it  is  sent to the plot device.  This is often
+          used for raster devices where each raster row  is  sent
+          in  a  separate buffer and there is some set of charac-
+          ters that tells the device that it just got  a  row  of
+          raster data.
+     BFOP [p] A sequence of characters prepended to  each  buffer
+          before  it  is sent to the plot device.  Again, this is
+          often used for raster devices before each raster row is
+          output, indicating that raster data will follow.
+     BFSZ [i] [VS i] Total number of characters to buffer  before
+          outputting  to the device (file).  This is used instead
+          of the default value, useful,  for  example,  when  the
+          device  can  only handle a limited number of characters
+          at a time.  (The HP2648 graphics terminal has an inter-
+          nal  80  character  buffer that is very easily overrun.
+          In this case, BFSZ should be 80). But, this  is  seldom
+          used  except with devices and/or operating systems that
+          cannot do flow control (XON/XOF).
+     CLOC [V p] Sequence to get the current cursor position  from
+          the plot device (Cursor LOCation). This sequence should
+          fill in the I and J variables with the  current  cursor
+          location  and  (by  convention) the S variable with the
+          key that was hit to give the location.
+     CLPHX
+          [i] Initial value,  in  pixels,  of  the  high  X  clip
+          bounds.  Must be less than PIXX.
+     CLPHY
+          [i] Initial value,  in  pixels,  of  the  high  Y  clip
+          bounds.  Must be less than PIXY.
+     CLPLX
+          [i] Initial value,  in  pixels,  of  the  low   X  clip
+          bounds.  Must be greater than or equal to zero.
+     CLPLY
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY                3
+
+
+
+
+
+
+PLOTCAP(5L)       UNKNOWN SECTION OF THE MANUAL       PLOTCAP(5L)
+
+
+
+          [i] Initial value,  in  pixels,  of  the  low   Y  clip
+          bounds.  Must be greater than or equal to zero.
+     DRAW [V p] Description of how to draw to a given point. This
+          is  the  standard drawing mode, setting pixels to draw.
+          This is the most frequently used _p_r_o_g_r_a_m  and  the  one
+          that you must always write for a vector device.
+     DRWCL
+          [V p] Like DRAW but for clearing a vector.   If  clear-
+          mode  drawing  is selected with gplot, this sequence is
+          used instead of DRAW.  If not given, however, selection
+          of  clear-mode  drawing  will  continue to use the DRAW
+          sequence.
+     DRWCM
+          [V p] Like DRAW but for complementing the pixels in the
+          vector.   If  complement-mode  drawing is selected with
+          gplot, this sequence is used instead of DRAW.   If  not
+          given,  however,  selection  of complement-mode drawing
+          will continue to use the DRAW sequence.
+     FILE [s] A default file name for all output.  This  file  is
+          used if no call to setpfil(3L) is given before plotting
+          begins.  If this is not given the  standard  output  is
+          used.  This  can  also  be used to create a unique file
+          each time by including the template of the 6 characters
+          "??????".  The "??????" are replaced each time by a set
+          of characters that are certain  to  be  a  unique  file
+          name.   If the first character of a file name is a plus
+          sign (`+') then the file  is  opened  in  append  mode.
+          Also (wow!!) if the first character of the file name is
+          a vertical  bar (`|'), then  the  file  name  field  is
+          taken  as  a  command (program) into which gplot output
+          should be  piped.   (NOTE:  This  is  operating  system
+          dependent, since not all operating systems allow piping
+          between programs).  Thus instead of writing to a  file,
+          a  pipe  will  be created and output is directed to the
+          standard input of the given command.  If the first  two
+          characters  are vertical bars (`||'), the the remainder
+          of the name field is taken as a command (program)  into
+          which gplot output should be piped AND input (e.g. from
+          a G_CLOC) command can be read.  In this case  the  plot
+          library  will  execute  the  command  with its standard
+          input connected to the plot file output;  its  standard
+          output  will  be  the  normal standard output (to allow
+          writing to the terminal); and the standard  error  will
+          be  connected  to the input plot file.  This is used by
+          the window drawing tools: xgplot, sunviewgplot.
+     FILS [V p] Select a new area  fill  pattern  for  subsequent
+          area fills.
+     GTOA [V p] Switch contexts from graphics mode to alpha mode.
+          This  would  be  used, for example, to suspend plotting
+          and (say) prompt for some user input.  (gplot uses ATOG
+          to get back from alpha mode).
+     ICLR [V b] Allow an initial clearing of the ``screen''.  The
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY                4
+
+
+
+
+
+
+PLOTCAP(5L)       UNKNOWN SECTION OF THE MANUAL       PLOTCAP(5L)
+
+
+
+          clear command generally will clear and then prepare for
+          the next plot (ie: by doing a page eject).  So that  if
+          a  program  has  a clear command as the very first plot
+          command it would get a  blank  page  on  some  devices.
+          However,  an initial clear command is sometimes needed,
+          such as on a terminal in order to clear the last plot.
+     IGPO [V b] Ignore post commands.  All output is buffered  to
+          increase  speed  and  posting  is sometimes needed.  In
+          some cases it may be desired to disallow  posting  com-
+          mands  to  gplot.  For example, if the output is always
+          directed to a file, posting will only slow  throughput.
+          (NOTE:  this  is  not  needed any longer. The GTOA/ATOG
+          sequences handle posting now.  (Just don't define  them
+          and  posting  will not happen). This is included in the
+          documentation in case you  are  trying  to  read  older
+          plotcap files.)
+     INIT [p] Sequence to initialize  the  device  for  plotting.
+          This sequence is used once at the very beginning of all
+          plotting.  It should leave the device in graphics mode.
+     INSZ [V i] Size to use other than the default for the  input
+          buffer  size.   This is used when reading from a device
+          (i.e. for finding the current cursor location).
+     LIKE [s] Some devices are similar except for a few capabili-
+          ties.   In this case, LIKE gives the name of the device
+          which the current devices is like.  This  must  be  the
+          last  capability for an entry.  There is a limit on the
+          number of likes to prevent recursive use of LIKE.  When
+          the  plotcap file is being read, the entry will be col-
+          lected and then any LIKE'd entries  will  be  appended.
+          Searching for a capability will then find the first one
+          in the concatenated list.  Note that  in  specifying  a
+          device,  as  can  be  done with setpdev(3L), the device
+          name may explicitly name the plotcap file to search  by
+          appending an at sign (`@') and file name to the device,
+          as:
+               LIKE = "some_device@/u/home/lib/special_pcap":
+     LINE [V p] A sequence for setting  line  types  for  drawing
+          (see gplot).  The subcommand (the S variable) will con-
+          tain the desired line type  and  this  sequence  should
+          switch the device to draw with the new line-type.
+     MCLR [V p] A sequence to begin  clear-mode  plotting.   This
+          will be done when gplot is called with the G_DMODE com-
+          mand and G_MCLR sub-command. Subsequent gplot calls  to
+          draw   will  actually  execute  the  DRWCL  program  if
+          defined, otherwise the DRAW sequence will  continue  to
+          be used.
+     MCMP [V p] A sequence, like MCLR, to  begin  complement-mode
+          plotting when selected by gplot.
+     MOVE [V p] Description of how to move to a given point. This
+          is used just before drawing, but is often not required.
+          Since there is the understanding of the last  point,  a
+          DRAW sequence will often contain an initial move to the
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY                5
+
+
+
+
+
+
+PLOTCAP(5L)       UNKNOWN SECTION OF THE MANUAL       PLOTCAP(5L)
+
+
+
+          previous point.
+     MSET [V p] A sequence to return to set-mode plotting.
+     NFILS
+          [V i] Maximum number of fill patterns supported by  the
+          hardware.   This  will  be  returned  by gpmisc(G_FILS,
+          G_GET, ...) calls.
+     NLINE
+          [V i] Maximum number of line  types  supported  by  the
+          hardware.
+     NPEN [V i] Maximum number of pen  styles  supported  by  the
+          hardware.
+     ORGX [i] The origin in pixels for the X-axis.  This is  sim-
+          ply an offset added to the X-value pixel location. Use-
+          ful for plot devices that want to begin  at  pixel  one
+          (vs  pixel  zero  or  an offset needed to not plot in a
+          `_d_e_a_d' zone - say where a roller moves the paper).
+     ORGY [i] Like ORGX but for the Y-value pixel location.
+     PCLR [V p] How to clear a plot  ``screen''.  This  can  mean
+          really clear or do a page eject operation.
+     PEN  [p] Sequence to change the pen with which we are  draw-
+          ing.  If  the  device supports different pen sizes, for
+          example, this can be used to change pen  sizes.   gplot
+          passes the requested pen type in the subcommand.
+     PEND [p] Sequence to ``close'' a plot device.  This is  used
+          once  at  the  very end of all plotting (triggered by a
+          G_PEND command to  _g_p_l_o_t.   All  internal  buffers  are
+          automatically posted and the output file closed.
+     PIVL [R i] Initial values for bytes used in outputting  each
+          pixel row to the device. For example, if only the lower
+          5 bits of each byte  in  a  raster  row  contain  pixel
+          information  and  the  raster information is being sent
+          over character communication lines (e.g. RS-232) it  is
+          often necessary to set the 6th bit of each byte so that
+          the value is always a  printable  character.   In  this
+          case,  PIVL  would  be  set to 040 (octal 40 - bit 6 is
+          set).
+     PIXX (i) Total number of pixels in the X direction.
+     PIXY (i) Total number of pixels in the Y direction.
+     PLCL [p] `plot  close'.  Sequence  to  close/end  each  plot
+          (after a clear).
+     PLOP [p] `plot open'. Sequence to begin each plot.
+     PUNX (i) Number of pixels in the X direction per basic  dev-
+          ice unit (ie: pixels per inch).
+     PUNY (i) Number of pixels in the Y direction per basic  dev-
+          ice unit (ie: pixels per inch).
+     ROTAX
+          [f] Initial X-point about which  to  rotate  (in  basic
+          plot units, e.g. inches).
+     ROTAY
+          [f] Initial Y-point about which  to  rotate  (in  basic
+          plot units, e.g. inches).
+     RPXB [R i] Number of pixels to output  in  each  byte.   The
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY                6
+
+
+
+
+
+
+PLOTCAP(5L)       UNKNOWN SECTION OF THE MANUAL       PLOTCAP(5L)
+
+
+
+          internal  pixel  map may be (say) 1024 pixels wide, but
+          when outputting the map a row at a time to the  device,
+          the pixels are mapped into a byte array RPXB pixels per
+          byte (and ORed with PIVL).
+     RREV [R b] 'Raster: reverse'.  Reverse order of bits in each
+          byte used in outputting each pixel row. For example, if
+          you think of a raster row as a left to  right  list  of
+          pixels  which for now we'll label _a through _j, then the
+          row would look like:
+               abcdefghij...
+          But if RPXB is (say) 5, then only 5 bits from this  row
+          will  be output in each byte.  This can be done as fol-
+          lows (where each set of  brackets  [...]  represents  a
+          byte  with the above pixels mapped in).  The left (high
+          order) bit is #7 and the right (low order) bit is #0.
+               [000abcde] [000fghij] ...
+          or
+               [000edcba] [000jihgf] ...
+          In other words, some devices think that  the  _n_e_x_t  bit
+          goes  in  the  next (left to right) bit position, while
+          others think it goes in the  next  (lowest  order)  bit
+          position.   The  second  style is used when RREV is set
+          true.
+     SCALX
+          [f] Initial scaling factor for the X direction.
+     SCALY
+          [f] Initial scaling factor for the Y direction.
+     SFORM
+          [S p] Format for saves.  Thus when a save  type  device
+          is  selected  with  setpdev(3L), this is the format for
+          each record output.  If not  given,  then  the  default
+          gplot meta file format is used.
+     TRANX
+          [f] Initial  translation  (offset)  factor  for  the  X
+          direction (in basic plot units, e.g. inches).
+     TRANY
+          [f] Initial  translation  (offset)  factor  for  the  Y
+          direction (in basic plot units, e.g. inches).
+     UNKN [p] Sequence to be executed when an unknown gplot  com-
+          mand  is  given  (normally,  gplot ignores unknown com-
+          mands).
+     USCAL
+          [f] Unit scale factor.  The number that each X,Y  value
+          is  multiplied  by to convert to the basic unit for the
+          device.  If, for example,  the  device  to  be  defined
+          gives pixels per centimeter, but local software expects
+          plotting in inches, a scale of 2.54 can be given.
+     USR1 [p] A user definable sequence executed by a G_USR1 com-
+          mand to gplot.
+     USR2 [p] A user definable sequence executed by a G_USR2 com-
+          mand to gplot.
+     _SENT
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY                7
+
+
+
+
+
+
+PLOTCAP(5L)       UNKNOWN SECTION OF THE MANUAL       PLOTCAP(5L)
+
+
+
+          [i] Special  internal  command.   Create  the  internal
+          plotcap  parsing  routine's symbol table with this many
+          entries (used only if an entry runs out of parsing sym-
+          bol   table   space).   You  should  never  need  this,
+          but......
+     _STAB
+          [i] Like _SENT but create the symbol  table  with  this
+          many total characters.
+
+SPECIAL COMMANDS
+     Each plotcap file may contain special commands.  These  com-
+     mands  may  come between entries and are indicated by a per-
+     cent sign (`%'), the command and any  parameters.  Currently
+     there is only one special command.
+
+     %next
+          The next command takes a quoted file name as its  argu-
+          ment.  If an entry has not been found by the end of the
+          current plotcap file, then the file  specified  by  the
+          %next  command  will  become  the current plotcap file.
+          This is useful in two cases. The first is when  a  user
+          without access to the system plotcap file wishes to add
+          or tailor a device entry. The user can create  his  own
+          plotcap  file  and set the PLOTCAP environment variable
+          with this name.  To avoid duplicating the system  file,
+          the  user's  local  file  would contain a %next command
+          pointing to the system file. For example:
+               # This is my own Plotcap file
+
+               # If not here, continue the search in the system file ...
+               %next "/usr/local/lib/plotcap"
+
+               my_entry: # my own entry
+                    :
+
+               my_hp | xhp2648 :   # my altered version.....
+               PIXX = 1000:        # Wow this is high res!
+               PIXY = 1000:
+               LIKE = "hp2648":    # Get the rest from the regular entry.
+                    :
+          So if the user tried to set a  device  'my_entry',  the
+          entry in the local file would be found and used.  If he
+          wants 'my_hp', that too would be  found  in  the  local
+          file,  but the "" LIKE="hp2648" will cause a search for
+          a device called "hp2648".  This will not  be  found  in
+          the current file, so searching will switch to the %next
+          file (here, the system plotcap file). Note that this is
+          a  switch, _n_o_t a push.  Once the reader has switched to
+          the %next file, there is no way back  to  the  previous
+          file.  Also note that the switch does not happen at the
+          point of the %next command, but only once  the  current
+          file  has  been  searched for an entry without success.
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY                8
+
+
+
+
+
+
+PLOTCAP(5L)       UNKNOWN SECTION OF THE MANUAL       PLOTCAP(5L)
+
+
+
+          Therefore, the %next command can  be  anywhere  in  the
+          file,  although it is usually at the beginning where it
+          is easily noticed.
+
+          The other usual case for the use of the  %next  command
+          is  in  a situation where some master machine sends out
+          updates to subscriber machines at  night  (say,  `_a  _l_a
+          rdist).  The default plotcap file, which is not distri-
+          buted, can contain all the  local  machine  definitions
+          and  have a %next command to the version which has been
+          distributed.
+
+DISCUSSION
+     Now it's time to take a look at each of the capability types
+     and  their  associated  values, and what it takes to write a
+     definition for a plot device.
+
+     A Device Entry
+     When specifying a plot device with setpdev(3L), the  plotcap
+     file  is  searched  for the named device.  The entry is col-
+     lected into an internal buffer  for  future  interpretation.
+     If  the  entry  ends  with  the capability LIKE, the file is
+     again searched for the  device  entry  named,  and  the  new
+     definition is appended to the current entry.  This continues
+     until all LIKEs are resolved.  (Note that there is  a  limit
+     on  the total number of LIKEs that can be used for a defini-
+     tion.  This is to prevent an infinite  loop  of  references.
+     The current limit is 10.)
+
+     Each entry is defined as a list of character names  for  the
+     device  separated  by  a  vertical bar  (`|') and terminated
+     with a colon.  These are the names matched against the  dev-
+     ice  name  given  to  setpdev(3L).  Note that all spaces and
+     tabs are removed so that a device name '_n_e_w  _d_e_v_i_c_e  '  will
+     actually match '_n_e_w_d_e_v_i_c_e'.
+
+     Following the list of device names, are the capabilities for
+     the the device. An entry is terminated by a null capability.
+     Each capability is defined as 1)  white  space  and/or  com-
+     ments, 2) the capability name, 3) optionally, the associated
+     value for the capability, 4) finally a closing colon  (`:').
+     A  null  capability  is simply the white-space/comment and a
+     closing colon.
+
+     Capability types which take values (numbers, strings or pro-
+     grams)  are  followed by an equals sign (`='), the value and
+     the closing colon.
+
+     A comment is defined as everything between and  including  a
+     pound sign (`#') and a newline.
+
+
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY                9
+
+
+
+
+
+
+PLOTCAP(5L)       UNKNOWN SECTION OF THE MANUAL       PLOTCAP(5L)
+
+
+
+     Capabilities
+     All capabilities are searched for from the beginning of  the
+     definition  and searching ends when the capability is found.
+     Thus if a capability is given more than once within a defin-
+     ition, the first one found is used.  Thus if two devices are
+     similar except for one capability, the following  entry  for
+     _m_y__d_e_v_i_c_e  would  make it just like _d_e_v_i_c_e except the buffer
+     size for the first device would be overridden by that  given
+     for the second.
+
+          my_device: BFSZ=80: # a new buffer size
+               LIKE="device": :
+
+     To turn off a capability that is in the  LIKEed  entry,  the
+     capability  can  be  immediately  preceded by an exclamation
+     point (`!').  So to use the default buffer size  instead  of
+     the one given by the LIKE'd device:
+
+          device:   # just like other but undo buffer size, to use default
+               !BFSZ:    # back to default.
+               LIKE = "other" : :
+
+     Boolean Type Capabilities
+     This type of capability is indicated by  presence  within  a
+     definition.  It can also be turned off, (as all capabilities
+     can) by preceding it with  the  exclamation  mark.  Thus  to
+     indicate  that posting calls should be ignored for some dev-
+     ice:
+
+          device: IGPO: .... : :
+
+     Numeric Type Capabilities
+     This type takes a numeric value.  There  are  two  types  of
+     numeric capabilities: integer and floating point.
+
+     Integer values can be specified in one  of  three  ways:  1)
+     decimal (the default), 2) octal - all numbers beginning with
+     a leading `0' (zero) are interpreted as  octal  numbers,  or
+     3).  hexadecimal - all numbers beginning with a leading `0x'
+     (zero exs) are interpreted as hex numbers.  Thus some values
+     are  easier  thought of as bit masks, for example _P_I_V_L - the
+     initial byte value for raster row is usually a  certain  bit
+     set  within  each  byte.   While pixels per unit are usually
+     given in decimal.  As examples of integer numbers:
+
+          device :               # to use integers
+               PIXX=1024:     # decimal
+               PIXY = 1024 :  #  ditto
+               PIVL=0100:     # octal (or 64 decimal)
+               JUNK=0xff:     # hex (or 255 decimal) (or 0377 octal)
+
+
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY               10
+
+
+
+
+
+
+PLOTCAP(5L)       UNKNOWN SECTION OF THE MANUAL       PLOTCAP(5L)
+
+
+
+     Floating point values can be given as in the  C  programming
+     language  (or Fortran E-format for that matter). Thus to set
+     the initial scaling factor:
+
+          device:   # to show how to use floats
+               SCALX= 2.0:    # scaling in X
+               SCALY= 2: # scaling in Y (same as X)
+               JUNK = 2e0 :   # same as above, a 2.
+               LITTLE= -12.3e-4 :
+               :
+
+     String Type Capabilities
+     String values are given as quoted strings.  The  string  may
+     be  delimited  with  either single or double quotes, but the
+     opening quote must be the same as the closing quote.  If you
+     need  to include a quote within a string, either delimit the
+     string with the other or you can escape the quote character.
+     Some interpretation is done when gathering the string.  Most
+     (if not all) of the standard C language escapes are  allowed
+     with  several additions.  This allows entering non-printable
+     characters withing the string.  The following sets of  char-
+     acters are mapped as shown.
+
+          \E   033 (octal). An escape.
+          \n   012 (octal). A new line.
+          \r   015 (octal). A return character.
+          \t   011 (octal). A tab.
+          ^_x   Control _x, where _x is any character.
+          \\   A backslash itself.
+          \^   An caret itself.
+          \'   A single quote.
+          \"   A double quote.
+          \_n_n_n An octal constant. Where _n_n_n is up to three digits
+               interpreted as an octal constant of one byte. Thus
+               \012 is a new line, and \0 is a null.
+
+     So, to give a default file name for output:
+
+          device:        # showing how to use a string
+               FILE = "plot.out" : # simple !
+               JUNK = "A string\n with \E escapes" :
+               HI   = "This isn't hard, with no \"'s, huh?" :
+               BYE  = 'This is "about" the same, isn\'t it?'  :
+               :
+
+     Program Type Capabilities
+     This is the most difficult of the capabilities to  use.   It
+     is  intended  to be a compact notation for describing how to
+     manipulate data values to be output to the plot device.  The
+     language has enough power and flexibility to get the correct
+     data to plot devices, but, it wasn't designed to be a  great
+     programming language.  The compiled code is small and simple
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY               11
+
+
+
+
+
+
+PLOTCAP(5L)       UNKNOWN SECTION OF THE MANUAL       PLOTCAP(5L)
+
+
+
+     (as is the compiler  for  that  matter).   It  is  terse  to
+     encourage  terseness.   These  so  called  programs drive an
+     internal finite state  machine  which  has  several  working
+     registers  (r0  to  r9) and several special purpose internal
+     registers.  Each time, for example, gplot wants  to  do  the
+     sequence  for  drawing,  it schedules the state machine with
+     the program for DRAW.
+
+     A program consists of  statements  separated  by  semicolons
+     (`;')  (actually  commas  (`,') are ok also).  As with other
+     capabilities, a colon ends the program.  The final semicolon
+     is optional.
+
+     A statement is either a null statement (i.e. ;;),  a  quoted
+     string,  a  code  sequence, an intrinsic function name, or a
+     _s_u_b_r_o_u_t_i_n_e name.  Below  is  a  simple  description  of  the
+     language  and  then a discussion of each element of the syn-
+     tax.
+
+          prog:  list
+          list:  statement  ';'  |  list
+          statement:
+                 null  |  string  |  expr  |  func  |  intrin   |
+                 label  |  test
+
+          func:  name  |  '*'  name
+          intrin:'.'  name
+          label: int  '$'
+          expr:  lhs  '='  rhs
+          lhs:   outform  |  reg  |  var
+          rhs:   val  |  rhs  oper  val
+          val:   reg  |  int  |  rhsvar  |  format
+          rhsvar:var  |  var  '['  range  ']'
+          range: int  |  int  '-'  int
+          test:  reg  '?'  test_list  |  goto_label
+          test_list:
+                 compare  goto_label  |  test_list  '|'   compare
+                 goto_label
+          compare:
+                 '=='  |  '!='  |  '>'  |  '>='  |  '>'  |  '<='
+          goto_label:
+                 '$' int
+          outform:
+                 format  |  format  '@'  reg
+          format:'%'  formchar  |  '%'  int  formchar
+          oper:  '+'  |  '-'  |  '*'  |  '/'  |  '>'  |   '<'   |
+                 '|'  |  '&'  |  '^'  |  '%'
+          reg:   'r0'  -  'r9'
+          var:   rwvar  |  rovar
+          rwvar: 'X'  |  'Y'  |  'I'  |  'J'  |  'C'  |  'S'
+          rovar: 'OB'  |  'BC'
+
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY               12
+
+
+
+
+
+
+PLOTCAP(5L)       UNKNOWN SECTION OF THE MANUAL       PLOTCAP(5L)
+
+
+
+     Strings are used just as they are in string  type  capabili-
+     ties.   They  are  inserted in the output at the point where
+     they are encountered.
+
+     Functions are called  by  other  program  type  capabilities
+     written  by  the user.  For example, the MOVE, DRAW and AREA
+     capabilities will all usually use  the  same  point  drawing
+     sequence.   Therefore, they can each reference a function to
+     draw the points.  Then you  must  write  the  point  drawing
+     function.  For example:
+
+          device:                # see how subroutines/functions work.
+               DRAW = "Begin Draw: "; *pnts;  "End Draw.\n":
+               MOVE = "Move to: ";  pnts; "\n":
+               pnts = "(a point)":
+               :
+
+     So when MOVE is called, the string "Move to: " will be  out-
+     put, then the function pnts will be called which outputs the
+     string "(a point)". Finally, a string with  only  a  newline
+     will  be output.  In the case of a DRAW command, notice that
+     the pnts function is _s_t_a_r_r_e_d.  This has special meaning.  It
+     means  that  this function will be called for every consecu-
+     tive DRAW command. Thus, for the  first  DRAW  command,  the
+     string  "Begin  Draw:  " will be output.  Then, the function
+     pnts will be called. And the DRAW function will then return.
+     If  the  next gplot command is again a DRAW command, it will
+     enter into the pnts function and then return.  This  contin-
+     ues  until the last consecutive call to DRAW.  At this time,
+     the pnts function is again done, and then  the  string  "End
+     Draw.\n"  string is output.  (Actually, when the new command
+     is called, before it is done the previous  command  is  fin-
+     ished  up.) There can only be one _s_t_a_r_r_e_d function in a pro-
+     gram sequence.  So, in general, if there is a _s_t_a_r_r_e_d  func-
+     tion,  at  the  first  call  to  the capability (i.e.: DRAW)
+     everything before the _s_t_a_r_r_e_d function AND one call to  that
+     function  are done.  Then for each call to the same capabil-
+     ity thereafter, the _s_t_a_r_r_e_d function  is  called.   Finally,
+     when  the  last  consecutive call to the capability is done,
+     the function is called and everything after the function  is
+     then done.
+
+     Intrinsic functions are built into the state machine.  These
+     are  functions  that don't fit the simple machine concept so
+     nicely, but are needed to get things done.  They are  called
+     just like a user written function, except that they are pre-
+     ceded by a period (`.').  The intrinsics most often used are
+     .P0,  .P1  and .READ.  Most of the others are used only when
+     debugging a new entry.
+
+     .P0  Change from current point reference to  previous  point
+          reference.   Thus, when referencing the gplot registers
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY               13
+
+
+
+
+
+
+PLOTCAP(5L)       UNKNOWN SECTION OF THE MANUAL       PLOTCAP(5L)
+
+
+
+          (e.g.: I, J, X, Y, S, C), the values from  the  current
+          call  to  gplot  are accessed.  But if a call to .P0 is
+          made, then all subsequent references  will  be  to  the
+          values from the _p_r_e_v_i_o_u_s call to gplot.
+     .P1  Reset the point reference to use the current values.
+     .READ
+          Read from the input device into an internal  buffer  up
+          to  a  record terminator (eg: cr-lf or cr).  All subse-
+          quent inputs are  done  from  this  (internal)  buffer.
+          This  probably  should have been done differently, say,
+          automatically when an input was done, but ...
+     ._DUMP
+          Print to the standard  error  all  internal  registers,
+          etc. for the machine. For debugging.
+     ._ABORT
+          Do a _DUMP and then call the  abort  function,  dumping
+          core on the way out.  For debugging.
+     ._TRACE
+          Turn on alu tracing.  This echos each  alu  instruction
+          just  before  it  is executed.  Tracing may not be com-
+          piled into all versions of the code.
+     ._NOTRACE
+          Turn off alu tracing. Tracing may not be compiled  into
+          all versions of the code.
+     .POST
+          Post the internal buffer now.
+
+     Expressions really are the main point  of  all  this.   Many
+     devices  like  to have data input as printable ascii charac-
+     ters and therefore require breaking a  pixel  location  into
+     bytes  and  then setting a high order bit to ensure that the
+     character is printable.  The primary  rule  to  remember  in
+     using  plotcap's  expressions is that all operators have the
+     same precedence.  Thus addition and multiplication have  the
+     same   precedence.    This  means  that  all  operators  are
+     evaluated in order, from left to right.
+
+     Value holding entities are variables and registers.  Some of
+     the  registers  are read only; this means that they can only
+     appear on the right hand side of an equation.  The  internal
+     registers  are r0 through r9.  They maintain assigned values
+     between gplot calls, but are generally used as scratch vari-
+     ables during a single call.  The readable and writable vari-
+     ables correspond to the gplot  subroutine  parameters.  They
+     are:
+
+     C    (Integer) The value of  the  gplot  command  parameter.
+          This  is seldom used since each _p_r_o_g_r_a_m is scheduled in
+          response to a call for a specific command.
+     S    (Integer) The sub-command to the gplot subroutine call.
+          For example, when gplot is called to change line types,
+          the sub-command contains a integer new line type.
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY               14
+
+
+
+
+
+
+PLOTCAP(5L)       UNKNOWN SECTION OF THE MANUAL       PLOTCAP(5L)
+
+
+
+     I    (Integer) The X-value from the gplot call; except  this
+          has  been transformed and converted from the user given
+          plot units (eg: inches) to an  integer  pixel  location
+          between zero and PIXX.
+     J    (Integer) Like I except for the Y-direction.
+     X    (Floating point)  The  actual  (unscaled,  unconverted)
+          gplot X-value parameter.  The converted form (ie: I) is
+          generally used; this is most often used for  SAVE  type
+          entries.
+     Y    (Floating point) Like X except for the Y-direction.
+
+     The internal read-only registers are:
+
+     OB   (Integer) The current output buffer location.  This  is
+          used to remember a location where a value not yet known
+          will need to be written.
+     BC   (Integer) The current count of bytes output to the plot
+          device.
+
+     The left hand side (lhs) of an expression can be  any  writ-
+     able  variable  or  a  register.  It  can also be the output
+     pseudo-register which will be  discussed  in  shortly.   The
+     right  hand  side  of an expression can be a register, vari-
+     able, constant or the  input  pseudo-register  separated  by
+     operations.   The  exception  to this is that floating point
+     variables cannot be operated on.  So the right hand side  of
+     a floating point expression can only have a numeric constant
+     or one of the floating point variables.  So  operations  are
+     only for integers (pixels).  The available operations are:
+
+     +    Addition.
+     -    Subtraction.
+     *    Multiplication.
+     /    Division.
+     %    Modulus.
+     |    Bit-wise OR.
+     ^    Bit-wise Exclusive OR.
+     &    Bit-wise AND.
+     >    Bit-wise shift right. The value  shifted  is  the  left
+          operand;  the  number  of  bits  to  shift is the right
+          operand.
+     <    Bit-wise shift left.
+     -    (Unary) Minus. Negation. There can also  be  a  leading
+          plus sign (`+').
+     [_r_a_n_g_e]
+          (Unary) subfield bit extraction. This is short hand for
+          extraction  of  a  subset  of bits from an integer. The
+          range can be a single integer in which case the  single
+          bit  will  be  returned  in  the  low  order bit of the
+          result.  It can also  be  a  range  (indicated  by  two
+          integers  separated  by  a dash (`-') in which case the
+          range of bits are returned in the lower order  bits  of
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY               15
+
+
+
+
+
+
+PLOTCAP(5L)       UNKNOWN SECTION OF THE MANUAL       PLOTCAP(5L)
+
+
+
+          the  result.  In  the following examples, the one using
+          the subfield notation is quicker and  easier  to  read,
+          but returns the same result as the other.
+               r0  =  I[9-5] ;
+               r0  =  I & 01740 > 5 ;
+          Bits are counted from zero to 15, zero being the  least
+          significant  (right  most).   If  the first bit is less
+          than the last bit, the bit field is loaded  in  reverse
+          order (why this would want to be done is certainly open
+          to question, but...) The subfield operation can be per-
+          formed on any register or variable.
+
+     Input and Output may take a little getting used  to.  Unlike
+     most  languages,  input and output are not done through sub-
+     routines.  More like the APL quad, there are input and  out-
+     put  pseudo-registers.   These  are indicated by the percent
+     sign (`%') (it is called the quad in APL and  looks  like  a
+     square).   So  to output a value, you need only assign it to
+     the output register.  The output register can also be  modi-
+     fied  to indicate how you would like the value to be format-
+     ted. This is done in one of two ways.  For binary output,  a
+     binary  specification follows the percent sign.  For format-
+     ted (ie: ascii) output, there can be possibly a number indi-
+     cating  the  desired field width, and then the ascii format.
+     The available formats are:
+
+     %B   Output only the low order byte to the output stream.
+     %W   Output the lower two bytes of the value (higher first).
+     %L   Output the lower  four  bytes  of  the  value  (highest
+          first).
+     %    Output the value (4 bytes) in its raw format.  On  many
+          systems  this is the same as the %L format. But on sys-
+          tems where the bytes are numbered from high to low (ie:
+          a  Vax), the byte order will be lowest first in the raw
+          form.  This is generally used to make save files  where
+          the  values  written are to be read by the another pro-
+          gram on the system and no byte swapping is desired. The
+          normal  order  of bytes output in the %W and %L formats
+          is always highest order byte first.
+     %d   Formatted decimal. (Like in the C language.) There  can
+          also  be  a field width specification, for example: %4d
+          will output an integer that takes  up  four  characters
+          (space padded).
+     %f   Formatted floating point. Again like in the C language.
+     %g   Ditto. In fact just about any C printf  format  can  be
+          used.
+
+     Input is the same.  Except that the inputting is  done  from
+     an  internal buffer filled by a call to the .READ intrinsic.
+     So a reference to the input pseudo-register of the form:
+
+
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY               16
+
+
+
+
+
+
+PLOTCAP(5L)       UNKNOWN SECTION OF THE MANUAL       PLOTCAP(5L)
+
+
+
+          r0 = %B + 1 ;
+
+     will input the next  byte  from  the  stream  and  add  one,
+     assigning the final result to register zero.
+
+     Output can also be done indirect off of a register.  This is
+     used, for example, when a sequence needs to be preceded by a
+     byte count which you can't know until the sequence has  been
+     output.  This is best illustrated by example:
+
+          DRAW = "Bytes "; {
+               r4 = OB ; # remember where in the output buffer we are.
+               r5 = BC ; # and the current byte count.
+               %2d = 0 ; # save room for byte count. 2 bytes.
+               * pnts ;  # each drawn to point....
+               %2d@r4 = BC - r5 ;  # output byte count to r4-indirect.
+               }
+               :
+
+     Zow! What happened here? We save the current location in the
+     output  buffer in register 4 and the current number of bytes
+     output in register 5.  Then we output 2 characters  to  save
+     space  for  the byte count when we finish.  The two calls to
+     the pnts subroutine are the usual way to draw, putting draw-
+     ing  information  to  the  output  buffer.  And finally, the
+     number of bytes used by this drawing sequence (BC -  r5)  is
+     output as 2 formatted characters to the location in the out-
+     put buffer pointed to by r4 (the remembered location  before
+     outputting began).  But since gplot buffers all output data,
+     what happens if the buffer fills and is posted after we save
+     the OB location but before we output indirect?  Big problems
+     is what happens.  So there  are  the  curly  braces.   These
+     indicate that the stuff in between must be kept together. So
+     if there isn't room for the bracketed information, post  the
+     buffer  early.   This  works  for  me,  but  I have had non-
+     reproducible bug reports of its not working, so be careful.
+
+     Labels are quite simple.  They are used as destinations  for
+     test  condition  branches.   A label is a small integer fol-
+     lowed by a dollar sign (`$').  There is a limited number  of
+     labels  (currently 10) that can be used in a single capabil-
+     ity definition.
+
+     Testing is very strange looking, but is not used very often.
+     (Again, it was designed to be easy to parse and to be a lit-
+     tle hard to use to discourage  its  overuse.  Sorry.)  In  a
+     test,  a  register  is  tested against its relationship with
+     zero.  The format is: the register, a question  mark  (`?'),
+     the  relation  to  be  tested for, and finally a destination
+     label to which to jump if the test is true.  It is also pos-
+     sible  to  have  several comparisons in the same test.  Each
+     additional compare is indicated with a vertical  bar  (`|'),
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY               17
+
+
+
+
+
+
+PLOTCAP(5L)       UNKNOWN SECTION OF THE MANUAL       PLOTCAP(5L)
+
+
+
+     the  next comparison and destination label.  The destination
+     label is local to the current  capability  definition.   For
+     example:
+
+          LINE = "\E*m" ;     # opening sequence
+                   r0 = S ;        # get the subcommand (line type)
+                   r0 ? != $1 ;    # if non-zero jump over next stuff.
+                   r0 = 1 ;        #  always non-zero....
+               1$; %2d = r0 ;      # output it.
+                   "b":       #  finish....
+
+          DRAW = .P0; r2 = I; r3 = J ; .P1 ; # get prev values....
+                   r0 = I - r2 ;        # compare I's
+                   r1 = J - r3 ;        # and J's
+                   r0 ? != $1;               # No change in I? then...
+                    vert ;              #  just move vertically.
+                    r0? == $3;          #  bra 3$, weird, huh?
+               1$; r1 ? != $2 ;         # No change in J? then...
+                    horiz ;             #  just move horizontally.
+                    $3 ;
+               2$;  draw ;              # draw diagonally.
+               3$;  #done......
+                   :
+
+     The second example is strange but illustrates  some  of  the
+     possibilities.  Note that the goto is a dollar sign then the
+     label number and that the label itself  is  defined  by  the
+     label  number and then the dollar sign.  In the second exam-
+     ple, after the call to the function _v_e_r_t, a goto is done  by
+     testing r0 again (in a test certain to pass).  But after the
+     call to _h_o_r_i_z, there is a call to goto label 3.
+
+EXAMPLES
+     So What?
+     Well having listed this with  all  too  brief  descriptions,
+     what the does it mean?  First let's look at a simple (if not
+     silly) definition.  This is the sumv fake device.  Something
+     very  similar  to  this  is included in the standard plotcap
+     file.  It is actually useful for debugging user written plot
+     software.
+
+          sumv:          # summary in verbose....
+               VECT:
+               PIXX = 10: PIXY = 10:    # need something...
+               PUNX =  1: PUNY =  1:
+               INIT = "init\n":
+               PEND = "done\n":
+               PCLR = "\nclear\n\n":
+               PLOP = "\nstart one plot\n" :
+               PLCL = "\nend   one plot\n" :
+               DRAW = "Drawing:\n";
+                    r0 = 0 ;
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY               18
+
+
+
+
+
+
+PLOTCAP(5L)       UNKNOWN SECTION OF THE MANUAL       PLOTCAP(5L)
+
+
+
+                    .P0 ; pnts ; .P1 ;
+                    *pnts ;
+                    "\t(total "; %d = r0; ")\n"
+                    :
+               pnts = "\t"; %d = I; "\t"; %d = J; "\n";
+                    r0 = r0 + 1:        # count them.
+               :
+
+     It is declared as a vector type device with  some  arbitrary
+     sizes.  Before any plotting is done, the word "init" will be
+     printed. At the start of each plot "start one plot" will  be
+     printed.   Each  drawing  sequence will print "Drawing" fol-
+     lowed by lines showing the I and J values and finally a line
+     printing the total number of consecutive draw commands done.
+     After each plot, the string "end  one plot" will be printed,
+     then "clear".  When plotting is finished, "done" is output.
+
+     The definition for the  HP  2648  graphics  terminal  should
+     illustrate  many  of the features of plotcap for vector dev-
+     ices.
+
+          hp2648 | 2648 :          # the 48 graphics tty.
+               VECT:
+               BFSZ = 80:          # need a small buffer.
+               PIXX = 720:    # total pixels in X.
+               PIXY = 360:    # total pixels in Y.
+               PUNX = 72:     # pixels per inch.
+               PUNY = 72:
+               DRAW =  "E*pia"; .P0; pnts; .P1 ; *pnts :
+               pnts = %B= I[9-5]+040; %B= I[4-0]+040;
+                      %B= J[9-5]+040; %B= J[4-0]+040:
+               ICLR:               # initial clearing is OK.
+               INIT = "\E*r4a":    # r defaults for hp, 4a for 'jam' mode.
+               PEND = "\EZ" :
+               GTOA = "\EZ" :
+               PCLR = "\E*da":     # clear screen.
+               BFCL = "\EZ":       # last thing in each buffer.
+               MCLR = "\E*m1a" :   # Go to clear drawing mode.
+               MCMP = "\E*m3a" :   # Go to complement drawing mode.
+               MSET = "\E*m4a" :   # Go(back)to set drawing mode.
+               CLOC = "\*s4\^\021";  .READ; I = %d; J = %d; S = %d :
+               :
+
+     The DRAW sequence could also have been given as:
+          MOVE = "\E*pia";  pnts: DRAW = "\E*pa" ; *pnts:
+     In the full example, any calls to gplot for a move would  be
+     ignored.  The point value to which to move will, however, be
+     remembered.  Thus the next call to perform a draw will  out-
+     put  the  \E*pia  followed by the value for the previous (to
+     this draw call) point  and  then  followed  by  any  draw-to
+     values.   In  the second, the move is done when it is called
+     from gplot and the draws as they are  called.   There  is  a
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY               19
+
+
+
+
+
+
+PLOTCAP(5L)       UNKNOWN SECTION OF THE MANUAL       PLOTCAP(5L)
+
+
+
+     capability  for  returning  the  curser location, as well as
+     entries to change the drawing move to  clear  or  complement
+     pixels as it draws.
+
+     The Printronix dot-matrix line printer is a  simple  example
+     of  a  raster device.  For raster devices, the plot software
+     will do all drawing in an internal raster map.  At  the  end
+     of  a  plot, the raster map will be output to the device one
+     raster row at a time with BFOP  and  BFCL  bracketting  each
+     row.
+
+          printronix | lp :
+               RAST:
+               PIXX = 720: PIXY = 720:
+               PUNX =  60: PUNY =  72:
+               PEND = "\014\014" :
+               PCLR = "\014" :
+               RPXB = 6 :          # Use only 6 bits(pixels) per byte.
+               PIVL = 0100 :       # and set the 7th in each byte.
+               BFCL = "\005\012" : #  and append this to each row on output.
+               FILE = "| lpr -Plp -v":  # Output "file" is pipe to spooler.
+               :
+
+FILES
+     /usr/local/lib/plotcap
+          System wide local version of  the  plotcap  file.  This
+          usually contains a %next command allowing access to the
+          full standard plotcap file. Note that this  may  be  in
+          "/usr/lib/plotcap" on some systems.
+     /usr/local/lib/plotcap.std
+          System wide plotcap capabilities data base file.
+
+ENVIRONMENT VARIABLES
+     PLOTCAPUser given plotcap file.
+     DEFPDEVDefault plot device to use if  setpdev(3L)  is  never
+            called.
+     DEFPFILDefault plot output file to  use  if  setpfil(3L)  is
+            never called.
+
+SEE ALSO
+     gplot(3L), gplot2(3L), high2(3L), plotcap(5L), dplot(1L)
+
+AUTHOR
+     Michael Eldredge (dredge@oasis.stanford.edu)
+
+
+
+
+
+
+
+
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY               20
+
+
+

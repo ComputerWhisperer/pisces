@@ -1,0 +1,395 @@
+.TH HIGH2 3L "STANFORD UNIVERSITY"
+.SH NAME
+high2 \- high level (2 dimensional) plot routines.
+.SH SYNOPSIS
+.nf
+linking/loading:
+	cc \fIfiles....\fR  \fB\-lhigh2\fR  \-lgplot ...
+
+calling sequences:
+
+.ft B
+axplt2(xst, yst, len, axang, Fval, Eval, Flab, Llab, ltic, utic, labht,
+	tlang, tloc, tang, tht, tdp, title, axtht, lform, vform) ;
+
+axtcs2(fmin, fmax, lexpnd, llog, axmin, axmax, axdel, ntics) ;
+
+\fIlen\fB = numb2(x0, y0, val, size, ang, hornt, wornt, form);
+
+#include <gplot.h>
+plota(x, y, pen) ;
+
+symbl2(x0, y0, cbuf, cnt, hsize, wsize, angle, hornt, wornt) ;
+
+symb2(x0, y0, cbuf, cnt, size, angle, hornt, wornt) ;
+.ft I
+	NOTE: symb2 is obviated by symbl2.
+.ft R
+.fi
+.SH DESCRIPTION
+This document describes the library
+.B high2
+routines.  The library includes routines to draw line segments, symbols and
+characters strings, numbers and axes as well as a routine to help guess
+the tic-mark related parameters for the axis drawing routine.
+Each routine is described separately with in this manual page (to avoid
+a manual entry for each).
+The documentation for each of these routines is simply the header out of
+each routine's source file.  Therefore, it is not quite like normal
+.B man
+pages.
+.sp 3
+.SH AXPLT2
+axplt2 \- user interface for axis plotting.
+.PP
+.B Synopsis:
+.br
+.nf
+axplt2(xst, yst, len, axang, Fval, Eval, Flab, Llab, ltic, utic, labht,
+    tlang, tloc, tang, tht, tdp, title, axtht, lform, vform)
+.fi
+.PP
+Draw an axis at the given XST,YST location (inches, say) labeled with
+the given values.  Tic-mark size, direction, and orientation can be given.
+It is also possible to give a label for the axis and to set the format
+for the tic-mark label numbers.
+.TP
+xst
+(float) X coordinate of start of axis, in plot units
+.PD 0
+.TP
+yst
+(float) Y coordinate of start of axis, in plot units
+.TP
+len
+(float) length of axis in plot units, drawn from (xst, yst)
+.TP
+axang
+(float) angle at which axis is to be drawn, measured from
+horizontal. "axang" > 0 implies angle is measured
+counterclockwise from horizontal.
+.TP
+Fval
+(float) axis value at start of axis
+.TP
+Eval
+(float) axis value at end of axis
+.TP
+Flab
+(float) first labeled value on the axis.  This value will
+always appear on the axis.
+.TP
+Llab
+(float) maximum label that will be printed on the axis.
+This value may or may not appear, depending on whether
+it is an integral number of major ticks away from Flab.
+.TP
+ltic
+(float) value between labeled ticks, i.e. "distance" between
+each labeled tick mark.  For a logarithmic axis this
+must be a 10.
+.TP
+utic
+(int) number of unlabeled tick marks between each labeled
+tick. "utic" < 0 means logarithmic spacing of ticks.  If
+"utic" is in fact less than 0, its value represents the
+percent increment of the minor tick marks.  For example,
+if utic = -2, then minor tick marks will be placed at
+20%, 40%, 60%, and 80% of the decade.  utic = -3 means
+minor ticks at 30%, 60%, and 90%, and so on.  Of course,
+if utic has a magnitude greater than 10 in the
+logarithmic case, bogus spacings will occur.  The only
+exception is if utic = -1.  In this case, no tick is
+placed at 10%, with ticks being placed at 20%, 30%, 40%, ....
+.TP
+labht
+(float) height of major tick labels.  0 ==> no labels.
+.TP
+tlang
+(float) angle at which labels on ticks are to be drawn.  This
+angle is measured as positive being counterclockwise from
+axang.
+.TP
+tloc
+(int) flag naming the location of the tick labels.  This parameter
+has 2 values:
+.RS
+.TP
+1
+=> labels on "top" of axis.  Top is regarded as above the axis if axang were 0.
+.TP
+0 
+=> labels on "bottom" of axis.  This is interpreted the same way as "top."
+.RE
+.TP
+tang
+(float) angle at which tick itself is to be drawn.
+This angle is measured with respect to "axang."
+.TP
+tht
+(float) height of major ticks, in plot units.  This value
+is in the direction of the "top" of the axis.
+.TP
+tdp
+(float) depth of major tick, in plot units.  This value is
+in the direction of the "bottom" of the axis.
+.TP
+title
+(char []) address of character array containing axis title.
+.TP
+axtht
+(float) axis title height, in plot units.
+.TP
+lform
+(int) location of axis title, according to the following key:
+.RS
+.IP 2
+=> top, axang+180
+.IP 1
+=> top, axang
+.IP -1
+=> bottom, axang
+.IP -2
+=> bottom, axang+180
+.RE
+.TP
+vform
+(char []) format of numerical labels.  This should not have a '%' in
+it, as this routine adds one. The format must be for floating point numbers.
+(e.g. "g" or ".2f")
+.PD
+.TP
+.B return values:
+none.
+.TP
+.B notes:
+\(bu This routine is insane with the number of parameters.  Its intention
+is to be everything to everyone in axis drawing.   This is of course
+an absurd hope.  It does, however, do many things for many people.
+In adding the flexibility, there is also a great deal of complexity.
+Likewise, there are still some bugs when this is used  in some
+situations.
+.sp 3
+.SH AXTCS2
+axtcs2 \- Calculate tic-mark positioning.
+.PP
+.B Synopsis:
+.br
+axtcs2(fmin, fmax, lexpnd, llog, axmin, axmax, axdel, ntics)
+.PP
+Can be used to chose the number of tics and inter-tic spacings for the
+.B axplt2
+routine.
+.IP fmin
+.PD 0
+\- (float) Input: minimum data value for axis.
+.IP fmax
+\- (float) Input: maximum data value for axis.
+.IP lexpnd
+\- (int)   Input: boolean flag, expand axis? 
+.RS
+.IP 1
+\(bu axmin <= fmin, etc.
+.IP 0
+\(bu axmin >= fmin, etc.
+.RE
+.PD
+.IP lloc
+\- (int)   Input: boolean flag. 1::axis is logarithmic.
+.IP axmin
+\- (float *) Output: Minimum value for axis label.
+.IP axmax
+\- (float *) Output: Maximum value for axis label.
+.IP axdel
+\- (float *) Output: Inter-tic value.
+.IP ntics
+\- (int   *) Output: Number of unlabeled tics between labels.
+.IP "notes:"
+\(bu Still doesn't do examples like 1.00233 to 1.00237 right.
+.sp 3
+.SH NUMB2
+numb2 \- routine that writes a number in graphics mode
+.PP
+Given a number, draw it in the graphics space at the given location, size
+and orientation.
+.PP
+.B Synopsis:
+.br
+len = numb2(x0, y0, val, size, ang, hornt, wornt, form);
+.IP x0
+.PD 0
+(float) x-coordinate of where number is to start
+.IP y0
+(float) y-coordinate of where number is to start
+.IP val
+(float) floating point number to be output
+.IP size
+(float) maximum number of character positions to be
+filled in writing the number
+.IP ang
+(float) angle at which the number is to be written
+.IP hornt
+(float) height orientation.
+.IP wornt
+(float) width orientation.
+.IP form 
+(char []) C-type format to use, except that the `%'must not be included
+as this routine adds one. "%d" format
+should not be used, use "%g" to get the same effect.
+(e.g. "g" or ".2f")
+.PD
+.TP
+.B return value:
+numb2 returns the length of the string written.
+.sp 3
+.SH PLOTA
+plota \- Plot with the pen up or down to the point (x,y).
+.PP
+Move from the current location to that given with the pen up (MOVE) or
+down (DRAW).
+.PP
+.B Synopsis:
+.br
+plota(x, y, pen)
+.IP x 
+.PD 0
+(float) X value (in inches, say) to which to plot.
+.IP y
+(float) Y value to which to plot.
+.IP pen
+(int) Indication of pen position (up or down).
+.RS
+.IP G_DRAW
+pen down (draw a line to (x,y) ).
+.IP G_MOVE
+pen up (no draw, just move to (x,y) ).
+.RE
+.PD
+.sp 3
+.SH SYMBL2
+symbl2 \- Symbol and character string drawing routine.
+.PP
+Symbol drawing routine. Will draw one or more characters
+from a given starting point at a given angle and size. Or will
+draw a single centered symbol
+(often used for plotting individual data points).
+.PP
+.B Synopsis:
+.br
+symbl2(x0, y0, cbuf, cnt, hsize, wsize, angle, hornt, wornt)
+.IP x0
+.PD 0
+(float) Starting point in x.
+.IP y0
+(float) Starting point in y.
+.IP cbuf 
+(char []) String of characters to draw.
+.IP cnt
+(int) Number of character is 'cbuf'
+.IP hsize
+(float) Height in plot units (ie: inches) for each character.
+.IP wsize
+(float) Width in plot units (ie: inches) for each character.
+.IP angle
+(float) Angle (degrees) at which to draw the string of
+characters (from x,y to the horizontally to the right
+is 0 degrees).
+.IP hornt
+(float) Height orientation of character string.  Range: 0 <= hornt <= 1.0
+.RS
+0.0 : x,y is bottom of symbol string.
+.br
+1.0 : x,y is top of symbol string.
+.RE
+.IP wornt
+(float) Width orientation of character string.  Range: 0 <= wornt <= 1.0
+.RS
+0.0 : x,y is left of symbol string.
+.br
+1.0 : x,y is right of symbol string.
+.RE
+.PD
+.PP
+.B Notes:
+.br
+\(bu This routine replaces the
+.B symb2
+routine. The difference is that now both the size for then width and the height
+of each character can be given.  This is basically to allow users who plot
+in scaled units (e.g. concentration vs. depth) to include centerable
+symbols un-scaled.  For example:
+.RS
+.ft B
+.nf
+	gscale(depth_fact, conc_fact) ;
+
+	for ( \fIeach point\fB ) {
+		gplot(depth, conc, pen) ;
+		symb2(depth, conc, "\e02", 1, 1./conc_fact, 1./depth_fact,
+			angle, .5, .5) ;
+		}
+
+	gscale(1./depth_fact, 1./conc_fact) ;
+
+.fi
+.ft R
+.RE
+.br
+\(bu This routine makes use of 'gplot' transformation features.
+.br
+\(bu This version uses character definition vectors generated by
+the 
+.I mksym
+program.
+.br
+\(bu Current centerable symbols are:
+.PD 0
+.RS
+.RS
+.IP 0
+\- a square
+.IP 1
+\- a circle
+.IP 2
+\- a triangle
+.IP 3
+\- a plus
+.IP 4
+\- an X
+.IP 5
+\- a diamond
+.IP 6
+\- an up arrow
+.IP 7
+\- a closed top X
+.IP 8
+\- a 'Z'
+.IP 9
+\- a 'Y'
+.IP 10
+\- a curved edged square
+.IP 11
+\- an asterisk
+.IP 12
+\- an hourglass
+.IP 13
+\- an apostrophe
+.IP 14
+\- a star of david
+.IP 15
+\- a clover leaf
+.RE
+.RE
+.PD
+.SH "SEGMENT NUMBERS"
+This version of the high2 library uses gplot2(G_MARK, ... ) calls to mark
+the axis and strings created by calls to axplt2() and symbl2().
+.IP axplt2()
+Opens with gplot2(G_MARK, GM_AXIS, 0., 0.) and closes with
+gplot2(G_MARK, \-GM_AXIS, 0., 0.).
+.IP sybml2()
+Opens with gplot2(G_MARK, GM_STRING, 0., 0.) and closes with
+gplot2(G_MARK, \-GM_STRING, 0., 0.).
+.sp 3
+.SH "SEE ALSO"
+gplot2(3L), mksym(1L), plotcap(5L), dplot(1L)

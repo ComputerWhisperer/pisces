@@ -1,0 +1,26 @@
+
+		SIMPLE NMOS DEVICE EXAMPLE
+
+This example is a simulation of a NMOS device.  The device consists of
+n=type source and drain diffusions with concentration of 1e18.  The source
+and drain diffusions have Gaussian profiles.  The substrate is doped p-type
+with a uniform concentration of 1e16.  The device dimensions are 3 micron
+by 3 micron.
+
+
+The nmos.p2 file generates the mesh and defines the device.  The grid is 
+first generated and the using the eliminate cards, unnecessary grid points
+are removed.  The region statements are used to designate the oxide and
+silicon regions.  The device is then equiped with four electrodes for 
+gate, drain, source, and substrate.  The mesh is written to a file called 
+nmesh.  The grid, junctions, and doping curves are then plotted. 
+
+
+The mosIV.p2 simulates the gate and drain characteristics of the device 
+defined by nmos.p2.  An initial solution is obtained at 0V bias condition.
+To generate the gate characteristics, the drain is biased at a low potential
+of 0.1V, while the source is grounded.  The gate voltage is stepped in 
+0.1V steps until Vgs is 1.5V.  The gate characteristic is then plotted.
+To obtain the drain characteristic, the gate is biased at 2V and the source 
+is grounded.  The drain voltage is then stepped in 0.1V steps until the 
+drain reaches 2 volts.  The drain characteristic is then plotted.

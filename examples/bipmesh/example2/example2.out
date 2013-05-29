@@ -1,0 +1,60 @@
+title BIPMESH automatic mesh - Version 8952
+
+$starting mesh card
+mesh nx=20 ny=20 rect
+
+$x mesh locations
+x.mesh node=1 location=-9 rat=2
+x.mesh node=2 location=-7 rat=2
+x.mesh node=3 location=-6 rat=1
+x.mesh node=4 location=-4 rat=1
+x.mesh node=6 location=-3 rat=1
+x.mesh node=8 location=-2 rat=1
+x.mesh node=9 location=-1 rat=1
+x.mesh node=11 location=1 rat=1
+x.mesh node=13 location=2 rat=1
+x.mesh node=15 location=3 rat=1
+x.mesh node=17 location=5 rat=1
+x.mesh node=18 location=6 rat=1
+x.mesh node=19 location=7 rat=1
+x.mesh node=20 location=9 rat=2
+
+$y mesh locations
+y.mesh node=1 location=0 rat=1
+y.mesh node=5 location=0.1 rat=1
+y.mesh node=12 location=0.5 rat=1
+y.mesh node=17 location=1 rat=1.25
+y.mesh node=20 location=2 rat=1.25
+
+$region definitions
+region num=1 ix.l=1 ix.h=20 iy.l=1 iy.h=20 silicon
+
+$Emitter = 1 Base = 2 Collector = 3 Bulk = 4
+electrode num=1 ix.l=9 ix.h=11 iy.l=1 iy.h=1
+electrode num=2 ix.l=15 ix.h=17 iy.l=1 iy.h=1
+electrode num=3 ix.l=3 ix.h=4 iy.l=1 iy.h=1
+electrode num=4 ix.l=1 ix.h=20 iy.l=20 iy.h=20
+
+$Doping Information
+doping reg=1 uniform x.lef=-9 x.rig=9
++	y.top=0.0 y.bot=2 conce=1.000000e+15 p.type
+
+$ Emitter Region
+doping reg=1 gauss char=0.0294718 peak=0 conce=1.000000e+20 n.type
++	x.lef=-2 x.rig=2 ratio.la=0.8
+
+$ Internal Base
+doping reg=1 gauss char=0.19024 peak=0 conce=1.000000e+18 p.type
++	x.lef=-3 x.rig=6 ratio.la=0.8
+
+$ External Base
+doping reg=1 gauss char=0.0912036 peak=0 conce=5.000000e+19 p.type
++	x.lef=2.5 x.rig=5.5 ratio.la=0.8
+
+$ Collector
+doping reg=1 gauss char=0.65901 peak=0 conce=1.000000e+16 n.type
++	x.lef=-7 x.rig=7 ratio.la=0.8
+regrid log doping step=6 outf=mesh2
+plot.2d grid bound 
+plot.2d no.tic bound junc l.elect=1 l.bound=2
+end

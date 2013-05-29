@@ -1,0 +1,59 @@
+
+		A SHORT BASE PN DIODE EXAMPLE
+
+
+In this diode example, the user will introduced to a variety of simulations
+which include forward current versus voltage characteristics, transient
+response, ramped diode simulation and AC analysis.
+
+To start things off, file pn1a.p2 describes the pn diode device.  This device
+is 5um x 1um, and as such constitutes a short base diode.  The mesh is 
+generated and stored in a file called pn.msh.  The n-type side of the 
+device is doped with the concentration of 1e15, while the p-type is doped
+to a concentration of 1e19.  This file also plots the grid and the doping.
+
+A file called pn2a.p2 solves for the forward bias IV characteristics.  This 
+file reads in the mesh, then defines a contact resistance so that a hard
+voltage is not impressed across the pn junction.  A two carrier newton
+solution is used for this simulation.  Initial solution at zero bias is 
+solved and saved in a file called pn2a0-r.slv.  A log file called 
+IV-r.log is started to save the simulation data.  The n side of the junction
+is grounded and the p side is stepped up in voltage from 0 to 2 volts.
+The solution at 2 volts is saved in a file called pn2a2-r.slv.
+
+To see the difference between in the IV characteristics with and without the
+contact resistance, a file called pn2aa.p2 does exactly what pn2a.p2 did 
+except without the contact resistance.  The log file in this case is called
+IV-nr.log, where the nr stands for no resistance.  Similarly, the initial 
+solution is stored in pn2a0-nr.slv, and the solution at 2 volts is saved
+is pn2a2-nr.slv.
+
+File pn3a.p2 plots the results of the previous simulations, and shows the
+comparison between the simulation with and without the contact resistance.
+This file also plot the diode voltage V1 versus VA1, the applied voltage.
+
+The transient simulation for the diode is done by a file called pn4.p2.
+The step voltage is applied to the diode such that the diode goes from 
+positive 2 volts to negative 2 volts.  The solution from past simulation
+at 2 volts is loaded in by the file called pn2a2-r.slv.  A log file called
+IV-step.log is started to keep track of the transient response of the
+diode to the step input.  The output characteristics for the step input
+are then plotted.  The simulation shows that the diode saturation time
+is 1ns, this is the time required to extract the stored charge from the
+forward biased state so that the diode becomes reverse biased.  A plot
+is also included of the automatic time-step estimator so that its 
+efficiency can be evaluated.
+
+A ramped diode response is also simulated.  This is done by a file called
+pn8.p2.  Here the voltage is again changed from +2 volts to -2 volts except
+this time its ramped instead of a step.  This is indicated by the endramp
+in the solve statement.  The ramp last for 2.5ns.  The saturation voltage 
+due to this change now doubles as is obivious from the simulation plots.
+
+Finally, small signal AC analysis simulations are conducted on the diode.
+The two carrier newton method is used for this simulation.  The zero bias
+solution is loaded.  A log file is started save the AC simulation data.  
+The AC analysis is done at 1 KHz.  The capacitance of the device is  
+plotted against the voltage.  The diode voltage is varied from -3 volts to
++0.5 volts.  The logarithim of the conductivity is also plotted over the
+same voltage range.  

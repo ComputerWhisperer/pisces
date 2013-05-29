@@ -1,0 +1,60 @@
+title NMOS device : n4a.i
+$option plotdev=stout
+MESH RECT NX=37 NY=33 OUTF=nmesh.msh
+X.M  N=1  L=.0000  R=1.0000
+X.M  N=6  L=0.8100 R=0.7000
+X.M  N=7  L=0.8500 R=1.0000
+X.M  N=12 L=0.9500 R=1.0000
+X.M  N=13 L=0.9800 R=1.0000
+X.M  N=19 L=1.5000 R=1.1000
+X.M  N=25 L=2.0200 R=0.9091 
+X.M  N=26 L=2.0500 R=1.0000
+X.M  N=31 L=2.1500 R=1.0000
+X.M  N=32 L=2.1900 R=1.0000
+X.M  N=37 L=3.0000 R=1.6000
+$
+Y.M  N=1  L=-0.0250 R=1.000
+Y.M  N=4  L=0.0000 R=1.0000
+Y.M  N=5  L=0.0005 R=1.0000 
+Y.M  N=6  L=0.0010 R=1.0000 
+Y.M  N=7  L=0.0020 R=1.0000
+Y.M  N=8  L=0.0040 R=1.0000
+Y.M  N=9  L=0.0080 R=1.0000
+Y.M  N=10 L=0.0160 R=1.0000 
+Y.M  N=11 L=0.0320 R=1.0000
+Y.M  N=19 L=0.3000 R=1.0000
+Y.M  N=23 L=0.5000 R=1.1000
+Y.M  N=27 L=1.0000 R=1.1000
+Y.M  N=33 L=3.0000 R=1.2000
+$
+ELIM Y.DIR  IX.L=26  IX.H=32  IY.L=19  IY.H=33
+ELIM Y.DIR  IX.L=7   IX.H=12  IY.L=19   IY.H=33
+ELIM Y.DIR  IX.L=13  IX.H=26  IY.L=21   IY.H=33
+ELIM Y.DIR  IX.L=22  IX.H=25  IY.L=21   IY.H=33
+ELIM Y.DIR  IX.L=6   IX.H=32  IY.L=24   IY.H=33
+ELIM Y.DIR  IX.L=1   IX.H=34  IY.L=28   IY.H=33
+$
+REGION NUM=1 IX.L=1 IX.H=37 IY.L=1 IY.H=4 OXIDE
+REGION NUM=2 IX.L=1 IX.H=37 IY.L=4 IY.H=33 SILICON
+$
+$  n1=drain n2=gate n3=source n4=substrate 
+$
+ELEC NUM=1  IX.L=36  IX.H=37 IY.L=4  IY.H=4
+ELEC NUM=2  IX.L=4   IX.H=33 IY.L=1 IY.H=1
+ELEC NUM=3  IX.L=1   IX.H=2   IY.L=4 IY.H=4
+ELEC NUM=4  IX.L=1   IX.H=37  IY.L=33 IY.H=33
+$
+DOP UNIF CONC=1E16 P.TYPE
+DOP GAUSS CONC=1E18 N.TYPE
++   X.RIGHT=0.75 y.top=0 y.bot=0 char=0.1
+DOP GAUSS CONC=1E18 N.TYPE
++   x.left=2.25  y.top=0 y.bot=0 char=0.1
+$
+$plot.2d bound no.tic no.fill grid
+$plot.2d bound no.tic no.fill junction
+$contour doping abs log min=15 max=20 del=.5
+$plot.1d dop log abs a.x=0 a.y=0 b.x=3 b.y=0
+$plot.1d dop log abs a.x=0.2 b.x=0.2 a.y=0 b.y=2
+$plot.1d dop log abs a.x=1.5 b.x=1.5 a.y=0 b.y=2
+$
+end  

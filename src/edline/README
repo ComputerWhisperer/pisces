@@ -1,0 +1,62 @@
+Wed Feb 14 09:01:30 PST 1990 (dredge--stanford)
+
+	There are, right now, 2 simple ways to use this library.  Both
+	handle the history insertion automatically.  The simple
+	interface provides C and Fortran entry points for the edit
+	functions.  Also included are Fortran and C functions that
+	provide the same readline service, but without any of the GNU
+	readline code -- ie: they provide a simple default with the
+	same calling sequence.
+
+	The default mode is emacs mode.  To get VI mode, do:
+
+		cp dot.inputrc ~/.inputrc
+
+
+
+	Note: the Imakefile is incomplete right now.  Will clean it
+	up later....
+	
+	If you want the full edit and history #define EDLINE must be
+	set somewhere in Imake.  At Stanford it is in site.def.
+	Without it defined, you get the simple cover functions.
+
+	C calling sequence:
+
+		char*	read_line(char* prompt) ;
+
+	e.g.:
+
+		char*	p ;
+
+		while (p = read_line("HUH? ")) {
+			parse(p,t) ;
+			dotree(t) ;
+			}
+
+	Fortran Calling sequence:
+
+		subroutine RDLINE(prompt,plen, buf,blen, ncin)
+		  character*(*) prompt		! prompt string
+		  integer       plen		! chars in prompt
+		  character*(*) buf		! destination buffer
+		  integer       blen		! max chars therein
+		  integer	ncin		! Stat: chars read
+
+	e.g.:
+
+		100	call rdline("HUH? ",5,  buf,LEN(buf), ncin)
+			if (ncin.le.0) goto 900		! EOF
+
+			call parse(buf,t)
+			call dotree(t)
+			goto 100
+
+		900	continue
+
+
+
+
+
+
+		

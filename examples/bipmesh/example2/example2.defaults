@@ -1,0 +1,33 @@
+0.8	-	lateral diffusion constant	0
+4	-	Emitter Width(um)	1
+9	-	Base Width(um)	2
+14	-	Collector Width(um)	3
+2	-	Contact  Width(um)	4
+1	-	Contact-Diffusion-Edge Spacing(um)	5
+1	-	Emitter-Collector Spacing(um)	6
+1e+15	-	Substrate Doping	7
+N	-	Doping Type	8
+2	-	Profile Type	9
+1e+20	-		Peak Doping Concentration	10
+0	-		Peak Doping Location	11
+0.1	-		Junction Depth	12
+P	-	Doping Type	13
+2	-	Profile Type	14
+1e+18	-		Peak Doping Concentration	15
+0	-		Peak Doping Location	16
+0.5	-		Junction Depth	17
+P	-	Doping Type	18
+2	-	Profile Type	19
+5e+19	-		Peak Doping Concentration	20
+0	-		Peak Doping Location	21
+0.3	-		Junction Depth	22
+N	-	Doping Type	23
+2	-	Profile Type	24
+1e+16	-		Peak Doping Concentration	25
+0	-		Peak Doping Location	26
+1	-		Junction Depth	27
+0.1	-	collector voltage	28
+0	-	starting base voltage	29
+0.7	-	sweep base voltage to	30
+0.1	-	base bias increment	31
+

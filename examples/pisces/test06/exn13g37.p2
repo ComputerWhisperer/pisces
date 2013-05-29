@@ -1,0 +1,33 @@
+title    PISCES example 07 - 0.717 Micron MOSFET
+$options  plotdev=stout 
+comment  calculate ID-VG characteristics (Vg=8)
+comment  read in simulation mesh
+mesh     infile=M131.msh
+comment  material/contacts
+mater    num=2 g.surf=0.75
+contac   num=1 n.poly
+comment  models
+models   print arora BGN FERMI INCOMP srh fldmob
+models   TFLDMB ACC.SF=0.87 INV.SF=0.75 OX.L=1.07 OX.R=2.01 OX.B=0.0
+comment  fixed charge
+interf   qf=3E10
+symb     carrier=0
+METHOD   XNORM RHS
+SOLVE   INIT
+LOG      OUTF=G37LOG1
+comment  solve with newton's method
+symb     newton carrier=1 electron
+method   XNORM RHS autonr trap atrap=0.5 itlimit=10
+solve     PREV v4=0.05   elect=4 
+solve     PREV v1=0.3   
+solve     PREV v1=0.4   
+solve     PREV v1=0.6
+solve     PREV v1=0.8
+solve     PREV v1=1.0  
+solve     PREV v1=1.5  ELECT=1 VSTEP=0.5 NSTEP=4
+solve     PREV v1=4.0   OUTF=G37A.slv
+solve     PREV v1=4.5 ELECT=1 VSTEP=0.5 NSTEP=6
+solve     PREV v1=8.0   OUTF=G37B.slv
+$PLOT.1D Y.AXIS=I4 X.AXIS=V1
+$print material
+end

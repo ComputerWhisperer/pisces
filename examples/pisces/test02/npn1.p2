@@ -1,0 +1,31 @@
+title npn transistor
+$options plotdev=stout
+mesh rect nx=60 ny=4 outf=npnmesh.msh
+x.m   n=1 l=0 r=1
+x.m   n=20 l=1 r=0.8
+x.m   n=30 l=1.5 r=1.2
+x.m  n=40 l=2 r=0.8
+x.m   n=60 l=3 r=1.2
+y.m  n=1  l=0  r=1
+y.m  n=4  l=1  r=1
+
+region  num=1  ix.l=1  ix.h=60  iy.l=1  iy.h=4 silicon
+
+$
+$ elect1=emitter  elect2=collector  elect3=base
+$
+elec   num=1  ix.l=1  ix.h=1 iy.l=1 iy.h=4 
+elec   num=2 ix.l=60 ix.h=60 iy.l=1 iy.h=4
+elec   num=3 ix.l=28 ix.h=34 iy.l=4 iy.h=4
+$
+$  specify doping
+$
+doping reg=1 p.type conc=1e15 uniform
+doping  reg=1 n.type conc=1e19 x.r=0 y.top=0 y.bot=1 char=0.33
++       ratio=1 gauss
+doping reg=1 n.type conc=1e17 x.l=3 y.top=0 y.bot=1 char=.33
++       ratio=1 gauss
+$plot.2d bound no.tic no.fill junction
+$plot.2d bound no.tic no.fill grid
+$plot.1d dop abs a.x=0 b.x=5 b.y=0.5 a.y=0.5 points log
+end

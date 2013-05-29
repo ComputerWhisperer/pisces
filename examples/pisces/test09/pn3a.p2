@@ -1,0 +1,15 @@
+Title Plot file (Fig 3a)
+$
+$ Plot figures 3b and 3c.
+$
+$options plotdev=stout
+mesh inf=pn.msh
+$
+$ FIGURE 3b
+$plot.1d inf=IV-nr.log x.ax=va1 y.ax=i1 log abs points
+$plot.1d inf=IV-r.log  x.ax=va1 y.ax=i1 log abs points unch
+
+$ FIGURE 3c
+$plot.1d inf=IV-r.log  x.ax=va1 y.ax=v1 x.max=2.2 points min=0
+
+end

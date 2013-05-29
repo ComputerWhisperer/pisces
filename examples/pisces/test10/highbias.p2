@@ -1,0 +1,61 @@
+
+title Mosaic-III bipolar device
+
+mesh inf=mosaic.msh
+
+contact num=1 neutral
+contact num=2 neutral
+contact num=3 neutral
+contact num=3 resis=1e3
+
+symb newton carr=2
+method rhsnorm xnorm autonr 
+
+models temp=300 srh auger conmob fldmob fermi print consrh bgn
+
+$ emitter=1 base=2 collector=3
+
+solve init
+
+
+log outf=highbias.log
+
+$
+$  step base voltage while holding collector voltage constant
+$
+solve v1=0 v2=.1 v3=.1 outf=mosaic1.slv
+solve vstep=.1 nsteps=10 elect=3
+solve vstep=.5 nsteps=10 elect=3
+load inf=mosaic1.slv
+solve prev v2=.2 v3=.1 outf=mosaic2.slv
+solve vstep=.1 nsteps=10 elect=3
+solve vstep=.5 nsteps=8 elect=3
+load inf=mosaic2.slv
+solve prev v2=.3 v3=.1 outf=mosaic3.slv
+solve vstep=.1 nsteps=10 elect=3
+solve vstep=.5 nsteps=8 elect=3
+load inf=mosaic3.slv
+solve prev v2=.4 v3=.1 outf=mosaic4.slv
+solve vstep=.1 nsteps=10 elect=3
+solve vstep=.5 nsteps=8 elect=3
+load inf=mosaic4.slv
+solve prev v2=.5 v3=.1 outf=mosaic5.slv
+solve vstep=.1 nsteps=10 elect=3
+solve vstep=.5 nsteps=8 elect=3
+load inf=mosaic5.slv
+solve prev v2=.6 v3=.1 outf=mosaic6.slv
+solve vstep=.1 nsteps=10 elect=3
+solve vstep=.5 nsteps=8 elect=3
+load inf=mosaic6.slv
+solve prev v2=.7 v3=.1 outf=mosaic7.slv
+solve vstep=.1 nsteps=10 elect=3
+solve vstep=.5 nsteps=8 elect=3
+load inf=mosaic7.slv
+solve prev v2=.8 v3=.1 outf=mosaic8.slv
+solve vstep=.1 nsteps=10 elect=3
+solve vstep=.5 nsteps=8 elect=3
+
+plot.1d inf=highbias.log x.ax=v2 y.ax=i3
+
+end
+

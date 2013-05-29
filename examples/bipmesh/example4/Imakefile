@@ -1,0 +1,18 @@
+#	Imakefile		Version 1.1	
+#	Last Modification:	3/27/90 14:22:22		
+
+#
+
+EXAMPLE = example4.out
+
+AllTarget( )
+
+#ifdef STANFORD
+# Build a Release
+ReleaseTarget(Makefile)
+ReleaseMultipleFile(Imakefile Makefile)
+ReleaseMultipleFile($(EXAMPLE))
+#endif
+
+
+

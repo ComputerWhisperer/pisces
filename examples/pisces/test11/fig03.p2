@@ -1,0 +1,81 @@
+Title	HMOS FET (1.5um channel)
+$
+$ *** A : define rectangular grid ***
+$
+Mesh	rectangular nx=38 ny=23 outf=hmos.msh
+X.mesh	n=1	l=0	r=1
+x.m	n=4	l=0.50	r=0.7
+x.m	n=8	l=0.70	r=0.75
+x.m	n=15	l=0.95	r=1.25
+x.m	n=24	l=2.05	r=1.0
+x.m	n=31	l=2.30	r=0.8
+x.m	n=35	l=2.50	r=1.33
+x.m	n=38	l=3.00	r=1.40
+Y.mesh	n=1	l=-.035	r=1
+y.m	n=4	l=0	r=1
+y.m	n=9	l=0.10	r=1.25
+y.m	n=16	l=0.50	r=1.15
+y.m	n=23	l=2.0	r=1.25
+
+$
+$ *** B: eliminate columns ***
+$
+elim	ix.lo=13  ix.hi=26  iy.lo=20  iy.hi=23	y.dir
+elim	ix.lo=1   ix.hi=38  iy.lo=21  iy.hi=23	y.dir
+elim	ix.lo=5   ix.hi=13  iy.lo=21  iy.hi=23	y.dir
+elim	ix.lo=25  ix.hi=33  iy.lo=21  iy.hi=23	y.dir
+
+$
+$ *** C: distort ***
+$
+spread	left  w=0.70  up=4  lo=13  y.lo=0.35  en=1.2  gr1=1.3
+ +	gr2=0.5  mid=7  y.mid=0.2
+spr	right w=0.70  up=4  lo=13  y.lo=0.35  en=1.2  gr1=1.3
+ +	gr2=0.5  mid=7  y.mid=0.2
+spr	left  w=0.70  up=13  lo=19  y.lo=0.879  en=1.2  gr1=1.5
+spr	right w=0.70  up=13  lo=19  y.lo=0.879  en=1.2  gr1=1.5
+
+$
+$ *** regions ***
+$
+region	num=1  ix.l=1  ix.h=38  iy.l=1  iy.h=4  oxide
+region	num=2  ix.l=1  ix.h=38  iy.l=4  iy.h=23 silicon
+$
+$ *** electrodes ***
+$
+elec	num=1  ix.l=4  ix.h=35  iy.l=1  iy.h=1
+elec	num=2  ix.l=1  ix.h=38  iy.l=23 iy.h=23
+elec	num=3  ix.l=1  ix.h=3   iy.l=4  iy.h=4
+elec	num=4  ix.l=36 ix.h=38  iy.l=4  iy.h=4
+$
+$ *** doping and fixed charge ***
+$
+dop	region=2 uniform  n.type concentration=3E15 outf=hmos.dop
+dop	region=2 gaussian p.type conc=2.0E16 junction=0.50
+dop	region=2 uniform  p.type concentration=6E15
+
+dop	region=2 gaussian n.type conc=2.0E20 junction=0.35 x.r=0.5 ratio=0.75
+dop	region=2 gaussian n.type conc=2.0E20 junction=0.35 x.l=2.5 ratio=0.75
+interface	qf=1E10 x.min=0.5 x.max=2.5 y.min=0 y.max=0
+
+$ .... Outline of the device
+$ fig 6
+$plot.2d	bound grid no.fill no.top
+$
+$ .... Plot doping contours and 1d slices
+$ fig 7
+$plot.2d	bound no.top no.fill
+$contour	doping absolute log min=15 max=20 del=0.5
+$
+$ fig 1
+$plot.2d	bound junction no.top no.fill
+$
+$ fig 2a
+$plot.1d	doping log abs  x.start=1  y.start=0  x.end=1  y.end=2  points
+$  +	min=15 max=17
+$
+$ fig 2b
+$plot.1d	doping log abs  x.start=0  y.start=0  x.end=0  y.end=2  points
+$  +	min=14 max=21
+$
+end

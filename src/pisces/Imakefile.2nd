@@ -1,0 +1,86 @@
+# -----------------------------------------------------------------------------
+# Wed Mar  7 15:22:52 PST 1990 (dredge--stanford)
+
+# =============================================================================
+#  Build PISCES from the system libraries -- no source code needed.
+#  To work on PISCES, add your own object and source names below.
+#  For example, to work on the file plotter, copy it to your directory
+#  from the pisces sources, then set the variables below to:
+#
+#	MY_OBJS= plotter.o
+#	MY_SRCS= plotter.F_EXT
+#
+#  You should also set "RELEASE" to indicate that this version is
+#  you copy of pisces.
+#
+#	RELEASE= I OSName (Eldredge)
+
+MY_OBJS=
+MY_SRCS=
+
+PISCES=p2tst
+RELEASE=	Test OSName (Your_Name_Here)
+
+
+# -----------------------------------------------------------------------------
+PISCES_VERSION=	9009
+
+# Option codes -- include the library if you need the code.
+OPTS_OBJS=
+OPTS_SRCS=
+
+
+INCDIR=Pisces2Src/include
+INCLUDES= -I$(INCDIR)
+# =============================================================================
+
+PISCES_DEST=$(PISCES_DIR)
+
+MAIN_SRC=pisc2.F_EXT
+MAIN_OBJ= pisc2.o
+
+# The source file with the VERSION code.
+VERS_OBJ=version.o
+VERS_SRC=version.F_EXT
+
+
+SOURCES=	$(MAIN_SRC) $(MY_SRCS) $(OPTS_SRCS)
+OBJECTS=	$(MAIN_OBJ) $(MY_OBJS) $(OPTS_OBJS) $(VERS_OBJ)
+
+# Where are those pisces libraries?
+LIBS=	$(PISCES_DEST)/libname(pisc2) $(PISCES_DEST)/libname(pisc2a)
+
+# =============================================================================
+AllTarget($(PISCES))
+
+# Make the program.
+F77_ToolTarget($(PISCES),$(OBJECTS),/*my libs*/,$(LIBS))
+
+
+#ifdef STANFORD
+# =============================================================================
+# make sure that version code is up to date with that above.
+
+ConditionalReplace(version.tmp,version.F_EXT)
+
+T=version.tmp
+version.tmp: Makefile
+	EchoInto("c  Don't edit this file.  It is created in the Makefile",$(T))
+	EchoAppend("c  The version and release codes."		,$(T))
+	EchoAppend( "      SUBROUTINE P2VERS(ver,rel)"		,$(T))
+	EchoAppend( "      character*(*) ver"			,$(T))
+	EchoAppend( "      character*(*) rel"			,$(T))
+	EchoAppend( "      ver    = '$(PISCES_VERSION)'"	,$(T))
+	EchoAppend( "      rel    = '$(RELEASE)'"		,$(T))
+	EchoAppend( "      return"				,$(T))
+	EchoAppend( "      end"					,$(T))
+
+#endif /* STANFORD */
+		
+
+# =============================================================================
+# Special rules for files that can be vectorized....
+VF77_ObjectRule(sollud.o, sollud.F_EXT, )
+
+
+# =============================================================================

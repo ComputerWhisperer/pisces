@@ -1,0 +1,89 @@
+.\" @(#)w.1 1.1 86/07/10 SMI; from UCB 4.2
+.TH MOSMESH 1 "15 September 1988"
+.SH NAME
+mosmesh \- Pisces deck generator for simple MOS devices - Version 8822
+.SH SYNOPSIS
+\fBmosmesh\fP [ \fB\-abist -f [defaultfile] -m[modifyfile] -o [outputfile] \fP ] [ outputfile ]
+.IX  "w command"  ""  "\fLw\fP \(em what are users doing"
+.IX  "what are users doing"  ""  "what are users doing \(em \fLw\fP"
+.IX  users  "what are they doing"  users  "what are they doing \(em \fLw\fP"
+.IX  login  "what are users doing"  login  "what are users doing \(em \fLw\fP"
+.SH DESCRIPTION
+.LP
+\fIMOSMESH\fP is an interactive program that generates a PISCES2-B input
+deck MOS structures.
+Questions are asked of the user such as doping concentrations, gate lengths,
+spacer thicknesses, and range of biases applied to the terminals.
+Upon completion, a pisces deck is generated in file outputfile.
+.SH OPTIONS
+.TP
+\fB\-a\fP
+Use analytic functions for doping profiles [default].
+.TP
+\fB\-b\fP
+Batch mode.  take default data and generate a deck.
+.TP
+\fB\-f [defaultfile]\fP
+read default information from file defaultfile.  if no filename is given
+then the default is .defaultmesh.
+.TP
+\fB\-i\fP
+Generate drain characteristics.
+.TP
+\fB\-m [modifyfile]\fP
+indicates that the default values to change (along with their new values)
+are present in file modifyfile.
+.TP
+\fB\-o [filename]\fP
+write output to filename.  if no filename is given then the default is
+mosmesh.out.  also if a filename is given as the last argument to 
+mosmesh, then the -o flag is ignored.
+.TP
+\fB\-s\fP
+indicates that Suprem3 doping profiles will be used
+.TP
+\fB\-t\fP
+Generate gate characteristics for a fixed drain bias.
+.SH EXAMPLE
+.RS
+.nf
+1 zotz> mosmesh -i filea \- generates Pisces deck for 
+			drain characteristics in filea
+
+2 zotz> mosmesh -t fileb \- generates Pisces deck for 
+			gate characteristics in fileb
+
+3 zotz> mosmesh -f playmesh -o outfile \- generates Pisces deck 
+			from information in playmesh and writes the
+			deck to outfile. no solve cards are present.
+
+4 zotz> mosmesh -st gate.in \- use Suprem3 doping files and generate
+			   gate characteristics in gate.in
+
+5 zotz> mosmesh -m changes -b -o outfile \- operates in batch mode, 
+				       using the defaults in .defaultmesh.
+				       In addition any changes to the
+				       default values are specified in file
+				       changes.  See user manual for
+				       details.
+.fi
+.RE
+.SH FILES
+\&.defaultmesh
+holds responses from previous mosmesh run
+
+\&.tempfile
+holds data from current session
+
+.SH BUGS
+does not check input for unreasonable data
+
+no backup mode to change a previous entry.  you must rerun the program.
+
+convergence problems with very short channel devices.
+
+please report any other bugs to chin@rats.stanford.edu
+.SH AUTHORS
+.nf
+Mark Law
+Goodwin Chin

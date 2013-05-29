@@ -1,0 +1,222 @@
+.TH DIGIT 1L "18 September 1985"
+.SH NAME
+digit \- digitize input from tablet
+.SH SYNOPSIS
+.B digit
+[option switches]
+.SH DESCRIPTION
+.I Digit
+will digitize points from the tablet
+.RI ( "usually there will be a graph on the tablet" ). 
+The coordinates of each point are put into an output file with the
+.I x
+coordinate in the first column and the
+.I y
+coordinate in the second column.
+
+If the user is in
+.I interactive
+mode, the program will give the user a command prompt,
+.BR digit> "."
+Otherwise, the program will first do a
+.B setup
+procedure which will ask the user to enter three different points on the
+axes.  For the program to work properly one point must be on the
+.I origin,
+one on the end of the
+.I x
+axis, and one on the end
+.I y
+axis.  The program will only accept axes which
+are orthogonal.  If the axes are not within a few
+degrees from being orthogonal, the user
+will be asked to reenter
+the points.  Then the program will
+make sure that the scales for
+.I x
+and
+.I y
+have been entered.  The user will be prompted for
+any information it needs.  The program will
+initialize by rescaling the plotting device to match the graph. Then it will
+take points entered from the plotting device and put the coordinates into
+an output file, and it will exit the program.
+.SH OPTION-SWITCHES
+.TP 10n
+.BR \- "command [value]"
+.B Any
+of the commands in digit can be used as
+option switches.  If the command
+does not require that a
+.I value
+be given then the program will not expect to find one.
+.TP
+.BR \-i
+The program will go into an interactive mode
+after all of the switches have been evaluated.
+The default is to digitize and then exit the program. 
+This switch is useful if you are going to digitize more than one graph.
+.SH
+.B NOTE:
+switches are processed in the order in which they are entered
+.SH COMMANDS
+.TP 10n
+.BR digitize
+This command will cause the program to
+automatically lead the user through the program
+and will ask the user for any information that it needs.
+.B No other commands should be necessary.
+However, if the user enters values for
+some or all of the variables then the program will
+run faster because it won't need to ask the user for
+those values.
+.TP
+.BR device " plot-device (or) " d " plot-device"
+The plotting device will be set to be
+.I plot-device.
+.TP
+.BR min.x "  value"
+This sets the
+.I minimum
+value of
+.I x
+to be equal to
+.I value.
+.TP
+.BR max.x " value"
+This sets the
+.I maximum
+value of
+.I x
+to be equal to
+.I value.
+.TP
+.BR min.y "  value"
+This sets the
+.I minimum
+value of
+.I y
+to be equal to
+.I value.
+.TP
+.BR max.y " value"
+This sets the
+.I maximum
+value of
+.I y
+to be equal to
+.I value.
+.TP
+.BR log.x
+This tells the program that all
+.I x
+values are scaled logarithmically on the graph.
+.TP
+.BR log.y
+This tells the program that all
+.I y
+values are scaled logarithmically on the graph.
+.TP
+.BR lin.x
+This tells the program that
+.I x
+values are scaled linearly on the graph.
+This is the default.
+.TP
+.BR lin.y
+This tells the program that
+.I y
+values are scaled linearly on the graph.
+This is the default.
+.TP
+.BR write " filename (or) " o " filename"
+The file
+.I filename
+will be rewritten or is created so that the
+data points can be put into it.
+.TP
+.BR append " filename"
+The file
+.I filename
+will be opened in append mode.
+.TP
+.BR file " [filename]"
+The program will digitize points
+entered from the tablet.  The output
+will be written into
+.I filename.
+.TP
+.BR setup
+This calls a procedure which will initalize
+the program so that it will be able to
+properly convert the input from the tablet.
+.TP
+.B show
+The value for each variable will
+be printed onto the terminal screen.
+.TP
+.BR verbose " (or) " v
+Toggles between verbose and no verbose
+modes.  In verbose mode the program will print
+the coordinates of each point that was entered from
+the tablet and will tell the user the total number of
+points that were entered.
+.TP
+.BR graph " (or) " g
+Toggles between graph and no graph modes.
+In graph mode the program will automatically
+plot the input onto to screen after all of the
+data points have been entered.
+.TP
+.B quit
+Terminates the program.
+.SH EXAMPLES
+The following line of commands will open 
+.I test.out,
+set the maximum and minimum values of both
+x and y, set the plotting device to be
+.I tekct,
+and will cause the program to automatically
+.B digitize
+after all of the switches on the command line have been evaluated.
+.sp 1
+.RS
+% digit \-o test.out \-min.x 0 \-max.x 0.44 \-min.y 1e17
+ \-max.y 1e19 \-log.y \-d tekct
+.sp 1
+.RE
+or to do the same thing without using switches the user would type
+.sp 1
+.RS
+% digit \-i
+.br
+digit> write test.out
+.br
+digit> min.x 0
+.br
+digit> max.x .44
+.br
+digit> min.y 1e17
+.br
+digit> max.y 1e19
+.br
+digit> log.y
+.br
+digit> d tekct
+.br
+digit> digitize
+.br
+digit> quit
+.RE
+.sp 1
+or the user could simply type
+.sp 1
+.RS
+% digit
+.sp 1
+.RE
+and the user will be prompted for all of the other necessary information.
+.SH BUGS
+The program cannot digitize graphs that are in polar coordinates.
+.SH AUTHOR
+Todd Atkins

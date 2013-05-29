@@ -1,0 +1,400 @@
+.ce 8
+MOSMESH Users Guide
+Version 8822
+Goodwin Chin (chin@rats.stanford.edu)
+Mark E. Law
+AEL 231
+Stanford University
+Stanford, CA  94305
+.sp 2
+.SH
+Introduction
+.sp
+.PP
+MOSMESH is intended to provide automatic generation of Pisces-2B input decks.
+Currently only substrate MOS devices are supported
+( i.e. NMOS devices in a p-well on
+n-type substrate are not allowed ).
+In the interactive mode, MOSMESH will ask the user for structure and doping
+information.
+Based on the input, grid is heuristically determined, contacts are
+placed, doping profiles are determined, and bias cards are generated.
+For repetitive runs that occur in a manufacturing environment, a batch
+mode is provided where input can be read from a file.
+The final output is an ascii file with suitable comments that may either
+be run directly by Pisces or used as a template for further modification
+by the user.
+.sp
+.SH
+Installation
+.sp
+.PP
+Installation is accomplished by using the UNIX Makefile utility.
+Typing "make" in the source directory should compile all the source
+files and create an executable file called "mosmesh".
+Be sure to edit Makefile to tell the compilers the type of operating
+system and hardware you are running on.
+This document is present in user_man.troff and a formatted version is
+in user_man.cat.
+A README file is also present for help.
+.SH
+Use of MOSMESH
+.sp
+.PP
+A UNIX syntax is used to invoke the program.
+The syntax in BNF form is as follows:
+.sp
+.nf
+.B
+mosmesh [-abist -f [defaultfile] -m[modifyfile] -o [outputfile] ] [outputfile]
+.R
+.sp
+where
+.fi
+.IP a - 
+denotes that analytic profiles are to be used (default)
+.IP b -
+indicates batch mode
+.IP i -
+indicates that bias statements to simulate drain characteristics will be
+generated
+.IP s -
+indicates that Suprem3 doping profiles will be used.  
+Suprem3 provides export files in either ascii or binary format(you will
+be asked which one you are using by the program).
+For ascii export files use the following Suprem3 command:
+.ti +5
+.nf
+.B
+savefile export formatte filename=<c>
+.R
+.sp
+.fi
+Otherwise use the following Suprem3 command to generate binary export files:
+.ti +5
+.nf
+.B
+savefile export filename=<c>
+.R
+.sp
+.fi
+.IP t -
+indicates that bias statements to simulate gate characteristics will be
+generated
+.IP f -
+indicates that the default parameters will be taken from file defaultfile.
+if defaultfile is not specified that the defaults will be taken from a
+file .defaultmesh, if it exists.  
+otherwise there are no default values and the user is expected to answer
+all of the questions in interactive mode.
+.IP m -
+indicates that the default values to change (along with their new values)
+are present in file modifyfile. 
+this allows automatic change of parameters in a rapid fashion - suitable
+for use in a manufacturing environment.
+.IP o -
+indicated that the output will be written to outputfile.  
+if outputfile is not specified, 
+the data is written to mosmesh.out.
+note that the outputfile can be specified outside of the flag sequence.
+any name outside of the flag sequence will supercede any
+name given in the -o flag.
+.sp
+If you forget the syntax the options will be listed if you type
+.ti +5
+.B
+mosmesh -?
+.R
+.LP
+Examples on the use of the command-line syntax are given below:
+.nf
+.B
+1 zotz > mosmesh 
+.R
+.fi
+MOSMESH will be in interactive mode, using the defaults from .defaultmesh
+and writing the output to mosmesh.out.  
+No bias cards will be generated.
+MOSMESH and MOSMESH -a are synonymous in this release.
+.nf
+.sp 2
+.B
+2 zotz > mosmesh -i drain.in
+.R
+.fi
+MOSMESH will be in interactive mode, using the defaults from .defaultmesh
+and writing the output to drain.in.  
+Bias cards will be generated to
+simulate the drain-IV characteristics.
+.nf
+.sp 2
+.B
+3 zotz > mosmesh -i -o drain.in
+.R
+Equivalent to example 2 above.
+.sp 2
+.B
+4 zotz > mosmesh -st gate.in
+.R
+.fi
+MOSMESH will be in interactive mode, using the .defaults from .defaultmesh
+and writing the output to gate.in.  
+Bias cards will be generated to simulate
+the gate-IV characteristics.  
+In addition, doping files will be expected to be Suprem3 format (either
+ascii Suprem3 export as discussed above or an ascii file containing
+concentration versus depth information).
+.sp 2
+.nf
+.B
+5 zotz > mosmesh -t -f standardparameters -b drain.in
+.R
+.fi
+MOSMESH will gather default parameters from the file
+standardparameters and automatically generate an output file in
+drain.in.  
+In batch mode the user is not prompted and the program 
+returns silently.
+.sp 2
+.nf
+.B
+6 zotz > mosmesh -m changes -b -o outfile
+.R
+.fi
+MOSMESH will operate in batch mode, using the defaults in .defaultmesh.
+In addition any changes to the default values are specified in file
+changes.
+An example of the format necessary for changes is:
+.sp
+.nf
+0 100	-	Poly Gate Width(um)	0
+6 P	-	Doping Type	6
+7 boron.dat	-	Suprem3 doping profile filename	7
+15 2	-	Maximum Source Substrate Reverse Bias	15
+.sp
+.fi
+The first column is associated with a tag number denoting which input
+is desired to be changed (the tag number appears in the last column
+of .defaultmesh).
+The second column contains the new default value desired.
+Other columns are ignored although an easy way to create changes
+is to copy .defaultmesh into changes and then edit the file, adding
+the new default value and tacking on the tag in the first column.
+.sp 2
+.B
+Interactive Session With MOSMESH
+.R
+.sp
+Below is an example of MOSMESH in interactive mode:
+.sp
+.I
+.nf
+1 lancashire:latex> mosmesh -t test.out
+		   MOSMESH Version 8822
+	Currently only MOS devices are supported
+	Default values based on your last run are in brackets
+	Input from .defaultmesh and output to test.out
+
+lateral diffusion constant [0.8] : 
+Poly Gate Width(um) [2] : 
+Spacer Thickness(um) (Zero for none) [0.15] : 
+Poly Metal Spacing(um) [2] : 
+Substrate Doping [1e+16] : 1e15
+Gate Oxide Thickness(ang) [250] : 
+Channel Threshold Adjust
+	N/P/0(none) type doping? [P] 
+	You can enter doping information in 3 ways: 
+		 1) peak conc., peak conc. location, std. dev 
+		 2) peak conc., peak conc. location, junc. depth 
+		 3) peak conc., peak conc. location, dose 
+			 this one is not good for high concentrations!!
+		 please pick 1, 2 or 3 [3] : 
+	Peak Doping Concentration [1e+16] : 2.0e16
+	Peak Doping Location [0.1] : 
+	Dose [2e+12] : 1e12
+Lightly Doped Drain
+	N/P/0(none) type doping? [N] 
+	You can enter doping information in 3 ways: 
+		 1) peak conc., peak conc. location, std. dev 
+		 2) peak conc., peak conc. location, junc. depth 
+		 3) peak conc., peak conc. location, dose 
+			 this one is not good for high concentrations!!
+		 please pick 1, 2 or 3 [2] : 
+	Peak Doping Concentration [1e+18] : 
+	Peak Doping Location [0] : 
+	Junction Depth [0.25] : 0.35
+Drain Doping
+	N/P/0(none) type doping? [N] 
+	You can enter doping information in 3 ways: 
+		 1) peak conc., peak conc. location, std. dev 
+		 2) peak conc., peak conc. location, junc. depth 
+		 3) peak conc., peak conc. location, dose 
+			 this one is not good for high concentrations!!
+		 please pick 1, 2 or 3 [2] : 
+	Peak Doping Concentration [1e+20] : 
+	Peak Doping Location [0] : 
+	Junction Depth [0.1] : 0.25
+Maximum Drain Substrate Reverse Bias [0.1] : 
+Maximum Source Substrate Reverse Bias [0] : 
+drain voltage [0.100000] : 
+starting gate voltage [0.000000] : -1.0
+sweep gate voltage to [2.000000] : 
+gate bias increment [0.100000] : 
+.R
+.sp 2
+.fi
+Most of these questions are self explanatory and defaults are given in
+brackets.
+If a new value is not entered, then the default value is taken.
+.sp 2
+.SH
+Files
+.PP
+.sp
+MOSMESH produces an output file and reads in a default file.
+The default file contains the inputs used in the previous
+run along with matching tags to describe the entry.
+To perform modifications to only a few parameters, one could
+edit the defaults file and rerun MOSMESH in batch mode.
+The default file generated by the above example is shown below.
+.sp
+.sp 2
+.SH PISCES OUTPUT
+.nf
+title MOSMESH automatic mesh - Version 8822
+
+$starting mesh card
+mesh nx=45 ny=22 rect outf=nmesh
+
+$x mesh locations
+x.mesh node=1 location=-3.1 rat=1
+x.mesh node=2 location=-3 rat=1
+x.mesh node=8 location=-1.59265 rat=1.25
+x.mesh node=9 location=-1.37133 rat=1.25
+x.mesh node=10 location=-1.15 rat=0.8
+x.mesh node=11 location=-1 rat=0.8
+x.mesh node=13 location=-0.72 rat=0.64
+x.mesh node=33 location=0.72 rat=1
+x.mesh node=35 location=1 rat=1.33
+x.mesh node=36 location=1.15 rat=2.51
+x.mesh node=37 location=1.37133 rat=1.25
+x.mesh node=38 location=1.59265 rat=0.8
+x.mesh node=44 location=3 rat=0.8
+x.mesh node=45 location=3.1 rat=1
+
+$y mesh locations
+y.mesh node=1 location=-0.025 rat=1
+y.mesh node=3 location=0 rat=0.8
+y.mesh node=4 location=0.01 rat=1
+y.mesh node=14 location=0.35 rat=1.24
+y.mesh node=19 location=1.05896 rat=1.25
+y.mesh node=22 location=2 rat=1.25
+
+$eliminate some nodes that aren't needed
+elim y.dir ix.l=11 ix.h=35 iy.l=5 iy.h=22
+elim y.dir ix.l=1 ix.h=45 iy.l=14 iy.h=22
+
+$region definitions
+region num=1 ix.l=1 ix.h=45 iy.l=1 iy.h=3 oxide
+region num=2 ix.l=1 ix.h=45 iy.l=3 iy.h=22 silicon
+
+$Gate = 1 Source = 2 Drain = 3 Bulk = 4
+electrode num=1 ix.l=11 ix.h=35 iy.l=1 iy.h=1
+electrode num=2 ix.l=1 ix.h=2 iy.l=3 iy.h=3
+electrode num=3 ix.l=44 ix.h=45 iy.l=3 iy.h=3
+electrode num=4 ix.l=1 ix.h=45 iy.l=22 iy.h=22
+
+$Doping Information
+$ junction depth is 0.35um
+doping reg=2 uniform x.lef=-3.1 x.rig=3.1
++	y.top=0.0 y.bot=2 conc=1.000000e+15 p.type
+
+$ Channel Doping Region
+doping reg=2 gauss char=0.564191 peak=0.1 conc=2.000000e+16 p.type
++	x.lef=-3.1 x.rig=3.1 ratio.la=0.8
+
+$ Lightly Doped Source
+doping reg=2 gauss char=0.133168 peak=0 conc=1.000000e+18 n.type
++	x.lef=-3.1 x.rig=-1 ratio.la=0.8
+
+$ Lightly Doped Drain
+doping reg=2 gauss char=0.133168 peak=0 conc=1.000000e+18 n.type
++	x.lef=1 x.rig=3.1 ratio.la=0.8
+
+$ Heavily Doped Source
+doping reg=2 gauss char=0.0736796 peak=0 conc=1.000000e+20 n.type
++	x.lef=-3.1 x.rig=-1.15 ratio.la=0.8
+
+$ Heavily Doped Drain
+doping reg=2 gauss char=0.0736796 peak=0 conc=1.000000e+20 n.type
++	x.lef=1.15 x.rig=3.1 ratio.la=0.8
+$ drain characteristics. Vd is 0.100000, minVg is -1.000000 maxVg is 2.000000
+symb gummel carriers=1 electrons
+method iccg damped
+models srfmob
+$ change the below line if another gate material is used
+contac num=1 n.poly
+$ solve for the initial step.  save in file initial
+solve initial v1=-1.000000 outfile=initial
+$ save I-V information in drainIV.log
+log ivfile=drainIV.log
+regrid potential step=0.2
+solve v1=-1.000000 v3=0.100000 vstep=0.100000 nsteps=30  electrode=1
+$ plot statement in ascii format in file iv.ascii
+plot.1d x.axis=v1 y.axis=i3 ascii outfile=iv.ascii
+end
+.sp
+.SH
+WARNINGS
+.sp
+.PP
+.fi
+To maintain flexibility of MOSMESH, a limited amount of error checking on
+user input has been done.
+The best way to determine correct input is to examine the .defaultsmesh
+file.
+In this file user input are tagged with strings.
+If a problem is found, the program must be rerun in interactive
+mode or the .defaultsmesh
+file can be edited and MOSMESH rerun in batch mode.
+Although the mesh generation seems to work well in many cases, convergence
+problems with MOSMESH associated input decks have been occasionally
+seen.
+Usually the problem is caused by using an excessively large drain voltage
+step.
+By reducing the step via the drain increment prompt, convergence improves.
+
+Features not included in this release are the poisson solver and contour
+gridding capabilities.  
+Since the poisson solver is not included, it is very important to regrid
+the initial mesh during the solution phase whenever current begins to
+flow within the device.
+As an example of regridding for determining the gate characteristics of a
+MOS device, assume that you have run MOSMESH with the -t option with a
+gate sweep from 0 to 1.0V.
+From the Pisces output, you determine that current begins to flow through
+the device at 0.6V.  
+You should then 
+.B
+rerun 
+.R
+Pisces but substitute the gate bias card
+.sp
+.nf
+.ti +5
+solve v1=0 v3=0.1 nsteps=10 vstep=0.1
+.fi
+.sp
+with the following cards
+.sp
+.nf
+.in +5
+solve v1=0 v3=0.1 nsteps=5 vstep=0.1
+regrid potential step=0.2
+symb gummel carriers=1 electrons
+method iccg damped
+solve v1=0.6 v3=0.1 nsteps=4 vstep=0.1
+.in -5
+.fi
+.sp
+In this manner you should obtain more accurate results.

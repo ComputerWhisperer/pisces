@@ -1,0 +1,45 @@
+
+ ------------------------------------------------------------
+PISCES-II is a two-dimensional, two-carrier device modeling program
+which simulates the behavior of devices under steady-state or transient
+conditions.  PISCES-II can analyze physical structures with completely
+arbitrary geometries (non-planar) with general doping profiles obtained
+either from analytical functions, SUPREM-III, SUPREM-IV or measured
+data. A wide variety of materials and physical models are incorporated
+and are user-accessible, including Fermi-Dirac carrier statistics and
+incomplete donor ionization. Various extraction facilities are
+incorporated, including frequency dependent Y-parameter calculations.
+The program supports non-uniform triangular grids which can be
+specified either through input statements or with a supplied interactive
+grid generator.  PISCES-II can also refine any supplied grid during the
+solution process.
+
+Major enhancements to the 9009 release include:
+	* Quasi-3d simulation of cylindrically-symmetrical devices.
+	* Several new carrier mobility models:
+        	* U. of Texas Transverse-field (surface) mobility models
+         	  for holes and electrons.
+        	* Carrier-carrier scattering model for high-level injection.
+	        * Improved concentration dependent model.
+	* User-customizable FORTRAN mobility model subroutines.
+	* A new photogeneration model for simulation of photodetectors.
+	* Maximum number of grid points easily changed by setting a few key
+	  parameters in a master configuration file.
+	* Interactive front-end to PISCES simplifies the use of the program,
+  	  especially for post-processing of data.
+	* Improved interactive grid generation programs (Tri and Skel) 
+	  again included with the release.
+	* BIPMESH and MOSMESH, automatic PISCES input file generation
+  	  utilities for bipolar and MOS structures.
+	* IG2IMAGE postprocessing utility converts PISCES output for
+	  use by public domain visualization software.
+	* Extensive example set included.
+
+A. Software Developed On:  Runs under UNIX on a Sun3, Sun4,
+	Convex-C1, MIPS, DEC-3100 at Stanford. Requires 16 Megabytes
+	virtual memory.
+
+B. Programming Language Used:  FORTRAN-77 (PISCES) and C (Skel,
+	Tri, Ig2image, Bipmesh, Mosmesh).
+
+C. Other software required: Stanford's PLOTCAP (GPLOT) graphics package.

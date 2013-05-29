@@ -1,0 +1,46 @@
+New in PISCES 9009 is an array parameterization file "p2conf.h."
+
+The ability to simulate devices with a larger number of gridpoints has
+been one of the most often-requested enhancements of the PISCES program.
+Merged BICMOS structures, for example, require a large number of gridpoints
+for accurate simulation.   Power device simulation is another grid-intensive
+example, typically requiring the fine resolution of depletion edges
+moving through physically large structures.
+
+Unfortunately, increasing the number of nodes in PISCES is difficult, because
+the sizes of the internal arrays used in the code are a strong function of
+the structure of the computational mesh as well as the number of nodes, and
+most of the arrays are dimensioned to different sizes.  When increasing the
+maximum number of grid nodes, it is difficult to know how much to increase
+the size of these other arrays.
+
+Toward that end, the dimensions of all the relevant arrays throughout the
+code have been parameterized; declarations are now of the form 
+
+		dimension x(MAXPT)
+	
+rather than
+
+		dimension x(3000).
+	
+The values of these integer parameters are set in a single configuration
+file.  A few key parameters are used to calculate internal array sizes
+which should be suitable for the majority of device problems.  By changing
+the value of these parameters, the person installing PISCES should be
+able to easily tailor the size of the code to suit their needs.
+
+The most important parameter in the file "p2conf.h" is the parameter
+MAXPT.  This parameter determines the maximum number of gridpoints
+PISCES can handle, and the largest problem PISCES can solve using 
+Gummel's method.  For a two-carrier Full-Newton solution, the maximum
+grid size is limited to approximately MAXPT/2.  Other relevant array
+size parameters are documented in the configuration file.  The default
+array sizes have been chosen somewhat conservatively; the average user
+should not have to change any parameter other than MAXPT to tailor
+the size of the program.  However, in the unlikely event that array
+size problems do arise, additional diagnostics have been built into
+the print option of the symbol statement;  array sizes, positions 
+needed, and the associated parameter names are now printed.  If 
+necessary, this information should be used to "tweak" the default 
+parameterization as needed.
+

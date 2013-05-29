@@ -1,0 +1,26 @@
+$ncols 16
+$col.x 1
+$col.y 14
+$title "Twin-Tub Transient Latchup"
+$label.x "Time(ns)"
+$label.y "Anode Current(uA/um)"
+$min.x 0
+$max.x 8
+$min.y 0
+$max.y 10
+$clear
+$axis
+$label.loc.data
+$label.loc.x 3
+$label.loc.y 8
+$label "2ns pulse"
+$label.loc.x 3
+$label.loc.y 2.25
+$label "1.75ns pulse"
+$mulby.y 1.0e6
+$mulby.x 1.0e9
+$by.line
+$line 1
+$file IV2ns.data
+$line 3
+$file IV1.75ns.data

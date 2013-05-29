@@ -1,0 +1,27 @@
+
+			A PMOS DEVICE
+
+This is an example of a pmos device which also reads in the impurity 
+doping profile.  
+
+A file called mesh098.p2 is used to define the device.  This file first
+specifies the mesh and then eliminates the undesired points in the  
+substrate.  The oxide and silicon regions are then specified and the
+necessary electrodes are provided.  The doping like the previous nmos example
+is provided by the file called depthcon except this file contains 
+concentration that is negative in value since this is a pmos device.
+The doping profile generates an ascii outfile called DOP232.  Similar to
+the previous example, the interface charge, the gate contact, the surface
+mobility, and the models are defined.  The relevant doping profiles and
+the junctions of the device are plotted.
+
+Similar to the nmos example, the gate characteristics is solved for next.
+The file that generates this curve is called idvg098.p2.  It reads in the
+mesh file, defines the surface mobility, the gate contact, the appropriate
+models and the interface charge.  Both the intial solution and the gate
+characteristics are solved using a single carrier newton method.  LOG098P is a llog file used to save the simulation data.
+
+Please note that since this is a pmos device, its the holes one solves for in
+the symbolic card.  The drain is biased at -.05 volts while the gate voltage
+is varied from -0.1 to -5.0 volts.  Outfiles are saved at -1,-2,-3,-4 and
+-5 volts.  The drain current versus the gate voltage is then plotted.

@@ -1,0 +1,40 @@
+title HMOS FET - drain characteristics
+
+$.....load mesh
+mesh infile=hmos4.msh
+$
+$.....symbolic factorization
+symbolic gummel carriers=1 electrons
+method iccg damped
+$
+$.....materials/contacts
+$
+material num=2 g.surf=0.75
+contact num=1 n.poly
+$
+$.....models
+models conmob temp=300 fldmob print
+$
+$.....load initial solution from hout.0
+load infil=hmos0.slv
+$
+$.....increment gate voltage (VGS=1,2)
+solve v1=1 vstep=1 nsteps=1 electrode=1
+$
+$.....setup IV log file
+log outfile=IVdrain.log
+$
+$.....solve for VGS=3 volts, save in hout.3
+solve v1=3 outfile=hmos3.slv
+$
+$.....switch to Newton's method
+symb newton carriers=1 electrons
+method autonr
+$
+$.....step VDS from 0.2 to 2.8 volts (VGS=3.0)
+solve v4=0.2 vstep=0.2 nsteps=13 electrode=4
+$
+$.....solve at VDS 3.0 volts (VGS=3.0) and save solution
+solve v4=3.0 outfile=hout30.slv
+
+end

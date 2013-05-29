@@ -1,0 +1,36 @@
+
+	*** src/plot/tool/ ***
+
+ This directory contains source for plot window ``tools''.  There is a tool
+ plotcap entry which gplot can use to send commands that these tools will
+ understand.  The connection to the tool is through a pipe.  Other
+ mechanisms could be used, but this is built into gplot and all flavors
+ of Unix.
+
+ The file "tool.c" is the main for each of the tools.  It reads the
+ plotcap commands from the pipe, decodes them and then calls a few
+ functions to actually do the work.  These functions need to be written
+ for the specific window manager.  Commands may be ignored, but it should
+ at least be able to move, draw, clear, init, pend.
+
+ Currently, there are tools for 
+	sunview	-- Suns with the notifier.  This has a bug in that it ignores
+		   the first several vectors.  I have put write statements
+		   is the sun code (to a log file) and it is getting the
+		   calls, but there is no displaying of the vectors.
+		   Got me!
+		   [ Files: sunview_lib.c, sunview.icon ]
+	x	-- For the X window system.  Seems to work pretty well, even
+		   returns cursor location G_CLOC. It even does color
+		   and area fills.
+		   [ Files: x_lib.c, x.curs (3 cursors), the X icon is
+		   created from the sunview.icon by the program sun2x.c ]
+
+ Others should be simple to write.  Any new tools or fixes to these --
+ let me know and they can be merged into the next release.
+
+ These tools only need to be built for systems that will support them.
+ They are not required to make the plot library work.
+
+ Michael Eldredge (Jul 88)
+

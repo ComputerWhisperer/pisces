@@ -1,0 +1,14 @@
+title suprem3 file for emitter for bjtmesh
+initialize structure=base.str
+
+implant arsenic dose=4e15 energy=30
+
+diffusion temperature=950 time=75
+
+savefile structure filename=emitter.str
+savefile export filename=emitter.exp
+
+print layer
+$ plot chemical  net cmax=1e20 cmin=1e15
+
+stop

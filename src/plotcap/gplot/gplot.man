@@ -1,0 +1,368 @@
+.TH  GPLOT 3L "STANFORD UNIVERSITY"
+.SH  NAME
+gplot \- General device independent plotting library.
+.PP
+.SH  SYNOPSIS
+.nf
+.ft B
+#include <local/gplot.h>
+
+setpdev(plotdev) char* plotdev ;
+setpfil(plotfil) char* plotfil ;
+setsfil(savefil) char* savefil ;
+
+gplot(x, y, pen) float x, y ;  int pen ;
+gmove(x, y) float x, y ;
+gdraw(x, y) float x, y ;
+
+gclear()
+ggtoa()
+gatog()
+gpend()
+
+gnline(n) int n ;
+gnfill(n) int n ;
+gnpen(n) int n ;
+
+garea(x,y,how) float x, y ;  int how ;
+
+gtrans(x,y) float x, y ;
+gscale(x,y) float x, y ;
+grotat(x,y,a) float x, y, a ;
+
+gclipl(x,y,how) float x, y ; int how ;
+gcliph(x,y,how) float x, y ; int how ;
+
+gpgeti(cmd, iv, fv) int cmd, iv[] ;  float fv[] ;
+greset(cmd) int cmd ;
+.ft R
+.fi
+.PP
+.SH  DESCRIPTION
+The
+.B gplot
+routines allow plotting to any device definable
+within the plot device description data base \fIplotcap\fR.
+The routines allow some very simple graphics primitives to be
+implemented on any of these devices.  It should be noted that
+not all desired graphics operations can be performed, only
+a simple subset is available \- there is no cursor tracking, for example.
+However, there are functions for transformations, clipping, area fill and
+cursor locating.
+This document is a simple introduction to the
+.B gplot
+library.  For the full description, see
+.BR gplot2 (3L).
+.PP
+In general, you will want to first select the plot device for output
+using
+.BI setpdev( plotdev )
+where
+.I plotdev
+is a null terminated
+character string giving the name of the plot device as specified
+in the
+.B plotcap
+file.
+.PP
+Next, create the desired plot with the routines to move, draw,
+clear and transform. And, finally, post all internal buffers and
+end plotting to the given device with a call to
+.BR gpend() .
+If no call is made to
+.BR setpdev() ,
+the
+.B gplot
+software will
+try to set up a default plot device.  It first looks for an
+environment variable
+.BR DEFPDEV .
+If found, the
+.B plotcap
+file is searched for the device given as the value of
+.B DEFPDEV .
+If no such environment variable is given, the environment is
+then searched for the variable
+.BR TERM .
+Finally, if if neither variable is set, the
+.B plotcap
+file is
+searched for a device called \fIdefault\fR.  This device is generally
+defined at the beginning of the
+.B plotcap
+file for the local
+system's default plotdevice.  For example:
+.PP
+.RS
+.ft B
+default: LIKE="hp2648"::  # our default plot dev
+.ft R
+.RE
+.PP
+To override the default output device, call
+.BI setpfil( plotfile )
+where
+.I plotfile
+is the name of the new output file. Note that if both
+.BR setpdev ()
+and
+.BR setpfil ()
+are being used, the file should be set first.  This is because the
+.BR setpdev ()
+function prepares for plotting by opening the default file if one isn't
+set.
+.PP
+Units used in calls are in default plot units for the device (e.g. inches).
+These units can be scaled with calls to gscale().
+.SH  FUNCTIONS
+.TP
+.BR setpdev (plotdev)
+Optional call to select the output plotting device.  If the device
+is not found in a plotcap file, an error is printed and -1 is returned,
+else 0 is returned.  The system plotcap file is searched (often:
+/usr/local/lib/plotcap), however, if the environment variable PLOTCAP
+is set, that will be used as the plotcap file.  If no call to
+.B setpdev
+is made, then the environment variable DEFPDEV is searched for. If this is
+not set, then the environment variable TERM is used.  If this is not set,
+the device "default" will be used.  In all cases, a failure in setting
+a device will result in all subsequent plotting calls going to a null
+device (until a new, good device gets set).
+.TP
+.BR setpfil (plotfil)
+Optional call to select the output plot file.
+If the environment variable DEFPFIL is set it will be used as the default
+if there is never any call to
+.BR setpfil .
+If this is not set, then the FILE capability in the plotcap file will be
+used.  If there is no file capability, then the standard output is used.
+If the file name is simply a dot (`.') the the standard output will be
+used as the output file (useful for overriding the default file).
+If the file name begins with a plus (`+') the the output file will be
+opened in append mode.
+If the file name begins with a pipe-symbol (`|') then the remainder of the
+filename string is taken as a command line to be executed into which the
+plot library will pipe its output (say a spooler or a filter).
+Return -1 if error or 0 if ok.
+.TP
+.BR setsfil (filename)
+Open the file as an
+.IR "auto-save file" .
+No matter what device has been set (with setpdev()) and what output file
+(with setpfil()) each plot call will also be saved in the named file in
+the gplot-binary-meta-file format.  These files can be replayed with
+.BR dplot (1L),
+for example.
+Return -1 if error or 0 if ok.
+.TP
+.BR gplot (x,y,pen)
+According to \fIpen\fR, move (pen = \fIG_MOVE\fR) or
+draw (pen = \fIG_DRAW\fR) to the given (x,y) point.
+.PP
+.TP
+\fBgmove\fR(x,y)
+Move to the given (x,y) point with the pen up. Same as
+\fBgplot(x,y,G_MOVE) \fR.
+.TP
+\fBgdraw\fR(x,y)
+Draw to the given (x,y) point with the pen down.  Same as
+\fBgplot(x,y,G_DRAW)\fR.
+.TP
+\fBgclear\fR()
+Clear the screen / go to the next page / prepare for the
+next plot.
+.TP
+.BR ggtoa ()
+Post internal buffers to the plot output file and switch to alpha-mode if
+need be.
+This is useful when the output device is a terminal to see
+intermediate plots.
+This should always be used before prompting (for example).  The function
+.BR post ()
+is a synonym; it remains for historical reasons.
+There is also a function
+.BR gatog ()
+which can be used to switch back to graphics mode before continuing to plot.
+It is not needed, however, since the plot library is aware that ggtoa()
+was called and will automatically switch back to graphics mode when needed.
+.TP
+.BR gpend ()
+The mandatory last plotting function.  Posts all internal
+buffers, executes any clean up functions (ie: putting the
+terminal back in alpha mode) and ends plotting to the
+current device.
+.TP
+.BR garea (x,y,how)
+Define and fill a polygonal area (with the current area fill
+pattern/color).  For the first point the the area,
+.I how
+should be \fBG_BEGIN\fR. For each subsequent point,
+.I how
+should
+be \fBG_ON\fR. And finally, any other command (other than
+.B garea(x,y,G_ON)
+will cause the current area to be filled.
+It is however a good idea to have a final call with
+.I how
+.B G_OFF
+or
+.BR G_STOP .
+If the last point given does not close the polygon, gplot will close it.
+.TP
+\fBgnfill\fR(n)
+Select the a new area fill pattern to be used for subsequent
+calls to area fill.
+The number of possible patterns is device dependent, but is alway greater
+that zero.  The actual number can be obtained with the gpgeti(G_FILS,iv,fv)
+call \- iv[0] is the current type and iv[1] is the maximum number available.
+.TP
+\fBgnline\fR(n)
+Select the new line pattern to be used for subsequent drawing.
+The number of possible patterns is device dependent, but is alway greater
+that zero.  The actual number can be obtained with the gpgeti(G_LINE,iv,fv)
+call \- iv[0] is the current type and iv[1] is the maximum number available.
+.TP
+.BR gnpen (n)
+Select the new pen style to be used for subsequent drawing.
+The number of possible styles is device dependent, but is alway greater
+that zero.  The actual number can be obtained with the gpgeti(G_PEN,iv,fv)
+call \- iv[0] is the current style and iv[1] is the maximum number available.
+.TP
+\fBgscale\fR(x,y)
+Scale all following plotting by the values given for each
+direction.  To ``undo'' a given scaling, use:
+\fBgscale(1.0/x,1.0/y)\fR.
+.TP
+\fBgtrans\fR(x,y)
+Offset (translate) all following plotting by the values
+given for each direction.  To undo a given translation, use:
+\fBgtrans(-x,-y)\fR.
+.TP
+.BR grotat (x,y,angle)
+Rotate all following plotting about point (x,y) through
+the given angle (in degrees).  To undo a given rotation,
+use:
+.BR grotat (x,y,\0\-angle).
+.TP
+.BR gclipl (x,y,how)
+Set the lower bound clipping limits.
+If how is G_ONLOG (the default if how is 0) then X and Y are taken to be
+logical values. If how is G_ONPHS then the X and Y values are not transformed,
+assuming that they are physical locations (in the original plot units).
+It is also possible to set whether, on return to the visible screen, a
+clipped line is broken from or connected to the point at which it left.
+This is done by calling either gclipl() or gcliph() as:
+gclipl(0.,0.,G_DOBREAK) \- to not connect the two clipped points or
+gclipl(0.,0.,G_NOBREAK) \- to connect (not break) the two clipped points.
+Clip values can be reset with greset(G_CLIPL).
+.TP
+.BR gcliph(x,y,how)
+Like gclipl(x,y,how), but set the higher clip limits.
+Clip values can be reset with greset(G_CLIPH).
+.TP
+.BR gpgeti (cmd, iv, fv)
+Get information.  This can be used to get the current cursor location or
+to return internal parameters. Following are the descriptions for each
+.IR cmd .
+.RS
+.IP G_CLOC
+Let the user move the cursor and select a location. Return the cursor
+location as: fv[0] \- x location, fv[1] \- y location, iv[2] \- is the
+key/button used to select the location.
+.IP G_PSIZE
+Return the maximum size of the current device. fv[0] \- maximum X size,
+fv[1] \- maximum Y size.
+.IP G_CLIPL
+Return the current lower bounds clipping locations.
+.IP G_CLIPH
+Return the current upper bounds clipping locations.
+.IP G_REVCO
+Return the current revision code (version number) of the gplot library
+in iv[0].
+.IP G_LINE
+Return the current line type (iv[0]) and the maximum number of lines 
+supported by the current device (iv[1]).
+.IP G_PEN
+Return the current pen type (iv[0]) and the maximum number of pens 
+supported by the current device (iv[1]).
+.IP G_FILS
+Return the current area fill patterns (iv[0]) and the maximum number of
+patterns supported by the current device (iv[1]).
+.RE
+.TP
+.BR greset (cmd)
+Reset specific parameters back to the default value.
+.RS
+.IP G_ROTATE
+(or G_SCALE or G_TRANS or G_ANGLE) reset the transformation matrix to the
+default.
+.IP G_CLIPH or G_CLIPL
+Reset the high (low) clip bounds to the default.
+.SH  "F77 LINKS"
+The
+.B gplot
+library can be accessed with cover function defined in the library
+.BR \-lgplotF77 .
+It contains links to the plot software for users of
+.BR F77 .
+Thus all of the above
+.I functions
+in C
+are really subroutines to f77 users and therefore must be called.
+.PP
+.RS
+.B "call gplot(x, y, GMOVE) ;"
+.RE
+.PP
+Also note that the include file should be: \fB<local/gplotF77.h>\fR.
+This file has the same constants defined as
+.B gplot.h
+without
+the underscore; it is actually contains ratfor defines for the gplot
+constants.
+.SH  FILES
+.B gplot.h
+\- Macros and constants.
+.br
+.B gplotF77.h
+\- F77 form of
+.B gplot.h
+.br
+.B /usr/local/lib/plotcap
+\- Device capability data base.
+.br
+.B /usr/local/lib/libgplot.a
+\- Plot library
+.br
+.B /usr/local/lib/libgplotF77.a
+\- Fortran entry points for gplot functions.
+.br
+.SH  "ENVIRONMENT VARIABLES"
+.TP
+.B DEFPDEV
+Use as the default plot device if no call to
+.B setpdev
+is given.
+.TP
+.B DEFPFIL
+Use as the default output file if no call to
+.B setpfil
+is given.
+.TP
+.B TERM
+If new plot device has been set and
+.B DEFPDEV
+is not
+set, then use the terminal as the default plot device.
+.TP
+.B PLOTCAP
+Use as
+.I plotcap
+file instead of the system wide
+plotcap file. Useful for debugging new device definitions or if
+you would like to use a slightly modified definition for some
+device.
+.SH  "SEE ALSO"
+gplot2(3L), high2(3L), plotcap(5L), dplot(1L)
+.SH  AUTHOR
+Michael Eldredge (dredge@oasis.Stanford.edu)

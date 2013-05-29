@@ -1,0 +1,88 @@
+Skel is a driver sitting on top of two vertical stacks of software,
+data base software and graphics software.
+
+                   menu.c..................
+                    /  \                  .
+               user.c   u2.c              .
+                   /..  /  .              .
+                  /   ./..  .             .
+                 /    /   ....            .
+                /   udb.c.    .           .
+               /     /    .    .          .
+              /     /      .    .         .
+             /     /        .... griph.c  .
+            /     /                  .
+           /     /                    skelp.c
+          /     /                       .
+          dbase.c                     tplot.c
+
+
+	                     |
+	  DATA BASE                GRAPHICS
+
+
+DATA BASE:
+==== =====
+At the bottom is the data base level.  The best way to understand the
+data base is to draw pictures of the objects defined in "dbase.h".  I
+drew up one example for a region consisting of three edges and three
+nodes (fig.  1).  The data base level is all the routines that maintain
+the linked lists of those objects, and make sure all pointers point
+somewhere.  They are all in dbase.c.  Check.c could be merged with
+dbase.c, it contains some sanity checks called in dbase routines.
+    As an example, cr_node takes a pair of x,y coordinates, mallocs off
+some space for a node object, stores away the coords in it, and links it
+into the doubly linked list of nodes.
+
+The next level is the "user data base" (udb.c).  This was inserted quite
+late because I got tired of defining edges and then going back and
+joining them up with the light pen to make regions.  Basically, udb.c
+provides a couple of utilities to automatically update regions whenever
+manipulations are done on edges.
+
+The next level is the user calls level.  These are all the things the
+user can get at by pointing at a menu button.  They can be found in
+"user.c" and "u2.c".  All these routines are very similar; they get some
+simple information from the user, then make an appropriate data base
+call.  "User.c" mostly contains calls directly into "dbase.c", and
+"u2.c" mostly into "udb.c".
+
+At the top level is the menu routine ("menu.c"), which just sits in a
+loop, calling get_grin and executing whatever subroutine is associated
+with the letter it gets back.  The association of routines and letters
+is set up in the header file menu.h, which I've sketched in Fig.  2.
+
+
+Terminal handling:
+======== =========
+     Initialization is in "iltty.c", which calls routines in "sys.c"
+     to return the alpanumeric and graphics characteristics of the tty,
+     then mallocs off the display and menu windows.
+
+     Alpha:
+	 is mostly handled in "alpha.c", except for the bottom level
+	 move-the-cursor type routines in "sys.c".
+
+    Graphics:
+
+     is called from the menu level (to draw the little boxes etc)
+     and from the user level (to show the effect of each data base call)
+     and from the user data base level (which is sort of bad)
+
+     It is also organized in layers:
+     griph.c 	- draws objects in natural (micron, lightyear, whatever)
+		       coordinates, by calling...
+     skelp.c	- handles transformations to & from window coordinates,
+		  and calls...
+     gplot2()	- to provide graphics action.
+
+     Calls in user.c and u2.c usually go through griph.c because they
+     deal in micron sized objects. The menu routines usually go direct
+     to skelp.c since they're concerned with positions on the screen.
+
+
+Other:
+======
+geom.c	- misc distance-to-object type routines
+meshio.c - IO routines
+stalloc.c - initialize globals

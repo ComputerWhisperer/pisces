@@ -1,0 +1,14 @@
+PISCES Release B.9009
+
+This distribution was original downloaded from 
+http://www-tcad.stanford.edu/tcad/programs/oldftpable.html
+
+The license text is available in the NOTICE file.
+
+Modifications were made to the source code to compile on a linux system.  The directory structure has been modified.  Please see the INSTALL file for more information about compiling this software distribution.
+
+The effort to port PISCES to a linux is based here:
+http://www.github.com/devsim/pisces
+
+If you would like to report issues or contribute to the project, please do so at the site.
+

@@ -1,0 +1,23 @@
+$ ******************* PISCES Mesh file *******************
+title	Gaussian mock-up of old twin tubs
+$
+mesh	inf=tri1 geom smooth.k=131 outf=mesh1.msh
+$
+doping	unif n.type conc=8e14 outf=dopout
+doping	gaus n.type conc=1e19 y.t=18 y.bot=100 char=.6
+doping	gaus n.type conc=1.5e16 x.l=15 char=1.75 y.b=.094
+doping	gaus p.type conc=1.5e16 x.r=15 char=1.75 y.b=.262
+doping	gaus p.type conc=5e19 x.l=2.5 x.r=3.5 y.b=.094 char=.15
+doping	gaus n.type conc=1e20 x.l=9.5 x.r=10.5 y.b=.094 char=.12
+doping	gaus p.type conc=5e19 x.l=20.5 x.r=21.5 y.b=.262 char=.15
+doping	gaus n.type conc=1e20 x.l=27.5 x.r=28.5 y.b=.262 char=.12
+$
+model	temp=300
+regrid	log doping step=4 smooth.k=1 
++	dopf=dopout outf=mesh2a.msh
+$
+plot.2	bound no.top no.fill junc outf=plt2
+contour	log abs doping min=14 max=20 del=1
+plot.1	log abs doping a.x=9 b.x=9 a.y=0 b.y=10 outf=plt1a
+plot.1	log abs doping a.x=20 b.x=20 a.y=0 b.y=10 outf=plt1b
+end

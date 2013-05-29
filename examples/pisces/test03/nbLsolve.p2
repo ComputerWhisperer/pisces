@@ -1,0 +1,47 @@
+Title Long Channel MOSFET (1.5um channel) with substrate doping of 1e15 [Subthreshold Region]
+$
+$ * * * A : define rectangular grid * * * 
+$
+mesh 	inf=nmeshb.msh
+$
+$ * * * Symbolic Factorization (Gummel) and Parameters * * * 
+symb    gummel carr=1 electrons
+method  iccg damped
+$
+$ * * * Materials/Contacts * * * 
+mater   num=2 g.surf=0.75
+contact num=1 n.poly
+$
+$ * * * Models * * * 
+$
+models  conmob temp=300 fldmob print
+$
+$ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+$
+$ * * * Solve Initial Bias Point; Save in nbiasbinit * * * 
+$
+solve   initial outfile=nbiasbinit.slv
+$
+$ * * * Switch to Newton Method * * *
+$
+symb    newton carriers=1 electrons
+method  autonr 
+$
+$ * * * Setup IV Log File * * * 
+$ 
+log 	outf=nIVb15.log
+$
+$ Solve for Vds = 0.1 volts; Save in nbiasb15a * * * 
+solve   v4=0.1 outf=nbiasb15a.slv 
+$
+$ * * * Step Vgs from -0.5 to 2.0 volts (vds=0.1 volts) * * * 
+solve   v1=-0.5 vstep=0.1 nsteps=25 electrode=1
+$
+$options plotdev=stout
+$
+$ * * * Plot Id vs Vgs (Log and Linear Scales)  * * * 
+$plot.1d   x.axis=v1 y.axis=i4  abs logarithm 
+$plot.1d   x.axis=v1 y.axis=i4 
+$
+end
+

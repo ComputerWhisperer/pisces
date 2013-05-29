@@ -1,0 +1,132 @@
+
+
+
+MOSMESH(1)                USER COMMANDS                MOSMESH(1)
+
+
+
+NAME
+     mosmesh - Pisces deck generator for  simple  MOS  devices  -
+     Version 8822
+
+SYNOPSIS
+     mosmesh [ -abist -f [defaultfile] -m[modifyfile] -o [output-
+     file]  ] [ outputfile ]
+
+DESCRIPTION
+     _M_O_S_M_E_S_H is an interactive program that generates a PISCES2-B
+     input  deck MOS structures.  Questions are asked of the user
+     such  as  doping  concentrations,   gate   lengths,   spacer
+     thicknesses,  and  range of biases applied to the terminals.
+     Upon completion, a pisces deck is generated in file  output-
+     file.
+
+OPTIONS
+     -a   Use analytic functions for doping profiles [default].
+
+     -b   Batch mode.  take default data and generate a deck.
+
+     -f [defaultfile]
+          read default information from file defaultfile.  if  no
+          filename is given then the default is .defaultmesh.
+
+     -i   Generate drain characteristics.
+
+     -m [modifyfile]
+          indicates that the default values to change (along with
+          their new values) are present in file modifyfile.
+
+     -o [filename]
+          write output to filename.  if no filename is given then
+          the  default  is  mosmesh.out.   also  if a filename is
+          given as the last argument to mosmesh, then the -o flag
+          is ignored.
+
+     -s   indicates that Suprem3 doping profiles will be used
+
+     -t   Generate gate characteristics for a fixed drain bias.
+
+EXAMPLE
+          1 zotz> mosmesh -i filea - generates Pisces deck for
+                         drain characteristics in filea
+
+          2 zotz> mosmesh -t fileb - generates Pisces deck for
+                         gate characteristics in fileb
+
+          3 zotz> mosmesh -f playmesh -o outfile - generates Pisces deck
+                         from information in playmesh and writes the
+                         deck to outfile. no solve cards are present.
+
+
+
+
+Sun Release 3.4  Last change: 15 September 1988                 1
+
+
+
+
+
+
+MOSMESH(1)                USER COMMANDS                MOSMESH(1)
+
+
+
+          4 zotz> mosmesh -st gate.in - use Suprem3 doping files and generate
+                            gate characteristics in gate.in
+
+          5 zotz> mosmesh -m changes -b -o outfile - operates in batch mode,
+                                     using the defaults in .defaultmesh.
+                                     In addition any changes to the
+                                     default values are specified in file
+                                     changes.  See user manual for
+                                     details.
+
+FILES
+     .defaultmesh holds responses from previous mosmesh run
+
+     .tempfile holds data from current session
+
+
+BUGS
+     does not check input for unreasonable data
+
+     no backup mode to change a previous entry.  you  must  rerun
+     the program.
+
+     convergence problems with very short channel devices.
+
+     please report any other bugs to chin@rats.stanford.edu
+
+AUTHORS
+     Mark Law
+     Goodwin Chin
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Sun Release 3.4  Last change: 15 September 1988                 2
+
+
+

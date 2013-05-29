@@ -1,0 +1,39 @@
+title    PISCES Id-Vg characteristics
+$OPTION   NO.SUB
+comment  calculate ID-VG characteristics (Vg=4)
+comment  read in simulation mesh
+$
+mesh     infile=MESH098.msh
+$
+comment  material/contacts
+mater    num=2 g.surf=0.75
+contac   num=1 WORKFUN=5.28
+comment  models
+$
+models   ANAL  CONMOB fldmob srh  print BGN FERMI 
++     TFLDMB ACC.SF=0.87 INV.SF=0.75 OX.L=0.5 OX.R=1.845 OX.B=0.0
+$
+comment  fixed charge
+interf   qf=1E10
+symb     newton carrier=1 HOLE
+method   XNORM RHS autonr trap atrap=0.5 itlimit=10
+SOLVE   INIT
+$
+LOG      OUTF=LOG098P.log
+$
+comment  solve with newton's method
+symb     newton carrier=1 HOLE
+method   XNORM RHS autonr trap atrap=0.5 itlimit=10
+solve     v4=-0.05   elect=4 
+solve     v1=-0.1   ELECT=1 VSTEP=-0.1 NSTEP=8
+solve     v1=-1.0  outf=idvg098.solp1.slv
+solve     v1=-1.2  ELECT=1 VSTEP=-0.2 NSTEP=3
+solve     v1=-2.0  outf=idvg098.solp2.slv
+solve     v1=-2.2  ELECT=1 VSTEP=-0.2 NSTEP=3
+solve     v1=-3.0  outf=idvg098.solp3.slv
+solve     v1=-3.2  ELECT=1 VSTEP=-0.2 NSTEP=3
+solve     v1=-4.0  outf=idvg098.solp4.slv
+solve     v1=-4.2  ELECT=1 VSTEP=-0.2 NSTEP=3
+solve     v1=-5.0  outf=idvg098.solp5.slv
+$PLOT.1D Y.AXIS=I4 X.AXIS=V1
+end

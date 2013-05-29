@@ -1,0 +1,18 @@
+title pn diode (fig 2a)
+$
+$ Steady-state forward bias analysis (w/ contact resistor)
+$
+mesh	in=pn.msh
+$
+contac 	num=1 resis=1e5
+symb	newton carr=2
+method	rhsnorm xnorm autonr
+models	temp=300 srh auger conmob fldmob print
+$
+solve	init outf=pn2a0-r.slv
+log	outf=IV-r.log
+solve	vstep=0.1 nsteps=10 elect=1
+solve	vstep=0.2 nsteps=4 elect=1
+solve	v1=2 outf=pn2a2-r.slv
+$
+end

@@ -1,0 +1,24 @@
+Title pn diode (Fig 1a)
+$  Generate and plot the mesh for the diode example
+
+option  plotdev=p2dit
+mesh	rect nx=60 ny=3 outf=pn.msh
+x.m 	n=1 l=0 r=1
+x.m	n=20 l=1 r=0.8
+x.m	n=60 l=5 r=1.07
+y.m	n=1 l=0 r=1
+y.m 	n=3 l=1 r=1
+region 	num=1 ix.l=1  ix.h=60 iy.l=1 iy.h=3 silicon
+elec	num=1 ix.l=1 ix.h=1 iy.l=1 iy.h=3
+elec	num=2 ix.l=60 ix.h=60 iy.l=1 iy.h=3
+
+doping	reg=1 n.type conc=1e15 uniform
+doping	reg=1 p.type conc=1e19 x.r=0 y.top=0 y.bot=1 char=0.333
++	ratio=1 gauss
+
+$ Make FIGURE 1b
+plot.2	bound no.tic no.fill grid outf=fig1b.tr
+$ Make FIGURE 1c
+plot.1 log dop abs a.x=0 b.x=5 b.y=0.5 a.y=0.5 points outf=fig1c.tr
+
+end

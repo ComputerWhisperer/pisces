@@ -1,0 +1,53 @@
+Title Long Channel MOSFET (1.5um channel) with substrate doping of 1e15 [Linear + Saturation Regions]
+$
+$ * * * Load Mesh * * * 
+$
+mesh 	inf=nmeshe.msh
+$
+$ * * * Symbolic Factorization (Gummel) and Parameters * * * 
+symb    gummel carr=1 electrons
+method  iccg damped
+$
+$ * * * Materials/Contacts * * * 
+mater   num=2 g.surf=0.75
+contact num=1 n.poly
+$
+$ * * * Models * * * 
+$
+models  conmob temp=300 fldmob print
+$
+$ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+$
+$ * * * Load Initial Solution from nbias/n3eL1d15init * * *
+load    inf=nbias.slv
+$
+$ * * * Increment gate voltage (Vgs=0.5,2.5)
+$
+solve   v1=0.5 vstep=0.5 nsteps=4 electrode=1
+$
+$ * * * Setup IV Log File * * * 
+$
+log     outf=nIVdrain.log
+$
+$ * * * Solve for Vgs=3 Volts; save in nbias/n3eL1d15b
+solve    v1=3 outf=nbias3e.slv
+$
+$ * * * Switch Methods * * * 
+$
+symb    newton carriers=1 electrons
+method  itlimit=50 autonr 
+$
+$ * * * Step Vds from 0.2 to 3.0 volts (Vgs=3 volts) and 
+$       output solutions to nbias/houtdrain
+$
+solve   v4=0.1 vstep=0.2 nsteps=14 electrode=4 outf=nbiasoutdrain.slv
+$
+$ * * * Plot Ids vs Vds
+$
+$options plotdev=stout
+$
+$
+$plot.1d x.axis=v4 y.axis=i4 pause
+$
+end
+

@@ -1,0 +1,37 @@
+title HMOS FET - subthreshold
+$.....load mesh
+mesh infile=hmos4.msh
+$
+$.....symbolic factorization
+symbolic gummel carriers=1 electrons
+method iccg damped
+$
+$.....materials/contacts
+$
+material num=2 g.surf=0.75
+contact num=1 n.poly
+$
+$.....models
+models conmob temp=300 fldmob print
+$
+$.....solve initial bias point, save in hout.0
+solve initial outfile=hmos0.slv
+$
+$.....switch to Newton's method
+symb newton carriers=1 electrons
+method autonr
+$
+$.....setup IV log file
+log outfile=IVsub.log
+$
+$.....solve for VDS=0.1, save in hout.1
+solve v4=0.1 outfile=hmos1.slv
+$
+$.....step VGS from -0.5 to 2.0 volts (VDS=0.1)
+solve v1=-0.5 vstep=0.1 nsteps=25 electrode=1
+
+$.....Plot Id vs Vgs (log and linear scale)
+$plot.1d	x.axis=v1 y.axis=i4	log
+$plot.1d	x.axis=v1 y.axis=i4
+
+end

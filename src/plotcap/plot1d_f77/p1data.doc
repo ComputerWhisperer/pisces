@@ -1,0 +1,19 @@
+c "p1data": Plot the given data arrays.
+c
+c Calling Sequence:
+c	call P1DATA(x, y, nxy, xlog, ylog, bylin, bysym)
+c
+c Where:
+c	x	- real array.  Values to plot along the X-axis.
+c	y	- real array.  Values to plot along the Y-axis.
+c	nxy	- integer.  Number of points in X,Y
+c	xlog	- integer.  1::Take the log of each X-value before
+c                 plotting.
+c	ylog	- integer.  1::Take the log of each Y-value before
+c                 plotting.
+c	bylin	- If >= 1 then connect each point with a line of
+c		  type 'bylin'.  If == 0 then don't connect points.
+c	bysym	- If >= 1 then put symbol 'bysym' at each point.
+c		  If == 0 then don't put a symbol at each point.
+c
+c Original: Michael Eldredge -- Stanford (apr 88)

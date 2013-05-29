@@ -1,0 +1,726 @@
+
+
+
+DPLOT(1L)         UNKNOWN SECTION OF THE MANUAL         DPLOT(1L)
+
+
+
+NAME
+     dplot - General data plotting / plot manipulation program.
+
+SYNOPSIS
+     dplot [-l[2]]  [-o  outfile]  [-d  plotdev]  [-t  tplotfile]
+     [data/command files] [-i]
+
+VERSION 4.1b
+     mail bugs to dplot-bugs@Oasis.Stanford.Edu or
+     {ucbvax,decwrl}!labrea!oasis!dplot-bugs
+
+CHANGES SINCE REV. 3.3
+     Rev 4.1a Labels can now be place relative  to  data  coordi-
+     nates      using      the      $label.loc.data     (default:
+     $label.loc.screen).  Subsequent $label.loc N calls  will  be
+     take  as  data  values.   Also, $locate commands will return
+     values relative to the data values.
+     Added the $pen.symb command to control the pen thickness for
+     drawing  symbols similar to the $pen.data and $pen.axis com-
+     mands.
+     Added the $label.size N command to set the  size  of  labels
+     ($label,   $symb.label,   $line.label)  independent  of  the
+     $symb.size command.  Formerly, $label.size  =  $symb.size  *
+     1.5
+
+     Rev 3.4 There is a  command  to  call  the  high2  library's
+     axplt2() function directly from dplot.  It is not pretty nor
+     easy to use (since it is simply a raw interface to  axplt2()
+     itself), but in some cases it may be the only way to get the
+     job done.  The comnand is $axplt2 _s_t_r_i_n_g.  The argument is a
+     comma  separated  list  of parameters for axplt2().  See the
+     high2 manual for details.
+
+     Rev 3.3 Add the ``$echo string'' command.  Helpful for  com-
+     menting script files.
+
+DESCRIPTION
+     dplot is a general plotting program that takes several  dif-
+     ferent  inputs  and  creates  plots  on a given plot device.
+     There are two main and overlapping uses for dplot:  plotting
+     raw  data  and   redrawing  plot  ``save'' files. dplot also
+     allows transformation of plots through offsetting, rotation,
+     and  scaling.   It  can  also produce plots for several dif-
+     ferent plot devices.
+
+     Command line arguments can be actual dplot commands or  some
+     special  commands  used only on the command line.  Arguments
+     include:
+
+     -d plotdev
+          Set plot device to 'plotdev'.  If used, this should  be
+          the  first argument to dplot.  The device specification
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY                1
+
+
+
+
+
+
+DPLOT(1L)         UNKNOWN SECTION OF THE MANUAL         DPLOT(1L)
+
+
+
+          can be any device defined in the plot device  capabili-
+          ties  data  base  _p_l_o_t_c_a_p.  If no plot device is given,
+          the value of the environment variable DEFPDEV  will  be
+          used.   If  this  is  not given, the user's terminal is
+          taken as the plot device to use.
+
+     -t tplotfile
+          Take _t_p_l_o_t_f_i_l_e as a binary save file  (like  that  pro-
+          duced by Suprem-III or dplot with the output device set
+          to save).  Redraw the  plot  with  any  transformations
+          already given to dplot.
+
+     files...
+          The named file are take to be data/dplot-command files.
+          Both  data  and dplot commands can be intermixed within
+          the same file or any number of files.  A standard setup
+          can be placed in one file followed by the data files or
+          everything in one file.
+
+     -f file
+          Like above, but just the single file name following  is
+          taken  as a dplot commands/text file.  Useful after the
+          -T option has been used to insert a commands/text file.
+
+     -T   Take all subsequent (untagged) files to be tplot files.
+          This  switches  the  default  from untagged files being
+          text/commands and -t tagged files are tplot files.
+
+     -F   Take all subsequent (untagged) files to be  dplot  com-
+          mand/ text files.  This undoes the -T option.
+
+     -o outfile
+          Set plot output file to _o_u_t_f_i_l_e.  All output  will  put
+          in  this  file  instead  of the default device given in
+          plotcap.  This option works best if it is given  before
+          the -d (device) option.
+
+     -l[2]
+          Log all dplot commands to the file dplot.log.  This  is
+          an  ascii  file  of  dplot  commands that can be edited
+          and/or re-executed by dplot.  If  the  option  is  -l2,
+          then save files will be expanded and logged.
+
+     -i   Use the standard input as the  input  file  for  dplot.
+          This  option  can  be  inserted anywhere in the command
+          line and as often as necessary.  This can be used,  for
+          example,  to  pipe program output into dplot after some
+          setup files have been read. _N_O_T_E: If no  arguments  are
+          given  on  the  command  line,  the  standard  input is
+          assumed.
+
+     -    Same as -i.  More Unix compatible concept.
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY                2
+
+
+
+
+
+
+DPLOT(1L)         UNKNOWN SECTION OF THE MANUAL         DPLOT(1L)
+
+
+
+     ,    Same as -i.  Easier for me to use.
+
+     -{dplot command} [dplot arg]
+          Any dplot command and possible argument can be given on
+          the command line beginning with a '-' (minus sign).
+
+     Several examples may help illustrate what can be  done  with
+     dplot.
+
+     % dplot -clear setup file.dat
+          Will clear the screen,  take  commands  from  the  file
+          setup and read the data from file.dat
+
+     % dplot -d hp2623 -clear setup file.dat
+          Like above, but plots to the hp2623 terminal.
+
+     % dplot
+          Use the standard input as input for dplot
+
+     % dplot -d hp2623 setup -i
+          Use new plot device, take commands from the setup  file
+          and  continue reading from the standard input (until an
+          EOF).
+
+     % dplot setup fil1.dat fil2.dat fil3.dat
+
+     Set up for given data ranges, etc and plot data from several
+     data files.
+
+     % myprog | dplot setup -i
+
+     Pipe the output of myprog into dplot.  dplot will  read  the
+     file _s_e_t_u_p and then take input (until EOF) from the standard
+     input (the piped output of myprog in this case).
+
+     % dplot -T tplot.1 tplot.2 tplot.3
+
+     All files after the -T are taken as (binary) save files.
+
+     alias cnp 'dplot -T -d canon'
+
+     This is functionally equivalent to the (old) cnp program.
+
+COMMANDS/TEXT/DATA FILES
+     dplot text files can be any format file.   They  are  parsed
+     into  words  separated  by  white  space (space, tab, return
+     characters).  dplot commands are signaled by a  word  begin-
+     ning with the command marker character (default: $).  It may
+     have an argument.  Numbers (data) to be plotted are  thought
+     to  be  in  columns.  Column counting is done by white space
+     separated words but only  numeric  _w_o_r_d_s  are  used  in  the
+     counting. Comments may be embedded within dplot files with a
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY                3
+
+
+
+
+
+
+DPLOT(1L)         UNKNOWN SECTION OF THE MANUAL         DPLOT(1L)
+
+
+
+     pound character (pound: #).  Text between the pound  charac-
+     ter  and  the end of line is ignored.  Data and commands can
+     be intermixed with one or more files.
+
+COMMANDS
+     dplot command summary.  These commands are  input  to  dplot
+     through  files  (with or without data) or the standard input
+     or the command line macros.
+
+     Some commands take sub-commands  given  as  _c_o_m_m_a_n_d._s_u_b  and
+     some can take an argument and some take both.  Arguments are
+     either numeric or character (as in file  names).   Character
+     type arguments should be quoted with either single or double
+     quotes (and embedded quote  characters  may  be  escaped  by
+     preceding  them with a backslash character).  If the charac-
+     ter argument is only one word long, it need not  be  quoted.
+     In  the following descriptions the use of a sub-command will
+     be indicated as $_c_o_m_m_a_n_d._S and that of an argument  will  be
+     either $_c_o_m_m_a_n_d _n_u_m or $_c_o_m_m_a_n_d _s_t_r.  Where sub-commands are
+     _x  or  _y  the  sub-command  may  be  omitted  and  both  the
+     corresponding X and Y values are set to the given argument.
+
+     $dump
+          Show current  dplot  settings.   There  is  an  option:
+          $dump.to  _f_i_l_e where the current settings are dumped to
+          the file _f_i_l_e in a form re-readable by dplot.
+
+COMMANDS: NUMERIC ARGUMENTS
+     $addto.S num
+          Set data offset values (these values get added to  each
+          datum _S = {_x,_y}
+
+     $axsize.S num
+          Hack command to override default axis label sizes.  _S =
+          {_t_i_t_l_e,_l_a_b_e_l}
+
+     $clip.S.SS [num]
+          Set clip values for  plotting.   These  values  are  in
+          inches  (for  now,  soon it can be inches on logical or
+          physical axis or at some data values).  _S = {_h_i_g_h, _l_o_w}
+          and  _S_S = {_x,_y}.  There are a couple of different forms
+          of this command best illustrated by example:
+          $clip.high.x 6.5 Set high clipping on  x  axis  at  6.5
+          inches.
+          $clip.high   6.5 Set x and y high clips at 6.5in.
+          $clip.high No number given. Set high clipping  at  axis
+          locations.
+
+     $col.S num
+          Set column number for X and Y. _S = {_x, _y}
+
+     $label.loc.S num
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY                4
+
+
+
+
+
+
+DPLOT(1L)         UNKNOWN SECTION OF THE MANUAL         DPLOT(1L)
+
+
+
+          Set the locators for label drawing.  This  affects  the
+          commands  $symb.label,  $line.label, and $label.  These
+          values can also be set (on devices with the capability)
+          with  the  $locate  command.   _S = {_x, _y} Note that the
+          value by default is relative to the screen, but can  be
+          changed  to data relative with the $label.loc.data com-
+          mand.
+
+     $label.size N
+          Set  the  size  of  label  strings  used  with  $label,
+          $line.label and $symb.label.
+
+     $line num
+          Set the line type with which to plot. Note:  some  plot
+          devices may have no line types.
+
+     $locate num
+          See $locate in the `action' commands below.
+
+     $max.S num
+          Set the maximum values to be plotted.  _S = {_x, _y}
+
+     $min.S num
+          Set the minimum values to be plotted.  _S = {_x, _y}
+
+     $mulby.S num
+          Set data scale values (each  datum  gets  multipled  by
+          these values _S = {_x,_y}
+
+     $ncols num
+          Set the number of columns of data in the input.
+
+     $offset.S num
+          Set the origin offset to _n_u_m.  _S = {_x, _y}
+
+     $pen.S num
+          Set pen width for drawing.  There are three  pens,  one
+          for data, one for axes and one for symbols and strings.
+          _S = {_d_a_t_a, _a_x_i_s, _s_y_m_b}
+
+     $rotate.S num
+          Set the rotation angle and point about  which  rotation
+          is to take place.  _S = {_x, _y, _a_n_g_l_e}
+
+     $scale.S num
+          Set the scale factor for each direction.  _S = {_x, _y}
+
+     $segment.S num
+          Select a segment (G_MARK'ed section of gplot2()  calls)
+          to  be deleted on replay of save files ($gplot commands
+          or $tplot files). If there is no subcommand  or  it  is
+          _d_e_l,  then  set  _n_u_m  to  be  a  segment  to be deleted
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY                5
+
+
+
+
+
+
+DPLOT(1L)         UNKNOWN SECTION OF THE MANUAL         DPLOT(1L)
+
+
+
+          (gplot2() subcommands are segment/G_MARK numbers).   If
+          the  subcommand  is  _k_e_e_p then the segment will be kept
+          (remove it from the to-be-deleted list).  Additionally,
+          with  no  numeric  parameter, the sub-command _s_h_o_w will
+          print  the  current  to-be-deleted  list   of   segment
+          numbers.  Likewise, the sub-command _r_e_s_e_t will keep all
+          segments (reset the list to empty).   _S  =  {  -_e_m_p_t_y-,
+          _d_e_l, _k_e_e_p, _s_h_o_w, _r_e_s_e_t }
+
+     $symb.S num
+          Set the symbol to be plotted at each point if  plotting
+          by symbol.  _S = {_s_i_z_e} or omitted. If S is omitted, set
+          symbol to symbol _n_u_m.  Symbols are numbered from  0  to
+          15.  If S is _s_i_z_e change the default symbol size.
+
+COMMANDS: ACTION OR SET-LOGICAL-FLAG
+     $abs.S.SS
+          Plot only the absolute values of data. To turn on: $abs
+          or $abs.on will plot the absolute value of both X and Y
+          values. To turn both off $abs.off.  To affect the abso-
+          lute  value of just X or Y, try $abs.x or $abs.x.on and
+          $abs.x.off (and $abs.y or $abs.y.on and $abs.y.off).
+
+     $axis
+          Draw the appropriate axis (Given: min, max, linear/log,
+          labels).
+
+     $axis.box
+          Draw a simple box for the axis (ie: without  tic  marks
+          and tic labels).
+
+     $by.S
+          Plot 'by' _S = {_l_i_n_e, _s_y_m_b,  _b_o_t_h}.   Do  plotting  with
+          symbols, lines or both.
+
+     $clear
+          Clear the plot ``_s_c_r_e_e_n''.
+
+     $label.loc.SS
+          Set  the  mode  for  $label.loc.{x,y}   commands.    If
+          SS=screen  (the  default),  label  locations are screen
+          relative.  If SS=data then the values will  be  assumed
+          to be data relative.
+
+     $linear.S
+          Set plot type to linear scale (this is the default).  _S
+          = {_x, _y}
+
+     $locate
+          Use the tablet (assuming one is available) to  get  the
+          current  {_x,_y}  position  instead  of using $label.loc.
+          Thus, any $symb.label,$line.label, or  $label  commands
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY                6
+
+
+
+
+
+
+DPLOT(1L)         UNKNOWN SECTION OF THE MANUAL         DPLOT(1L)
+
+
+
+          will  draw at the _l_o_c_a_t_e_d point. (NOTE: if this command
+          has a numeric operand, it will be passed  to  to  gplot
+          call as the subcommand.  This is included since in some
+          Plotcap definitions, the type of tablet  is  determined
+          with the gplot subcommand.)
+
+     $log.S
+          Set plot type to logarithmic. _S = {_x, _y}
+
+     $pen.S
+          Raise or lower the drawing pen explicitly.   _S  =  {_u_p,
+          _d_o_w_n}  The  pen  is  automatically  raised when $ncols,
+          $col.x, $col.y change or when a new data file is begun.
+          It  is sometimes, however, nice to be able to alter the
+          default action.
+
+     $reset.S
+          Reset  internal  variables  to  the  original   default
+          values.   The  $reset.cols  command  can be used to re-
+          synchronize column counting for data items.
+
+COMMANDS: STRING ARGUMENTS
+     $asave str
+          Simultaneously plot to current device and save all plot
+          commands to a file.  Saving can be paused and restarted
+          as well as stopped at any time. The auto-save  commands
+          would look like:
+          $asave savefile.gp      # turn saving on to new file.
+          $asave.off      # don't save, file still open.
+          $asave.on      # save again, to (still) open file.
+          $asave.stop      # stop saving, close file.
+          Note that the command $asave.file  savefile.gp  is  the
+          same  as  $asave  savefile.gp and that only these forms
+          take a parameter (a file name).
+
+     $axplt2 str
+          Call the high2 library function axplt2 directly.   This
+          was added as a quick hack for someone and has been left
+          in since it may be the  only  way  to  accomplish  some
+          tasks.   The string is a comma separated list of axplt2
+          arguments.  See the high2 manual.
+
+     $cd str
+          Or $_c_h_d_i_r _s_t_r can be  used  (on  systems  that  support
+          directory  trees)  to  change  the working directory to
+          which dplot is connected.  Note that not  all  versions
+          support  this command (but those that don't are on sys-
+          tems where the command has no meaning).
+
+     $device str
+          (or dev).  Set plot device to that named _s_t_r.
+
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY                7
+
+
+
+
+
+
+DPLOT(1L)         UNKNOWN SECTION OF THE MANUAL         DPLOT(1L)
+
+
+
+     $echo.s str
+          Echo the given string to the standard output.   _s_t_r  is
+          optional.   If  the sub-command is nl then echo without
+          added a newline. ($echo.nl "hi")
+
+     $file str
+          Take commands and/or data from the file named _s_t_r.
+
+     $gpget str
+          Call the gpgeti() routine directly.  Prints the  infor-
+          mation returned.  Useful for debugging but probably not
+          much else. Example: $gpget G_PSIZE
+
+     $gplot str
+          Call gplot2() directly.  String is  a  comma  separated
+          list  of gplot arguments (see gplot2 for details).  The
+          gplot commands can be numeric or symbolic.   For  exam-
+          ple:  $gplot "G_MOVE,,2,3.45" or $gplot "gmove,,2,3.45"
+          or $gplot 3,0,2,3.45 are all equivalent.  Note  that  a
+          null  parameter  is  set to zero.  The names are mapped
+          from the system gplot include or the file specified  by
+          the  GPLOTH  environment variable.  This was originally
+          added  for debugging, but has proved  useful  for  many
+          other  needs.   Note  the  case is unimportant and that
+          underscore characters are optional.
+
+     $label.S str
+          Set the label for each axis to _s_t_r.  _S = {_x, _y} If _S is
+          not  given  then  draw  the string at the current label
+          locations. (See the command $label.loc num in the  Com-
+          mands with numeric values section).
+
+     $line.label str
+          Draw a small line segment in the current line  type  at
+          the  current  label  location (See $label.loc num) fol-
+          lowed by the given string.
+
+     $outfile str
+          Set the output file to _s_t_r.  All plot  output  will  be
+          put in this file.
+
+     $symb.label str
+          Draw the current symbol at the current  label  location
+          (See $label.loc num) followed by the given string.
+
+     $sys str
+          Execute the system command _s_t_r in a sub-shell.  This is
+          a  shell  escape.  Note that like titles, etc. if there
+          are embedded white spaces, the string must be quoted.
+          NOTE: there is a special form of the $sys commands.  As
+          with  most  Unix  commands,  an exclamation mark in the
+          first column is taken as a shell escape.  But  in  this
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY                8
+
+
+
+
+
+
+DPLOT(1L)         UNKNOWN SECTION OF THE MANUAL         DPLOT(1L)
+
+
+
+          case  no quoting (other than that required by the shell
+          being used) is required; the remainder of the  line  up
+          to  a  newline is take as the shell command to execute.
+          Likewise, if the first character is  the  shell  escape
+          and the second character is a less than symbol (<) then
+          the entire line is taken as a shell command to  execute
+          and  (like  _s_y_s._i_n)  the  output  from  the  command is
+          trapped by dplot and used as input at that point.
+
+     $sys.in str
+          Like the sys command, but all output from  the  command
+          is _c_a_u_g_h_t by dplot and taken as further input. See note
+          for sys.
+
+     $title str
+          Set the title of the plot to _s_t_r.  NOTE: if  the  title
+          has  embedded  spaces,  it  must be quoted (with either
+          single or double quotes).
+
+     $tplot str
+          Take _s_t_r to be a tplot file and re-draw the plot.  (See
+          the -_t option).
+
+     $tty Take input from the user's terminal at this point until
+          a control-D is reached.
+
+COMMANDS: SOME EXTRA COMMANDS (MISC.)
+     There are now some _e_x_t_r_a commands that allow a  little  more
+     fooling  around with the final plot.  These are like regular
+     dplot commands, except that they have an extra  sub-command,
+     as $extra.command.sub arg.
+
+     $phys.c.s arg
+          This command can be used to alter the physical  set  up
+          of the plot axis.  Note that in some cases the argument
+          can be a percentage. This should be given as  a  number
+          between  0  and  100  immediately followed by a percent
+          sign.  Thus to specify that the origin  of  the  X-axis
+          should be at 10 percent of the screen:
+               $phys.origin.x 10%
+     Note also that giving .10 would mean 1/10th of a  plot  unit
+     (inch).
+
+          $phys.origin.S val
+               Set the origin of the axis  to  the  given  value.
+               Value  can either be some absolute value or a per-
+               centage of full screen size. S = x,y and if  omit-
+               ted, both X and Y are set.
+
+          $phys.len.S val
+               Set the length  of each axis to the  given  value.
+               Again  the  same  holds for percentages and x or y
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY                9
+
+
+
+
+
+
+DPLOT(1L)         UNKNOWN SECTION OF THE MANUAL         DPLOT(1L)
+
+
+
+               being omitted.
+
+          $phys.max.S val
+               Regardless of the settings for origin and  length,
+               the right side (for _x) and/or the top side (for _y)
+               are not to be greater than _v_a_l (in  plot  units  -
+               inches).
+
+          $phys.aspect.S val
+               Set the aspect ratio for  the  axis.   Within  the
+               above  constraints, make the largest plot possible
+               with the given ratio in length of sides.  For _S  =
+               x,  x/y or omitted, _v_a_l is taken as the ratio of X
+               to Y. For _S = y , y/x the value is  taken  as  the
+               ratio of Y to X.
+
+STARTUP FILES
+     When dplot starts up it will search for a file  of  commands
+     to execute before anything else.  The file can be in several
+     places, the first one found will be the one  executed.   The
+     first  file  tried  is the value of the environment variable
+     DPLOTRC.  If this variable is not set or the named  file  is
+     not  readable,  it will try the file .dplotrc in the current
+     directory.  If this is non-existent  or  is  unreadable,  it
+     will try the file .dplotrc in the users home directory.  The
+     start up file may contain any dplot commands or comments  or
+     whatever.
+
+FILES
+     $DPLOTRC - User specifiable startup file name.
+     ./.dplotrc - Next choice for a startup file.
+     $HOME/.dplotrc - And the next choice for a startup file  for
+     dplot.
+
+ENVIRONMENT VARIABLES
+     DPLOTRC - User specifiable startup file name.
+     DEFPDEV - Default plot device if none given.
+     DEFPFIL - Default output file if none given.
+     PLOTCAP - Alternate plotcap file.
+     GPLOTH - Location  of  the  gplot  definitions  file  (often
+     "/usr/include/local/gplot.h")  other than the default.  This
+     is only used with symbolic constants with  the  $gplot  com-
+     mand.  TERM - Default plot device if DEFPDEV not given.
+     HOME - Home directory to in which to find start up file.
+     LOGDIR - Used for home directory if HOME is not set  (System
+     V systems).
+     SHELL - Shell to use for shell escapes (sys commands).
+
+DIAGNOSTICS
+     Errors are reported giving input file and  line  number  and
+     maybe  some  added  information.  Numbers in parenthesis are
+     error returns from a specific internal subroutine.
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY               10
+
+
+
+
+
+
+DPLOT(1L)         UNKNOWN SECTION OF THE MANUAL         DPLOT(1L)
+
+
+
+NOTES
+     dplot now sets plot sizes by default to some  percentage  of
+     the screen (plot device) size.  It also does not clip on the
+     axis bounds (as one might expect).  Thus, you  may  want  to
+     create  a  .dplotrc  file  in you home directory and add the
+     following lines to emulate the way dplot used to start up:
+
+          $phys.origin.x 1.25
+          $phys.origin.y  .75
+          $phys.len.x   8.0
+          $phys.len.y   4.0
+          $clip.high
+
+AUTHOR
+     Michael Eldredge (dredge@Oasis.Stanford.Edu)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Sun Release 3.5 Last change: STANFORD UNIVERSITY               11
+
+
+

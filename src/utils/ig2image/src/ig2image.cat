@@ -1,0 +1,132 @@
+
+
+
+IG2IMAGE(1)               USER COMMANDS               IG2IMAGE(1)
+
+
+
+NAME
+     ig2imagetool -  NCSA  Image  Interface  for  PISCES-IIB  and
+     SUPREM-IV files
+
+SYNOPSIS
+     ig2image [ -ab [bin_file] cel m # p  [pisc_file]  q  v  #  ]
+     meshfile
+
+DESCRIPTION
+     ig2image is an interactive program that generates movies for
+     ImageTool.   Questions are asked of the user such as whether
+     movies are being produced, the number  of  pixels  for  each
+     frame,  the pixel expansion for each data point, the name of
+     the binary frames, and relevent data to retrieve  PISCES-IIB
+     solution files.
+
+OPTIONS
+     -a   Take absolute value of data.
+
+     -b bin_file
+          Use bin_file for outputting binary data.   bin_file  is
+          appended with a unique integer for frame number as well
+          as a image size (only occurs on the first frame  for  a
+          movie).
+
+     -e   Make a movie using multiple files with  special  incre-
+          ment  code.   File  format is filennn, where nnn is a 3
+          digit number.
+
+     -l   Take logorithm base 10 of data.
+
+     -m # Use data only from material # (3 is for Si,  1  is  for
+          Oxide, 7 for all)
+
+     -p pisc_file
+          Data is from PISCES-IIB.  Use  pisc_file  for  solution
+          data.
+
+     -q   Quiet mode. Do not interactively ask questions.
+
+     -t   PISCES-IIB solution file contains deep level traps.
+
+     -v # Plot # as the solution variable.
+
+EXAMPLE
+     1 zotz> ig2image pn.msh -  generates  NCSA  Image  data  for
+     pn.msh
+
+FILES
+     .piscestos4 holds the translated  PISCES-IIB  data  file  in
+     SUPREM-IV format
+
+
+
+
+Sun Release 3.5   Last change: 31 December 1990                 1
+
+
+
+
+
+
+IG2IMAGE(1)               USER COMMANDS               IG2IMAGE(1)
+
+
+
+     for movies using SUPREM-IV,  the  structure  files  must  be
+     arranged in the format basennn where nnn is a 3 digit number
+     starting at 000 and incrementing  sequentially.   this  same
+     format  is  used  in  naming  the output frames.  PISCES-IIB
+     solution files must also be numbered sequentially.
+
+BUGS
+     no backup mode to change a previous entry.  you  must  rerun
+     the program.
+
+     it can be slow for large frame sizes.  also try  to  specify
+     even sizes.
+
+     please report any other bugs to huang@pudleys.stanford.edu
+
+AUTHORS
+     Goodwin Chin
+     Robert Huang
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Sun Release 3.5   Last change: 31 December 1990                 2
+
+
+

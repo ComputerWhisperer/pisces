@@ -1,0 +1,19 @@
+#
+# Copyright c 1990 The board of trustees of the Leland Stanford
+#                  Junior University. All rights reserved.
+#
+#
+#	Imakefile		Version 1.1	
+#	Last Modification:	3/27/90 14:22:22		
+
+#
+
+EXAMPLE = README skel.demo tri.demo tri.pisces
+AllTarget( )
+
+#ifdef STANFORD
+# Build a Release
+ReleaseTarget(Makefile)
+ReleaseMultipleFile(Imakefile Makefile)
+ReleaseMultipleFile($(EXAMPLE))
+#endif

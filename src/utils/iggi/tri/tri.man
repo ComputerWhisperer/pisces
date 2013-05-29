@@ -1,0 +1,88 @@
+.TH TRI
+.ad b
+.SH TRI
+tri \- generate triangular grid
+.SH SYNOPSIS
+.B tri
+[ -Cstring -D -c -d -i# -l# -m# -r# -s -t#] file [-o output -p output]
+.SH IGGI-II
+.TP 10
+Level:
+Iggi
+.TP
+Author:
+Conor S. Rafferty
+.sp
+Based on an algorithm in PLTMG [\fIComputing\fR, R.E. Bank and A.H. Sherman,
+\fB26\fR, 91-105 (1981)]
+.TP
+Version:
+%I% %G% %U%
+.SH DESCRIPTION
+Tri generates the grid for two-dimensional simulators.
+It reads a 'skeleton' of the structure from the input file, which may
+be generated with a text editor or using the interface skel(1).
+Depending on a number of numerical parameters, triangular grid is
+generated to cover the skeleton, and by default some smoothing
+is done to improve the triangles. The output is then written to a
+file of the same type as the input. An output file in PISCES-II
+format can also be generated.
+.TP
+\-Cstring
+("Command") The string following C is a command to the smoothing phase. 
+There are three
+types of smoothing available, averaging, flipping, and nonlinear optimization.
+The command string is a sequence of the letters 'a','f','o' giving the 
+smoothing steps to perform. The default command string is Cfa, which 
+performs a flipping step and an averaging step in that order. 
+Flipping and averaging steps are quite fast (~1 min for
+600 nodes). Optimization steps are slow (~15 min for 600 nodes), but
+usually do a good job of removing obtuse triangles. Optimization can
+be completely turned off by putting nothing after the -C.
+.TP
+-D
+("Debug") Turn on cryptic debugging information.
+.TP
+\-c
+("CPU") Save CPU time of optimizer in the file opt.cpu.
+.TP 
+\-d
+("Display") 
+The triangulation is plotted as it is generated. Default off.
+.TP
+\-i <number>
+("Inner") Set the convergence tolerance of the inner loop, default 1%.
+.TP
+\-l <number>
+("Limit") Limit the number of outer loops in the optimizer, default 15.
+.TP
+\-o
+("Output")
+Defines the output file; the default is t.out.
+.TP
+\-p
+("Pisces") Requests a file formatted for PISCES-II.
+.TP
+\-q <number>
+("Quality") Set the minimum quality of triangles generated, on a scale of 0 to 1.
+This is a guideline to how fussy the program should be; the less, the faster
+it runs, but the worse the angles generated. Default 0.6.
+.TP
+\-r <number>
+Defines the maximum ratio between adjacent edges, default 1.5,
+normal range is 1.1 - 2.
+Decreasing the ratio creates better triangles but more nodes,
+and increasing it does the opposite.
+.TP
+\-s
+("Summary") Prints a short description of the mesh generated. Default off.
+.TP
+\-t <number>
+Set the convergence tolerance of the optimizer, default 1% (which 
+amounts to 1\(de of error in the angles).
+.SH BUGS
+Generates obtuse triangles. 
+.br
+Regions must be simply connected (no holes)
+.SH SEE ALSO
+skel

@@ -1,0 +1,59 @@
+
+
+			A HMOS FET
+
+
+This example is a simulation of a HMOS mosfet.  This example will show
+some tricks one can play with the grid refinement.  It also is a good
+example that leads the user sequentially through the subthreshold, linear
+and saturation.
+
+
+
+The simulation starts with a file called fig03.p2.  This file generates
+the mesh and saves it to a file called hmos.msh.  The device has a 1.5um
+channel and measures 3um x 2um.  The rectangular grid is distorted using
+spread statements.  Electrodes are defined for the gate, substrate, drain
+and source.  The substrate doping and source and drain diffusions are
+put in using the doping statements.  The file then plots the grid, junction,
+and doping contours.
+
+
+
+Files fig04.p2 and fig05.p2 are not important to this simulation, but they
+are there to show how the final grid is obtained in the file called fig03.p2.
+
+
+
+An example of regrid is in the file called fig08.p2.  The file starts with
+a rectangular mesh on a device similar to fig03.p2.  The doping and the
+interface charge is exactly the same as fig03.p2.  Regriding is done in
+the silicon region of the device and the regrid mesh files are saved in
+hmos1.msh and hmos2.msh.  Next, instead of performing regriding on the doping,
+the regrid is done on the potential.  Since the regrid files are saved
+as hmos3.msh and hmos4.msh, the user can compare how the regrid changes
+the mesh for both potential and doping.  Regriding on potential after an
+intial solution is obtained, refines the triangles showing the greatest
+change in potential.
+
+
+
+The subthreshold curve is solved for by the file called fig15.p2.  This
+file uses the last regrid on potential mesh file (hmos4.msh).  A single
+carrier gummel method is used to solve for the intial solution and it is
+saved in a file called hmos0.slv.  The remainder of the solution is
+obtained using a single carrier newton solution.  A log file called
+IVsub.log keeps track of the generated data.  The solution for Vds=0.1 volts
+is solved and saved in a file called hmos1.slv.  Next, Vgs is stepped from
+-0.5 to 2.0 volts.  The plot gate voltage versus the drain current is then
+plotted.
+
+
+
+In much the same way the subthreshold curve was obtained, the drain charac-
+teristics are solved for in a similar manner.  This time the gate voltage is
+first stepped up to 3 volts.  The log file this time is called IVdrain.log.
+The drain voltage is then slowly stepped up to 3 volts.  At 3 volts the
+solution is saved in a file called hout30.slv.  The drain characteristic
+is then plotted.
+

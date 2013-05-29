@@ -1,0 +1,198 @@
+
+
+
+DIGIT(1L)           UNIX Programmer's Manual            DIGIT(1L)
+
+
+
+NAME
+     digit - digitize input from tablet
+
+SYNOPSIS
+     digit [option switches]
+
+DESCRIPTION
+     _D_i_g_i_t will digitize points from the tablet (_u_s_u_a_l_l_y _t_h_e_r_e
+     _w_i_l_l _b_e _a _g_r_a_p_h _o_n _t_h_e _t_a_b_l_e_t).  The coordinates of each
+     point are put into an output file with the _x coordinate in
+     the first column and the _y coordinate in the second column.
+
+     If the user is in _i_n_t_e_r_a_c_t_i_v_e mode, the program will give
+     the user a command prompt, digit>.  Otherwise, the program
+     will first do a setup procedure which will ask the user to
+     enter three different points on the axes.  For the program
+     to work properly one point must be on the _o_r_i_g_i_n, one on the
+     end of the _x axis, and one on the end _y axis.  The program
+     will only accept axes which are orthogonal.  If the axes are
+     not within a few degrees from being orthogonal, the user
+     will be asked to reenter the points.  Then the program will
+     make sure that the scales for _x and _y have been entered.
+     The user will be prompted for any information it needs.  The
+     program will initialize by rescaling the plotting device to
+     match the graph. Then it will take points entered from the
+     plotting device and put the coordinates into an output file,
+     and it will exit the program.
+
+OPTION-SWITCHES
+     -command [value]
+               Any of the commands in digit can be used as option
+               switches.  If the command does not require that a
+               _v_a_l_u_e be given then the program will not expect to
+               find one.
+
+     -i        The program will go into an interactive mode after
+               all of the switches have been evaluated.  The
+               default is to digitize and then exit the program.
+               This switch is useful if you are going to digitize
+               more than one graph.
+
+
+     NOTE: switches are processed in the order in which they are
+     entered
+
+COMMANDS
+     digitize  This command will cause the program to automati-
+               cally lead the user through the program and will
+               ask the user for any information that it needs.
+               No other commands should be necessary.  However,
+               if the user enters values for some or all of the
+               variables then the program will run faster because
+
+
+
+Printed 3/27/87         18 September 1985                       1
+
+
+
+
+
+
+DIGIT(1L)           UNIX Programmer's Manual            DIGIT(1L)
+
+
+
+               it won't need to ask the user for those values.
+
+     device plot-device (or) d plot-device
+               The plotting device will be set to be _p_l_o_t-_d_e_v_i_c_e.
+
+     min.x  value
+               This sets the _m_i_n_i_m_u_m value of _x to be equal to
+               _v_a_l_u_e.
+
+     max.x value
+               This sets the _m_a_x_i_m_u_m value of _x to be equal to
+               _v_a_l_u_e.
+
+     min.y  value
+               This sets the _m_i_n_i_m_u_m value of _y to be equal to
+               _v_a_l_u_e.
+
+     max.y value
+               This sets the _m_a_x_i_m_u_m value of _y to be equal to
+               _v_a_l_u_e.
+
+     log.x     This tells the program that all _x values are
+               scaled logarithmically on the graph.
+
+     log.y     This tells the program that all _y values are
+               scaled logarithmically on the graph.
+
+     lin.x     This tells the program that _x values are scaled
+               linearly on the graph.  This is the default.
+
+     lin.y     This tells the program that _y values are scaled
+               linearly on the graph.  This is the default.
+
+     write filename (or) o filename
+               The file _f_i_l_e_n_a_m_e will be rewritten or is created
+               so that the data points can be put into it.
+
+     append filename
+               The file _f_i_l_e_n_a_m_e will be opened in append mode.
+
+     file [filename]
+               The program will digitize points entered from the
+               tablet.  The output will be written into _f_i_l_e_n_a_m_e.
+
+     setup     This calls a procedure which will initalize the
+               program so that it will be able to properly con-
+               vert the input from the tablet.
+
+     show      The value for each variable will be printed onto
+               the terminal screen.
+
+     verbose (or) v
+
+
+
+Printed 3/27/87         18 September 1985                       2
+
+
+
+
+
+
+DIGIT(1L)           UNIX Programmer's Manual            DIGIT(1L)
+
+
+
+               Toggles between verbose and no verbose modes.  In
+               verbose mode the program will print the coordi-
+               nates of each point that was entered from the
+               tablet and will tell the user the total number of
+               points that were entered.
+
+     graph (or) g
+               Toggles between graph and no graph modes.  In
+               graph mode the program will automatically plot the
+               input onto to screen after all of the data points
+               have been entered.
+
+     quit      Terminates the program.
+
+EXAMPLES
+     The following line of commands will open _t_e_s_t._o_u_t, set the
+     maximum and minimum values of both x and y, set the plotting
+     device to be _t_e_k_c_t, and will cause the program to automati-
+     cally digitize after all of the switches on the command line
+     have been evaluated.
+
+          % digit -o test.out -min.x 0 -max.x 0.44 -min.y 1e17
+           -max.y 1e19 -log.y -d tekct
+
+     or to do the same thing without using switches the user
+     would type
+
+          % digit -i
+          digit> write test.out
+          digit> min.x 0
+          digit> max.x .44
+          digit> min.y 1e17
+          digit> max.y 1e19
+          digit> log.y
+          digit> d tekct
+          digit> digitize
+          digit> quit
+
+     or the user could simply type
+
+          % digit
+
+     and the user will be prompted for all of the other necessary
+     information.
+
+BUGS
+     The program cannot digitize graphs that are in polar coordi-
+     nates.
+
+AUTHOR
+     Todd Atkins
+
+
+
+
+Printed 3/27/87         18 September 1985                       3
+
+
+

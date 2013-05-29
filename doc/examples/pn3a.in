@@ -1,0 +1,15 @@
+Title Plot file (Fig 3a)
+$  Plot figures 3b and 3c.
+
+option plotdev=p2dit
+mesh inf=pn.msh
+$
+$ FIGURE 3b
+option  asave=fig3b.sav
+plot.1d inf=IV-nr.log x.ax=va1 y.ax=i1 log abs points	outf=fig3b.dit
+plot.1d inf=IV-r.log  x.ax=va1 y.ax=i1 log abs points unch
+
+$ FIGURE 3c
+plot.1d inf=IV-r.log  x.ax=va1 y.ax=v1 points min=0	outf=fig3c.tr
+
+end

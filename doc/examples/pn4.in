@@ -1,0 +1,24 @@
+title pn diode (Figure 4 -- corrected)
+$  Transient analysis - voltage step
+
+mesh	in=pn.msh
+contac 	num=1 resis=1e5
+symb	newton carr=2
+method	rhsnorm xnorm autonr
+models	temp=300 srh auger conmob fldmob print
+
+load	inf=pn2a2-r.slv
+log	outf=IV-step.log
+solve
+solve	v1=-2 tstep=10e-12 tstop=100e-9
+
+option plotdev=p2dit
+$ FIGURE 6a
+plot.1d x.ax=time y.ax=i1 x.max=10e-9 points		outf=fig6a.tr
+$ FIGURE 6b
+plot.1d x.ax=time y.ax=va1 x.max=10e-9 points		outf=fig6b.tr
+plot.1d x.ax=time y.ax=v1 x.max=10e-9 points unch
+$ FIGURE 6c
+plot.1d x.ax=time y.ax=i1 x.max=10e-9 points integral	outf=fig6c.tr
+$
+end

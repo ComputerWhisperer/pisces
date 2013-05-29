@@ -1,0 +1,66 @@
+.\" @(#)w.1 1.1 86/07/10 SMI; from UCB 4.2
+.\ "%W%\t%G%";
+.TH IG2IMAGE 1 "31 December 1990"
+.SH NAME
+ig2imagetool \- NCSA Image Interface for PISCES-IIB and SUPREM-IV files
+.SH SYNOPSIS
+\fBig2image\fP [ \fB\-ab [bin_file] cel m # p [pisc_file] q v # \fP] meshfile 
+.SH DESCRIPTION
+.LP
+\fiig2image\fP is an interactive program that generates movies for
+ImageTool.
+Questions are asked of the user such as whether movies are being produced,
+the number of pixels for each frame, the pixel expansion for each data point,
+the name of the binary frames,
+and relevent data to retrieve PISCES-IIB solution files.
+.SH OPTIONS
+.TP
+\fB\-a\fP
+Take absolute value of data.
+.TP
+\fB\-b bin_file\fP
+Use bin_file for outputting binary data.  bin_file is appended with a
+unique integer for frame number as well as a image size (only occurs on
+the first frame for a movie).
+.TP
+\fB\-e\fP
+Make a movie using multiple files with special increment code.
+File format is filennn, where nnn is a 3 digit number.
+.TP
+\fB\-l\fP
+Take logorithm base 10 of data.
+.TP
+\fB\-m #\fP
+Use data only from material # (3 is for Si, 1 is for Oxide, 7 for all)
+.TP
+\fB\-p pisc_file\fP
+Data is from PISCES-IIB.  Use pisc_file for solution data.
+.TP
+\fB\-q\fP
+Quiet mode. Do not interactively ask questions.
+.TP
+\fB\-t\fP
+PISCES-IIB solution file contains deep level traps.
+.TP
+\fB\-v #\fP
+Plot # as the solution variable.
+.SH EXAMPLE
+1 zotz> ig2image pn.msh \- generates NCSA Image data for pn.msh
+.SH FILES
+\&.piscestos4
+holds the translated PISCES-IIB data file in SUPREM-IV format
+
+for movies using SUPREM-IV, the structure files must be arranged in the
+format basennn where nnn is a 3 digit number starting at 000 and 
+incrementing sequentially.  this same format is used in naming the
+output frames.  PISCES-IIB solution files must also be numbered sequentially.
+.SH BUGS
+no backup mode to change a previous entry.  you must rerun the program.
+
+it can be slow for large frame sizes.  also try to specify even sizes.
+
+please report any other bugs to huang@pudleys.stanford.edu
+.SH AUTHORS
+.nf
+Goodwin Chin
+Robert Huang

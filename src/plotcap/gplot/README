@@ -1,0 +1,78 @@
+
+	*** GPLOT library source directory ***
+
+ +++ In the original development source directory, pg_pgetprg.o is made from
+ the mkpar(1) parser-parser source file pg_pgetprg.m file.  This is turned
+ into a C file called pg_pgetprg.c which is just a standard C file.  The .c
+ file should be almost as easy as the .m file to understand and modify.
+ It (the .m) is included in the distribution just for your information.
+ The makefile does not require mkpar (called mp) to make the code.
+
+ +++ The systems types (BSD, SYSIII, SYSV, ...) are used to simply decide
+ on some definitions -- e.g. use strchr() instead of index() or
+ include <sys/file.h> or <fcntl.h> use vfork() instead of fork().  If your
+ system doesn't match, or you have compilation problems, the first step
+ should be to hunt down the "#ifdef BSD" or whatever and decide if your
+ system has the feature that is being defined (or redefined).  Most of the
+ system depends should be highlighted by the define/ifdef's.  The more
+ complete (but harder for the average porter to figure out -- at least on
+ first pass) would be to have a file full of:
+	#ifdef VFORK
+	#ifdef SYS_FILE
+	#ifndef INDEX
+ or some such...
+
+
+
+Things that need to be...
+
+12/86	Redo the "compiled" format plotcap files for fast loading.  Note that
+	chaining makes the simple binary load difficult.  It would be nice to
+	(say) have your local plotcap file be text and chain it to the system
+	(compiled) file.....
+
+12/86	It would be nice (although not really in the scheme of gplot()) to have
+	a "set-literal-string-on-the-output" function.  This could be used
+	to instert litteral postscript strings in the output file (for example)
+
+	This could be done (not very efficiently) as:
+		USR1 = %B=S :	# output the sub-command as is....
+
+		put_litr(str)
+			char*	str ;
+			{
+			while (*str) gplot2(G_USR1, (int)*str++, 0.,0.) ;
+			}
+
+	Actually, gpmisc() now is set to do this and will soon.  This will
+	help do high resolution fonts
+
+12/86	When area fill and line types were added, the patterns chosen were just
+	for illustration.  I've never gotten around to doing anything better
+	with them.  Some can go for it and send the patterns back.
+
+12/86	Symbl2() is set for different fonts.  It is just not implemented yet.
+
+12/86	It would be nice to have a plotcap capability(s) for high resolution
+	fonts if the device supports it.  So, if (eg) the device was a
+	postscript printer, just use its (nice) fonts instead of defaulting
+	to drawing the characters.  This is NOT simple by any means, but I've
+	got some ideas on the subject.  (But just think about fixed number of
+	point sizes - how do you scale? Rotate?)
+
+	Again, I'll be working on this.  It will probably go into symbl2()
+	and not in gplot itself.
+
+02/87	This is the last release of the library in this format.  As soon
+	as it is gone, I will begin rewriting everything, now that I know
+	what I really want.  Specifically, I will make the gplot level and
+	the plotcap/device levels completely separate.  Stay tuned.
+	(And send any suggestions...)
+
+08/88	This is the last release of the library in this format.  (I lied
+	in the comment above.)  I have added several bug fixes and many
+	new features.  It was just easier to test the ideas in the working
+	library than to try in a new version of *everything*.  I have
+	added software pens, the capability in the INIT sequence to read
+	back the actual screen size (very useful for windowed workstations)
+	and have done ALOT of work to the xgplot driver.

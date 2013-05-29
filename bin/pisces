@@ -1,0 +1,6 @@
+#!/bin/bash
+set -e
+progname="$0"
+curdir=`dirname "$progname"`
+export PISC2UKY=${curdir}/PISC2UKY
+$curdir/pisces.bin $*

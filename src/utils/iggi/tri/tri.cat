@@ -1,0 +1,132 @@
+
+
+
+TRI()             UNKNOWN SECTION OF THE MANUAL             TRI()
+
+
+
+TRI
+     tri - generate triangular grid
+
+SYNOPSIS
+     tri [ -Cstring -D -c -d -i# -l# -m# -r#  -s  -t#]  file  [-o
+     output -p output]
+
+IGGI-II
+     Level:    Iggi
+
+     Author:   Conor S. Rafferty
+
+               Based on an algorithm in  PLTMG  [_C_o_m_p_u_t_i_n_g,  R.E.
+               Bank and A.H. Sherman, 26, 91-105 (1981)]
+
+     Version:  %I% %G% %U%
+
+DESCRIPTION
+     Tri generates the grid for two-dimensional  simulators.   It
+     reads  a  'skeleton'  of  the structure from the input file,
+     which may be generated with  a  text  editor  or  using  the
+     interface  skel(1).   Depending  on  a  number  of numerical
+     parameters, triangular grid is generated to cover the skele-
+     ton,  and  by  default some smoothing is done to improve the
+     triangles. The output is then written to a file of the  same
+     type  as  the  input. An output file in PISCES-II format can
+     also be generated.
+
+     -Cstring
+          ("Command") The string following C is a command to  the
+          smoothing  phase.  There  are  three types of smoothing
+          available, averaging, flipping, and nonlinear optimiza-
+          tion.   The command string is a sequence of the letters
+          'a','f','o' giving the smoothing steps to perform.  The
+          default  command  string is Cfa, which performs a flip-
+          ping step and an averaging step in that order. Flipping
+          and  averaging  steps  are  quite  fast (~1 min for 600
+          nodes). Optimization steps are slow (~15  min  for  600
+          nodes),  but  usually  do a good job of removing obtuse
+          triangles. Optimization can be completely turned off by
+          putting nothing after the -C.
+
+     -D   ("Debug") Turn on cryptic debugging information.
+
+     -c   ("CPU") Save CPU time of optimizer in the file opt.cpu.
+
+     -d   ("Display") The triangulation is plotted as it is  gen-
+          erated. Default off.
+
+     -i <number>
+          ("Inner") Set the convergence tolerance  of  the  inner
+          loop, default 1%.
+
+
+
+Sun Release 3.5           Last change:                          1
+
+
+
+
+
+
+TRI()             UNKNOWN SECTION OF THE MANUAL             TRI()
+
+
+
+     -l <number>
+          ("Limit") Limit the number of outer loops in the optim-
+          izer, default 15.
+
+     -n   ("No Edge Division")  Do not split  edges.   Just  tri-
+          angulate.
+
+     -o   ("Output") Defines the  output  file;  the  default  is
+          t.out.
+
+     -p   ("Pisces") Requests a file formatted for PISCES-II.
+
+     -q <number>
+          ("Quality") Set the minimum quality of  triangles  gen-
+          erated,  on  a scale of 0 to 1.  This is a guideline to
+          how fussy the program should be; the less,  the  faster
+          it  runs,  but  the worse the angles generated. Default
+          0.6.
+
+     -r <number>
+          Defines  the  maximum  ratio  between  adjacent  edges,
+          default  1.5,  normal range is 1.1 - 2.  Decreasing the
+          ratio creates better  triangles  but  more  nodes,  and
+          increasing it does the opposite.
+
+     -s   ("Summary") Prints a short description of the mesh gen-
+          erated. Default off.
+
+     -t <number>
+          Set the convergence tolerance of the optimizer, default
+          1% (which amounts to 18o9 of error in the angles).
+
+BUGS
+     Generates obtuse triangles.
+     Regions must be simply connected (no holes)
+
+SEE ALSO
+     skel
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Sun Release 3.5           Last change:                          2
+
+
+

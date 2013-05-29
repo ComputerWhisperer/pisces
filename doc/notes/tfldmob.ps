@@ -1,0 +1,359 @@
+%!PS-Adobe-2.1
+%%Creator: groff version 0.6
+%%DocumentFonts: Symbol-Slanted Symbol Times-Italic Times-Roman Times-Bold
+%%DocumentSuppliedFonts: Symbol-Slanted
+%%DocumentNeededFonts: Symbol Times-Italic Times-Roman Times-Bold
+%%Pages: 2
+%%EndComments
+/grops 100 dict def grops begin
+%!
+% If you add definitions here, be sure to check that MAX_PROLOGUE_DEFS
+% in ps.c is large enough.
+
+% The ASCII code of the space character.
+/SC 32 def
+
+/A /show load def
+/B { 0 SC 3 -1 roll widthshow } bind def
+/C { 0 exch ashow } bind def
+/D { 0 exch 0 SC 5 2 roll awidthshow } bind def
+/E { 0 rmoveto show } bind def
+/F { 0 rmoveto 0 SC 3 -1 roll widthshow } bind def
+/G { 0 rmoveto 0 exch ashow } bind def
+/H { 0 rmoveto 0 exch 0 SC 5 2 roll awidthshow } bind def
+/I { 0 exch rmoveto show } bind def
+/J { 0 exch rmoveto 0 SC 3 -1 roll widthshow } bind def
+/K { 0 exch rmoveto 0 exch ashow } bind def
+/L { 0 exch rmoveto 0 exch 0 SC 5 2 roll awidthshow } bind def
+/M { rmoveto show } bind def
+/N { rmoveto 0 SC 3 -1 roll widthshow } bind def
+/O { rmoveto 0 exch ashow } bind def
+/P { rmoveto 0 exch 0 SC 5 2 roll awidthshow } bind def
+/Q { moveto show } bind def 
+/R { moveto 0 SC 3 -1 roll widthshow } bind def
+/S { moveto 0 exch ashow } bind def
+/T { moveto 0 exch 0 SC 5 2 roll awidthshow } bind def
+
+% name size font SF -
+
+/SF {
+	findfont exch
+	[ exch dup 0 exch 0 exch neg 0 0 ] makefont
+	dup setfont
+	[ exch /setfont cvx ] cvx bind def
+} bind def
+
+% name a c d font MF
+
+/MF {
+	findfont
+	[ 5 2 roll
+	0 3 1 roll % b
+	neg 0 0 ] makefont
+	dup setfont
+	[ exch /setfont cvx ] cvx bind def
+} bind def
+
+	
+% BP -
+
+/BP {
+	/level0 save def
+	1 setlinecap
+	1 setlinejoin
+	72 RES div dup scale
+	LS {
+		90 rotate
+	} {
+		0 PL translate
+	} ifelse
+	1 -1 scale
+} bind def
+
+/EP {
+	level0 restore
+	showpage
+} bind def
+
+
+% centerx centery radius startangle endangle DA -
+
+/DA {
+	newpath arcn stroke
+} bind def
+
+% x y SN - x' y'
+% round a position to nearest (pixel + (.25,.25))
+
+/SN {
+	transform 
+	.25 sub exch .25 sub exch
+	round .25 add exch round .25 add exch
+	itransform
+} bind def
+	
+% endx endy startx starty DL -
+% we round the endpoints of the line, so that parallel horizontal
+% and vertical lines will appear even
+
+/DL {
+	SN
+	moveto
+	SN
+	lineto stroke
+} bind def
+
+% centerx centery radius DC -
+
+/DC {
+	newpath 0 360 arc closepath
+} bind def
+
+
+/TM matrix def
+
+%  width height centerx centery DE -
+
+/DE {
+	TM currentmatrix pop
+	translate scale newpath 0 0 .5 0 360 arc closepath
+	TM setmatrix
+} bind def
+
+% these are for splines
+
+/RC /rcurveto load def
+/RL /rlineto load def
+/ST /stroke load def
+/MT /moveto load def
+/CL /closepath load def
+
+% fill the last path
+
+% amount FL -
+
+/FL {
+	currentgray exch setgray fill setgray
+} bind def
+
+% fill with the ``current color''
+
+/BL /fill load def
+
+/LW /setlinewidth load def
+% new_font_name encoding_vector old_font_name RE -
+
+/RE {
+	findfont
+	dup maxlength dict begin
+	{
+		1 index /FID ne { def } { pop pop } ifelse
+	} forall
+	/Encoding exch def
+	dup /FontName exch def
+	currentdict end definefont pop
+} bind def
+
+% hpos vpos EBEGIN -
+
+/EBEGIN {
+	moveto
+	DEFS begin
+} bind def
+
+/EEND /end load def
+
+% llx lly newwid wid newht ht newllx newlly -
+
+/PICTURE {
+	translate
+	div 3 1 roll div exch scale
+	neg exch neg exch translate
+	% set the graphics state to default values
+	0 setgray
+	0 setlinecap
+	1 setlinewidth
+	0 setlinejoin
+	10 setmiterlimit
+	[] 0 setdash
+	newpath
+} bind def
+/DEFS 1 dict def DEFS begin/u{.001 mul}bind def end end
+%%EndProlog
+%%IncludeFont: Symbol
+%%IncludeFont: Times-Italic
+%%IncludeFont: Times-Roman
+%%IncludeFont: Times-Bold
+%%BeginFont: Symbol-Slanted
+%%BeginDocument: symbolsl.ps
+%!PS-Adobe-2.1
+%%DocumentFonts: Symbol
+
+% newfontname matrix oldfontname MakeTransformedFont
+
+/MakeTransformedFont {
+	findfont dup maxlength dict begin
+		{
+			exch dup dup /FID ne exch /UniqueID ne and {
+				exch def
+			} {
+				pop pop
+			} ifelse
+		} forall
+		% first copy FontBBox
+		/FontBBox 
+		% FontBBox sometimes seems to have the executable
+		% attribute set
+		% so to get the array on the stack, we have to do this
+		currentdict /FontBBox get
+		4 array copy def
+		% now transform it
+		FontBBox aload pop
+		4 index transform 4 2 roll
+		4 index transform 4 2 roll
+		FontBBox astore pop
+		% matrix
+		% now transform FontMatrix
+		FontMatrix exch matrix concatmatrix
+		/FontMatrix exch def
+		dup /FontName exch def
+	currentdict end
+	definefont pop
+} bind def
+
+
+/Symbol-Slanted
+[.89 0.0 15.5 dup sin exch cos div .89 0.0 0.0]
+/Symbol
+MakeTransformedFont
+%%EndDocument
+%%EndFont
+%%BeginSetup
+grops begin/#copies 1 def/RES 72 def/PL 792 def/LS false def/ENC0[/asciicircum
+/asciitilde/Scaron/Zcaron/scaron/zcaron/Ydieresis/trademark/.notdef/.notdef
+/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef
+/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef
+/.notdef/.notdef/.notdef/.notdef/space/exclam/quotedbl/numbersign/dollar
+/percent/ampersand/quoteright/parenleft/parenright/asterisk/plus/comma/hyphen
+/period/slash/zero/one/two/three/four/five/six/seven/eight/nine/colon/semicolon
+/less/equal/greater/question/at/A/B/C/D/E/F/G/H/I/J/K/L/M/N/O/P/Q/R/S/T/U/V/W/X
+/Y/Z/bracketleft/backslash/bracketright/circumflex/underscore/quoteleft/a/b/c/d
+/e/f/g/h/i/j/k/l/m/n/o/p/q/r/s/t/u/v/w/x/y/z/braceleft/bar/braceright/tilde
+/.notdef/quotesinglbase/guillemotleft/guillemotright/bullet/florin/fraction
+/perthousand/dagger/daggerdbl/endash/emdash/ff/fi/fl/ffi/ffl/dotlessi/dotlessj
+/grave/hungarumlaut/dotaccent/breve/caron/ring/ogonek/quotedblleft
+/quotedblright/oe/lslash/quotedblbase/OE/Lslash/.notdef/exclamdown/cent
+/sterling/currency/yen/brokenbar/section/dieresis/copyright/ordfeminine
+/guilsinglleft/logicalnot/minus/registered/macron/degree/plusminus/twosuperior
+/threesuperior/acute/mu/paragraph/periodcentered/cedilla/onesuperior
+/ordmasculine/guilsinglright/onequarter/onehalf/threequarters/questiondown
+/Agrave/Aacute/Acircumflex/Atilde/Adieresis/Aring/AE/Ccedilla/Egrave/Eacute
+/Ecircumflex/Edieresis/Igrave/Iacute/Icircumflex/Idieresis/Eth/Ntilde/Ograve
+/Oacute/Ocircumflex/Otilde/Odieresis/multiply/Oslash/Ugrave/Uacute/Ucircumflex
+/Udieresis/Yacute/Thorn/germandbls/agrave/aacute/acircumflex/atilde/adieresis
+/aring/ae/ccedilla/egrave/eacute/ecircumflex/edieresis/igrave/iacute
+/icircumflex/idieresis/eth/ntilde/ograve/oacute/ocircumflex/otilde/odieresis
+/divide/oslash/ugrave/uacute/ucircumflex/udieresis/yacute/thorn/ydieresis]def
+/Times-Italic@0 ENC0/Times-Italic RE/Times-Roman@0 ENC0/Times-Roman RE
+/Times-Bold@0 ENC0/Times-Bold RE
+%%EndSetup
+%%Page: 1 1
+BP/F0 12/Times-Bold@0 SF(Impr)87.384 96 Q(oved Local-Field Electr)-.216 E
+(on and Hole Mobilities for MOS Inversion Layers)-.216 E
+(in PISCES-IIB Release 9009)215.496 120 Q/F1 10/Times-Roman@0 SF .741(Any loca\
+l-\214eld-dependent mobility model for electrons and holes in the inversion la\
+yer should satisfy the)72 171.6 R .178
+(equation below in order to replicate the experimentally observed ef)72 195.6 R
+.179(fective \(or average\) mobility)-.18 F(,)-.65 E/F2 10/Symbol-Slanted SF(m)
+3.359 E/F3 7/Times-Italic@0 SF(eff).812 2 M F1 2.679(,w)1.809 -2 O(hen)489.56
+195.6 Q(the local-\214eld mobility)72 220.549 Q F2(m)3.18 E F1
+(is integrated across the inversion layer to calculate the ef)3.2 E
+(fective mobility [1].)-.18 E F2(m)182.524 281.839 Q F1(\().7 E .28 LW 199.604
+279.114 199.604 283.839 DL 201.004 279.114 201.004 283.839 DL/F4 10
+/Times-Italic@0 SF(E)192.354 281.839 Q F1(,)6.54 E 221.024 283.839 217.524
+283.839 DL .16 LW 219.274 281.139 219.274 283.839 DL F4(E)210.974 281.839 Q F1
+(\))7.24 E/F5 10/Symbol SF(=)2.8 E F2(m)3.48 E F3(eff).812 2 M F5<e6>254.175
+276.354 Q<e8>254.175 288.454 Q .28 LW 266.095 279.114 266.095 283.839 DL
+267.495 279.114 267.495 283.839 DL F4(E)258.845 281.839 Q F1(,)6.54 E 288.715
+276.839 285.215 276.839 DL .16 LW 286.965 274.139 286.965 276.839 DL F4(E)
+278.665 274.839 Q F5(+)7.24 E F4(E)3.47 E F3(o).601 2 M .4 LW 311.805 279.239
+277.995 279.239 DL F1(2)292.4 288.839 Q F5<f6>313.005 276.309 Q<f8>313.005
+288.499 Q(+)319.805 281.839 Q F1(\()2.8 E .28 LW 342.145 283.839 338.645
+283.839 DL .16 LW 340.395 281.139 340.395 283.839 DL F4(E)332.095 281.839 Q F5
+(-)7.24 E F4(E)3.47 E F3(o).601 2 M F1(\)).619 -2 M F4(d)371.815 274.39 Q F2(m)
+1.39 E F3(eff).812 2 M .28 LW 389.66 290.839 386.16 290.839 DL .16 LW 387.91
+288.139 387.91 290.839 DL .4 LW 392.956 279.239 371.465 279.239 DL F4(dE)374.61
+288.839 Q F1(where)72 322.529 Q .28 LW 104.92 347.404 104.92 352.129 DL 106.32
+347.404 106.32 352.129 DL F4(E)97.67 350.129 Q F1 2.5(:l)3.74 G
+(ongitudinal electric \214eld parallel to the Si/SiO2 interface.)115.58 350.129
+Q 107.72 379.729 104.22 379.729 DL .16 LW 105.97 377.029 105.97 379.729 DL F4
+(E)97.67 377.729 Q F1 2.5(:t)4.44 G(ransverse electric \214eld.)116.28 377.729
+Q F4(E)97.67 405.329 Q F3(o).601 2 M F1 2.5(:t).619 -2 O(ransverse electric \
+\214eld at the boundary between the inversion layer and the depletion layer)
+116.56 405.329 Q(.)-.55 E .267(New transverse-\214eld-dependent mobility model\
+s for electrons and holes have been derived by applying the)72 432.929 R .153(\
+above equation to the new physically-based semi-empirical equations for electr\
+on and hole ef)72 456.929 R .154(fective mobil-)-.18 F .581
+(ity [2,3]. These ef)72 480.929 R .581(fective mobility models account explici\
+tly for surface roughness scattering and screened)-.18 F .899(Coulomb scatteri\
+ng in addition to phonon scattering, and they exhibit excellent agreement with\
+ consider)72 504.929 R(-)-.2 E .321
+(able experimentally measured mobility data.)72 528.929 R .321
+(Therefore, the new local mobility models [2,3],)5.321 F F2(m)3.5 E F1 2.82(,d)
+.7 G(eveloped)467.9 528.929 Q .963(with the approach described in Reference [1\
+] replicate the experimentally measured)72 552.929 R F2(m)4.143 E F3(eff).812 2
+M F1 .963(when integrated)5.272 -2 N .934(across the inversion layer)72 577.878
+R 3.434(.A)-.55 G 3.434(sa)189.326 577.878 S .933
+(result, the simulated I-V characteristics using these new mobility models)
+-.001 F(are expected to match the measured data very well.)72 601.878 Q .361(T\
+he new models require some restrictions in the grid structure. First, it is re\
+commended to have at least 10)72 629.478 R .413
+(nodal points in the vertical direction for the \214rst 200A)72 655.818 R F5
+<b0>286.87 652.818 Q F1 .413
+(of the surface region in the silicon at Si/SiO2 inter)4.913 3 N(-)-.2 E .842(\
+face. This mesh structure is dictated by the necessity for accurately computin\
+g the transverse \214eld within)72 679.818 R .856(the inversion layer which is\
+ not possible with a coarse grid. Second, the nodes within the inversion layer)
+72 703.818 R 1.975(should be aligned vertically)72 727.818 R 6.975(.I)-.65 G
+4.475(ti)200.9 727.818 S 4.475(sb)210.935 727.818 S 1.975
+(ecause, for the nodes on each vertical line, a search is performed)224.3
+727.818 R EP
+%%Page: 2 2
+BP/F0 10/Times-Roman@0 SF 2.5(-2-)279.67 60 S .443(beginning with the surface \
+node to \214nd the node where the carrier concentration drops below the substr\
+ate)72 96 R(doping level. This point is the edge of the inversion layer)72 120
+Q(.)-.55 E(The following parameters have been added to the)72 147.6 Q/F1 10
+/Times-Bold@0 SF(MODEL)2.5 E F0(card:)2.5 E F1(TFLDMB)97 175.2 Q F0 2.85(:S)C
+.35(peci\214es the use of the new mobility model extracted from the experiment\
+ally measured)150.97 175.2 R(ef)97 199.2 Q 1.992(fective mobility including su\
+rface roughness and Coulomb scattering [2,3]. This is the recom-)-.18 F
+(mended model.)97 223.2 Q F1(OLDTFL)97 250.8 Q F0 2.645(:S)C .145
+(peci\214es that a mobility model extracted from Schwarz and Russek')149.105
+250.8 R 2.645(se)-.55 G .145(quation [4] is used)429.405 250.8 R(\(This is an \
+early version of the new modeling approach as discussed in [1]\).)97 274.8 Q F1
+(ACC.SF)97 302.4 Q F0 3.994(:T)C 1.493
+(he low-\214eld surface reduction factor for accumulation layers.)145.714 302.4
+R 1.493(It is recommended that)6.493 F(0.87 be used for the electron case [5].)
+97 326.4 Q F1(INV)97 354 Q(.SF)-1.29 E F0 4.639(:T)C 2.139
+(he low-\214eld surface reduction factor for the inversion layer)141.739 354 R
+7.139(.T)-.55 G 2.14(his reduction factor is)410.65 354 R .897(applied to the \
+Si/SiO2 interface nodes when the inversion is weak \(the carrier concentration\
+ is less)97 378 R(than the doping level at the interface\).)97 402 Q F1
+(OX.LEFT)97 429.6 Q F0 2.5(:T)C
+(he x coordinate of the left edge of gate electrode.)152.01 429.6 Q F1
+(OX.RIGHT)97 457.2 Q F0 2.5(:T)C
+(he x coordinate of the right edge of gate electrode.)159.23 457.2 Q F1
+(OX.BOTT)97 484.8 Q(OM)-.18 E F0 2.5(:T)C
+(he y coordinate of the Si/SiO2 interface at the channel region.)170.72 484.8 Q
+F1(Refer)72 536.4 Q(ences:)-.18 E F0([1] H. Shin et al.,)97 564 Q/F2 10
+/Times-Italic@0 SF(IEEE T)2.5 E(rans. Elect. Dev)-.55 E(.)-.74 E F0 2.5(,E)C
+(D-36, 1)275.13 564 Q -.37(11)-.37 G 2.5(7\().37 G(1989\).)325.77 564 Q([2] H.\
+ Shin et al., accepted for publication in Solid-State Electronics, 1990.)97
+591.6 Q([3] V)97 619.2 Q(.M. Agostinelli et al., NUP)-1.29 E(AD III T)-.92 E
+(ech. Dig.,)-.7 E(p. 39, 1990.)5 E([4] S.A. Schwarz et al.,)97 646.8 Q F2
+(IEEE T)2.5 E(rans. Elect. Dev)-.55 E(.)-.74 E F0 2.5(,E)C
+(D-30, 1634 \(1983\).)299.28 646.8 Q([5] S.C. Sun et al.,)97 674.4 Q F2(IEEE T)
+2.5 E(rans. Elect. Dev)-.55 E(.)-.74 E F0 2.5(,E)C(D-27, 1497 \(1980\).)279.86
+674.4 Q EP
+%%Trailer
+end

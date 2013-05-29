@@ -1,0 +1,62 @@
+Title Short Channel (L = 1.5 um) SOI MOSFET with Nsub = 1e15
+$
+$ * * * A : define rectangular grid * * *
+$
+mesh    rectangular nx=38 ny=23 outf=nmeshsoi.msh
+x.m     n=1     l=0     r=1
+x.m     n=4     l=0.50  r=.7
+x.m     n=8     l=0.70  r=.75
+x.m     n=15    l=0.95  r=1.25
+x.m     n=24    l=2.05  r=1.0
+x.m     n=31    l=2.30  r=.8
+x.m     n=35    l=2.50  r=1.33
+x.m     n=38    l=3.00  r=1.40
+y.m     n=1     l=-.035 r=1
+y.m     n=4     l=0     r=1
+y.m     n=9     l=0.10  r=1.25
+y.m     n=16    l=0.50  r=1.15
+y.m     n=23    l=2.0   r=1.25
+$
+$ * * * eliminate * * *
+$
+elim    ix.lo=13 ix.hi=26 iy.lo=21 iy.hi=23 y.dir
+elim    ix.lo=1  ix.hi=38 iy.lo=21 iy.hi=23 y.dir
+elim    ix.lo=5  ix.hi=13 iy.lo=21 iy.hi=23 y.dir
+elim    ix.lo=25 ix.hi=33 iy.lo=21 iy.hi=23 y.dir
+$
+$ * * * distort * * *
+$
+spread  left w=0.70 up=4  lo=16 y.lo=0.5 en=1.2 gr1=1.3
++       gr2=.5 mid=13 y.mid=0.35
+spr     righ w=0.70 up=4  lo=16 y.lo=0.5 en=1.2 gr1=1.3
++       gr2=.5 mid=10 y.mid=0.3
+$
+$ * * * regions * * *
+$
+region  num=1 ix.l=1  ix.h=38 iy.l=1  iy.h=4  oxide
+region  num=2 ix.l=1  ix.h=38 iy.l=4  iy.h=9  silicon
+region  num=3 ix.l=1  ix.h=38 iy.l=9  iy.h=16 oxide
+region  num=4 ix.l=1  ix.h=38 iy.l=16 iy.h=23 silicon
+$
+$ * * * electrodes * * *
+$
+elec    num=1   ix.l=4  ix.h=35 iy.l=1  iy.h=1
+elec    num=2   ix.l=1  ix.h=38 iy.l=23 iy.h=23
+elec    num=3   ix.l=1  ix.h=3  iy.l=4  iy.h=4
+elec    num=4   ix.l=36 ix.h=38 iy.l=4  iy.h=4
+$
+$ * * * doping and fixed charge * * *
+$
+dop     reg=2 unif conc=1e15 p.type
+dop     reg=2 n.type gaussian x.right=.5 ratio.lateral=.8
++       conc=2e19 junction=.1
+dop     reg=2 n.type gaussian x.left=2.5 ratio.lateral=.8
++       conc=2e19 junction=.1
+dop     reg=4 unif conc=1e15 p.type
+$....Plot grid
+$options plotdev=sp
+$plot.2d grid bound pause
+$plot.2d no.top bound junction
+$contour doping abs log min=10 max=20 del=2 pause
+$
+end

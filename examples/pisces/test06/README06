@@ -1,0 +1,36 @@
+
+		      A SUBMICRON MOSFET
+
+This is simulation of a 0.8 micron mosfet that reads a file containing the 
+information to define the impurity doping profile as opposed to using the
+pisces defined doping profiles.  The doping file supplies the concentration
+versus depth information and is called depthcon.  A file such as depthcon
+could be generated from a process simulator (such as SUPREM) and imported
+into pisces in ascii format.
+
+The device definition and the grid is generated using a file called ex13ig.p2.
+The device is 3.08 x 3.00 microns.  The mesh is first generated and the
+unnecessary points are eliminated.  The oxide and silicon regions are defined,
+and electrodes are provided for the gate, drain, source and substrate.  The
+doping, as mentioned earlier, is specified by depthcon.  The oxide of this 
+device contains an interface charge of 3e10.  A outfile is generated that 
+contains the doping information called DOP07.  The initial solution is 
+obtained using the gummel method with the surface mobility reduced to 75%.
+The device is then regrid to ensure more grid points around the junctions 
+and an outfile is generated called M131.  The relevant doping profiles are
+plotted to check that depthcon provided the desired information.
+
+A curve for the drain current versus the gate voltage is simulated for by
+a file called exn13g37.p2.  This file reads in the mesh file, the surface
+mobility, the gate contact, the interface charge, and the models 
+necessary for the simulation.  The initial solution is obtained using
+a zero carrier gummel method.  A log file called G37LOG1 is started to 
+store the simulation data.  A single carrier newton method is used to solve
+for the gate characteristics.  The drain is biased at .05 volts and the 
+gate voltage is varied from .3 volts to 8 volts.  Solution files are saved
+at 4 and 8 volts called G37A and G37B.  Finally, the gate characteristics
+are plotted.  
+
+This example does not solve for the drain characteristics of the device, but
+it can easily be done by biasing the gate at a particular voltage and then
+slowly increasing the drain voltage, making sure that convergence is met.  

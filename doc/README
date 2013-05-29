@@ -1,0 +1,11 @@
+This is the directory in which the sources for PISCES documentation
+are kept.  If you have access to a postscript-compatible printer,
+two important documents can be printed immediately:
+
+cards/paper-tr  --  The updated command summary for PISCES.
+notes/tfldmob.ps -- Notes on the use of the new transverse-field
+		    mobility model.
+
+The Troff sources for all files are also available, including
+those for the PISCES IIB Supplementary Report in the manual 
+directory.  

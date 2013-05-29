@@ -1,0 +1,85 @@
+title MOSMESH automatic mesh - Version 8904
+
+$starting mesh card
+mesh nx=45 ny=25 rect outf=nmesh
+
+$x mesh locations
+x.mesh node=1 location=-3.1 rat=1
+x.mesh node=2 location=-3 rat=1
+x.mesh node=8 location=-1.59265 rat=1.25
+x.mesh node=9 location=-1.37133 rat=1.25
+x.mesh node=10 location=-1.15 rat=0.8
+x.mesh node=11 location=-1 rat=0.8
+x.mesh node=13 location=-0.72 rat=0.64
+x.mesh node=33 location=0.72 rat=1
+x.mesh node=35 location=1 rat=1.33
+x.mesh node=36 location=1.15 rat=2.5
+x.mesh node=37 location=1.37133 rat=1.25
+x.mesh node=38 location=1.59265 rat=0.8
+x.mesh node=44 location=3 rat=0.8
+x.mesh node=45 location=3.1 rat=1
+
+$y mesh locations
+y.mesh node=1 location=-0.025 rat=1
+y.mesh node=3 location=0 rat=0.8
+y.mesh node=4 location=0.01 rat=1
+y.mesh node=14 location=0.35 rat=1.24
+y.mesh node=24 location=2.96206 rat=1.25
+y.mesh node=25 location=3 rat=1.25
+
+$eliminate some nodes that aren't needed
+elim y.dir ix.l=1 ix.h=45 iy.l=14 iy.h=25
+
+$region definitions
+region num=1 ix.l=1 ix.h=45 iy.l=1 iy.h=3 oxide
+region num=2 ix.l=1 ix.h=45 iy.l=3 iy.h=25 silicon
+
+$Gate = 1 Source = 2 Drain = 3 Bulk = 4
+electrode num=1 ix.l=11 ix.h=35 iy.l=1 iy.h=1
+electrode num=2 ix.l=1 ix.h=2 iy.l=3 iy.h=3
+electrode num=3 ix.l=44 ix.h=45 iy.l=3 iy.h=3
+electrode num=4 ix.l=1 ix.h=45 iy.l=25 iy.h=25
+
+$Doping Information
+$ junction depth is 0.35um
+doping reg=2 uniform x.lef=-3.1 x.rig=3.1
++	y.top=0.0 y.bot=3 conc=1.000000e+15 p.type
+
+$ Channel Doping Region
+doping reg=2 gauss char=0.564191 peak=0.1 conc=2.000000e+16 p.type
++	x.lef=-3.1 x.rig=3.1 ratio.la=0.8
+
+$ Lightly Doped Source
+doping reg=2 gauss char=0.133168 peak=0 conc=1.000000e+18 n.type
++	x.lef=-3.1 x.rig=-1 ratio.la=0.8
+
+$ Lightly Doped Drain
+doping reg=2 gauss char=0.133168 peak=0 conc=1.000000e+18 n.type
++	x.lef=1 x.rig=3.1 ratio.la=0.8
+
+$ Heavily Doped Source
+doping reg=2 gauss char=0.0736796 peak=0 conc=1.000000e+20 n.type
++	x.lef=-3.1 x.rig=-1.15 ratio.la=0.8
+
+$ Heavily Doped Drain
+doping reg=2 gauss char=0.0736796 peak=0 conc=1.000000e+20 n.type
++	x.lef=1.15 x.rig=3.1 ratio.la=0.8
+
+interface qf=5e+10
+$ gate characteristics. Vd is 0.100000, minVg is 0.000000 maxVg is 1.000000
+symb gummel carriers=1 electrons
+method iccg damped
+models srfmob
+$ change the below line if another gate material is used
+contac num=1 n.poly
+$ solve for the initial step.  save in file initial
+solve initial v1=0.000000 outfile=initial
+$ save I-V information in gateIV.log
+log ivfile=gateIV.log
+regrid potential step=0.2
+symb gummel carriers=1 electrons
+method iccg damped
+solve v1=0.000000 v3=0.100000 vstep=0.100000 nsteps=10  electrode=1
+$ plot statement in ascii format in file iv.ascii
+plot.1d x.axis=v1 y.axis=i3 ascii outfile=iv.ascii
+end
