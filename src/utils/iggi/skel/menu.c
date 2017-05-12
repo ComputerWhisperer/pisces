@@ -24,12 +24,19 @@
 #define DRAW    1	/* to draw things */
 #define CLEAR  -1	/* to erase things */
 
+void do_menu (struct mitem *m);
 /*-----------------COMMAND_LOOP-----------------------------------------
  * Dummy routine to intialize menu base and start.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+int 
+command_loop (void)
+#else
+
 command_loop()
+#endif
 {
-    void do_menu();
     wmenu->prevx = wmenu->vxmin;
     wmenu->prevy = wmenu->vymax;
 
@@ -42,8 +49,15 @@ command_loop()
  * for each new level of menu and pops whenever it gets a
  * null function.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+void 
+do_menu (struct mitem *m)
+#else
+
 void do_menu (m)
 	struct mitem *m;
+#endif
 {
 	struct mitem *which, *wait_menu();
 	char *err, *uerr();
@@ -71,10 +85,21 @@ void do_menu (m)
  * Display a menu. Location is at main menu window variables
  * wmenu->prevx, wmenu->vymax, text size is wmenu->ch;
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+int 
+disp_menu (
+    struct mitem *m,
+    int linetype,
+    int mode  /* 1 for draw, -1 for clear */
+)
+#else
+
 disp_menu (m, linetype, mode)
 	struct mitem *m;
 	int linetype;
 	int mode;  /* 1 for draw, -1 for clear */
+#endif
 {
 	double fieldw; 
 	double fieldh;
@@ -126,8 +151,15 @@ disp_menu (m, linetype, mode)
 /* BSD does toupper wrong (groan) */
 #define Toupper(c) (islower(c)?toupper(c):(c))
 
+#ifdef ANSI_FUNC
+
+struct mitem *
+wait_menu (struct mitem *m)
+#else
+
 struct mitem * wait_menu (m)
 	struct mitem *m;
+#endif
 {
 	struct mitem *mm; double x,y; int ipen, found;
 	
@@ -151,18 +183,32 @@ struct mitem * wait_menu (m)
 /*-----------------REFRESH_MENU-----------------------------------------
  *After a graphics clear.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+void 
+refresh_menu (void)
+#else
+
 void refresh_menu ()
+#endif
 {
     wmenu->prevx = wmenu->vxmin;
     do_rfmenu (main_menu);
 }
 
+#ifdef ANSI_FUNC
+
+int 
+do_rfmenu (struct mitem *m)
+#else
+
 do_rfmenu (m)
     struct mitem *m;
+#endif
 {
     if (m->active) {
 	/* draw top level menu */
-	disp_menu (m, MENU_LINEDRAW);
+	disp_menu (m, MENU_LINEDRAW, DRAW);
 
 	/* draw submenu */
 	for (; m->text[0] != '\0'; m++) 

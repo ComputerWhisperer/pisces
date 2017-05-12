@@ -38,6 +38,21 @@ static char SccsID[] = "@(#)active.c	1.2\t5/3/89";
  * Original:	7/87							*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+get_active (
+    int simple,
+    double temp,
+    double **chem,		/*the solution values to use in calculation*/
+    double *net,		/*the net active concentration*/
+    double **dnet,		/*partial of the active concentration*/
+    double **active,	/*the active substitutional concentrations*/
+    double **equil,		/*the equilibrium concentration*/
+    double **dequ		/*the equilibrium concentration*/
+)
+#else
+
 get_active( simple, temp, chem, net, dnet, active, equil, dequ )
 int simple;
 float temp;
@@ -47,6 +62,7 @@ double **dnet;		/*partial of the active concentration*/
 double **active;	/*the active substitutional concentrations*/
 double **equil;		/*the equilibrium concentration*/
 double **dequ;		/*the equilibrium concentration*/
+#endif
 {
     register int i, j, imp;
     double Vt = kb * temp;

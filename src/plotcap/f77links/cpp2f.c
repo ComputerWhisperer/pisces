@@ -16,6 +16,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+void 
+ckstop (char word[]);
 
 struct _stoplist {
 	char*	orig ;		/* original string */
@@ -31,9 +33,16 @@ struct _stoplist {
 	} ;
 
 
+#ifdef ANSI_FUNC
+
+int 
+main (int argc, char **argv)
+#else
+
 main(argc, argv)
 	int   argc;
 	char  **argv;
+#endif
 	{
 	FILE *fp;
 	char line[132] , *lp;
@@ -135,8 +144,15 @@ printf("\n");
 
 	}/*of program */
 
+#ifdef ANSI_FUNC
+
+void 
+ckstop (char word[])
+#else
+
 ckstop(word)
 	char	word[] ;
+#endif
 	{
 	struct _stoplist*	p ;
 
@@ -157,10 +173,17 @@ ckstop(word)
 		}
 	}
 
+#ifdef ANSI_FUNC
+
+int 
+Wordcmp (char *word, char *tmpl)
+#else
+
 int
 Wordcmp(word,tmpl)
 	char*	word ;
 	char*	tmpl ;
+#endif
 	{
 
 	for ( ; *word && *tmpl ; ++word, ++tmpl) {

@@ -21,8 +21,15 @@ extern writecollectorIV();
 extern writeanaldoping();
 extern double dmax();
 
+#ifdef ANSI_FUNC
+
+int 
+write_pisces (char *name)
+#else
+
 write_pisces( name ) 
 char *name;
+#endif
 { 
     FILE *fp;
     register int i;

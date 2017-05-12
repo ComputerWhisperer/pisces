@@ -19,10 +19,20 @@ static int get1c(int literal);
  *
  * written:  Michael Eldredge (jan 86)
  */
+#ifdef ANSI_FUNC
+
+int 
+entok (
+    char *buf,		/* returned token value string */
+    int blen		/* how much room? */
+)
+#else
+
 int
 entok(buf,blen)
 	char	*buf ;		/* returned token value string */
 	int	blen ;		/* how much room? */
+#endif
 	{
 
 	int	 ch, ch0, n ;
@@ -111,9 +121,16 @@ entok(buf,blen)
  *	if we are parsing a literal string we must go and check glexs'
  *	pushed back character to see if there is one and then take it.
  */
+#ifdef ANSI_FUNC
+
+static int 
+get1c (Bool literal)
+#else
+
 static int
 get1c(literal)
 	Bool	 literal ;
+#endif
 	{
 	int	 ch ;
 

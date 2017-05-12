@@ -1,3 +1,4 @@
+
 /*----------------------------------------------------------------------
 **  Copyright 1986 by
 **  The Board of Trustees of the Leland Stanford Junior University
@@ -99,6 +100,17 @@
 #define S_CHARN	   4	/* Not the first character */
 
 
+#ifdef ANSI_FUNC
+
+int 
+glexs (
+    int st[],
+    char *symbs,	/* symbol chars (other than alphanums) */
+    char *skips,	/* white space chars */
+    int c1,
+    char buf[]
+)
+#else
 int
 glexs(st, symbs, skips, c1, buf)
 	int	 st[] ;
@@ -106,6 +118,7 @@ glexs(st, symbs, skips, c1, buf)
 	char	*skips ;	/* white space chars */
 	int	 c1 ;
 	char	 buf[] ;
+#endif
 	{
 
 	int	c, cl ; 

@@ -28,12 +28,19 @@
 
 extern double dmax();
 
+#ifdef ANSI_FUNC
+
+int 
+asciicalc (FILE *dopingfile, double *junction, double *std_dev, double *peakdop, double *sub_dop)
+#else
+
 asciicalc( dopingfile, junction, std_dev, peakdop, sub_dop )
 FILE *dopingfile;
 double *junction;
 double *std_dev;
 double *peakdop;
 double *sub_dop;
+#endif
 {
     double peakloc = 0.0;
     double depth = 0.0;

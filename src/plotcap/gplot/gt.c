@@ -71,9 +71,16 @@ struct _comd_list {
 	{ '\0'  }
 	} ;
 
+#ifdef ANSI_FUNC
+
+int 
+main (int argc, char **argv)
+#else
+
 main(argc, argv)
 	int   argc;
 	char  **argv;
+#endif
 	{
 
 	int   com, sub, lu;
@@ -322,8 +329,15 @@ main(argc, argv)
 	}
 
 
+#ifdef ANSI_FUNC
+
+int 
+prP (ipoint2d *P)
+#else
+
 prP(P)
 	ipoint2d *P;
+#endif
 	{
 
 	printf("(prP) P is (%d,%d)\n", P->x, P->y);
@@ -332,10 +346,17 @@ prP(P)
 
 
 /* "tp_read.c" : routine to do the absolute binary reads for tplot.  */
+#ifdef ANSI_FUNC
+
+int 
+tp_read (int lu, float *x, float *y, int *pen)
+#else
+
 int tp_read(lu, x,y,pen) 
 	int   lu;
 	float *x, *y;
 	int   *pen;
+#endif
 {
 
 	char buf[20];

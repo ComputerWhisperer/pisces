@@ -72,9 +72,16 @@ extern get_info();
 extern generate_deck();
 extern write_info();
 
+#ifdef ANSI_FUNC
+
+int 
+main (int argc, char **argv)
+#else
+
 main(argc, argv)
 int argc;
 char **argv;
+#endif
 {
 
     char buf[80];

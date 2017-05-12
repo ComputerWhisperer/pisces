@@ -35,8 +35,15 @@ char *list_parse(char **s, int first );
  *	Original	Mark E. Law		Sept, 1984		*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+dump_macro (struct macro_table *macro)
+#else
+
 dump_macro( macro )
 struct macro_table *macro;
+#endif
 {
     struct macro_table *temp;
     int i;
@@ -61,9 +68,16 @@ struct macro_table *macro;
  *	Original	Mark E. Law		Sept, 1984		*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+define_macro (char *str, struct macro_table **macro)
+#else
+
 define_macro(str, macro)
 char *str;
 struct macro_table **macro;
+#endif
 {
     struct macro_table *temp;
     int i;
@@ -179,10 +193,17 @@ struct macro_table **macro;
  *	Original	Mark E. Law		Sept, 1984		*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+expand_macro (char **expand_str, int *len, struct macro_table *macro)
+#else
+
 expand_macro( expand_str, len, macro )
 char **expand_str;
 int *len;
 struct macro_table *macro;
+#endif
 {
     int i, j;
     char *s, *t;
@@ -289,9 +310,16 @@ struct macro_table *macro;
  *	Original	Mark E. Law		Sept, 1984		*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+undef_macro (char *name, struct macro_table **macro)
+#else
+
 undef_macro(name, macro)
 char *name;
 struct macro_table **macro;
+#endif
 {
     struct macro_table *old, *mac;
     char *t;
@@ -338,7 +366,16 @@ struct macro_table **macro;
  *  Original:	MEL	2/85						*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
 char *arg_expand(char *s, struct macro_table *mac)
+#else
+
+char *
+arg_expand (s, mac)
+char *s;
+struct macro_table *mac;
+#endif
 {
     char *argvalue[20];
     char *argnames[20];

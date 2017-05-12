@@ -39,12 +39,26 @@ typedef struct b_str { struct b_str *left, *right; int ie, j; } b_typ;
  * Original:	MEL	1/85						*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+do_1d (
+    int ptype,			/*type of one d cross section*/
+    double val,			/*the value in x or y*/
+    struct d_str data[],
+    int mat1,
+    int mat2,			/* two sides of an interface */
+    int byarc			/* whether to go by arclength or x */
+)
+#else
+
 do_1d( ptype, val, data, mat1, mat2, byarc )
 int ptype;			/*type of one d cross section*/
 float val;			/*the value in x or y*/
 struct d_str data[];
 int mat1, mat2;			/* two sides of an interface */
 int byarc;			/* whether to go by arclength or x */
+#endif
 {
     int t, i, j, nx, num, in;
     int count = 0;
@@ -122,8 +136,15 @@ int byarc;			/* whether to go by arclength or x */
 }
 	
 
+#ifdef ANSI_FUNC
+
+int 
+d_compar (struct d_str *f1, struct d_str *f2)
+#else
+
 d_compar(f1, f2)
 struct d_str *f1, *f2;
+#endif
 {
     if ( f1->x > f2->x )
 	return( 1 );

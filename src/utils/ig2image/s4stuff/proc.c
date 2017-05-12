@@ -31,8 +31,15 @@ static char SccsID[] = "@(#)proc.c	1.1\t4/25/89";
  *	Original	Conor S. Rafferty	Oct, 1986		*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+substring (char *s, char *ss)
+#else
+
 substring(s, ss)
     char *s, *ss;
+#endif
 {
     char *ass;
 

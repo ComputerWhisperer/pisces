@@ -64,7 +64,14 @@
  *  Original:	MEL	2/85						*
  *  									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+detect_error (void)
+#else
+
 detect_error()
+#endif
 {
     switch( stack[st_pnt].type ) {
     case OP1  : if ( ! input_token.type & (VFN | FN | LPAR | RCONST | SOLVAL)) {
@@ -109,9 +116,16 @@ detect_error()
  *  Original:	MEL	2/85						*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+char *
+parse_expr (char *str, struct vec_str **out)
+#else
+
 char *parse_expr( str, out ) 
 char *str;
 struct vec_str **out;
+#endif
 {
     
     /*make the return null to handle error conditions*/

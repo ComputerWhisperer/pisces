@@ -1,3 +1,4 @@
+
 /*	window.c		Version 1.6		*/
 /*	Last Modification:	4/10/90 13:14:03		*/
 /*----------------------------------------------------------------------
@@ -13,6 +14,11 @@
 #include <stdio.h>
 #include <math.h>
 
+#ifdef ANSI_FUNC
+
+int 
+window (double x, double y, float *xarray, float *yarray, int xsize, int ysize, int *xlo, int *xhi, int *ylo, int *yhi)
+#else
 window(x, y, xarray, yarray, xsize, ysize, xlo, xhi, ylo, yhi)
 float x;
 float y;
@@ -24,6 +30,7 @@ int *xlo;
 int *xhi;
 int *ylo;
 int *yhi;
+#endif
 {
     static int lo;
     static int hi;

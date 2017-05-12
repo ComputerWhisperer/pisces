@@ -118,8 +118,15 @@ ChosenBC( par, param, other)
  *									*
  ************************************************************************/
 
+#ifdef ANSI_FUNC
+
+int 
+comp_mat (double temp)
+#else
+
 comp_mat( temp )
 float temp;
+#endif
 {
     register int i;
 
@@ -135,7 +142,14 @@ float temp;
  * Take the substrate orientation and calcualte the transformation matrix.
  * Original CSR 7/87
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+int 
+set_crystal (void)
+#else
+
 set_crystal()
+#endif
 {
     float ortho, norm; int i, j; double swap;
 #   define X 0

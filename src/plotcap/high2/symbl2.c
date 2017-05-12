@@ -91,7 +91,7 @@ static int getvects(float *x, float *y, int *pen, char cvect);
 
 
 /* "symbl2": Draw the given character buffer.*/
-int symbl2(double x0, double y0, char cbuf[], int cnt, double hsize, double wsize, double angle, double hornt, double wornt)
+void symbl2(double x0, double y0, char cbuf[], int cnt, double hsize, double wsize, double angle, double hornt, double wornt)
 	{
 
  	float   xstart, ystart;       /* start of each character */

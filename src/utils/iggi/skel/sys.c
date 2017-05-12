@@ -30,7 +30,14 @@ static int  AlRow, AlCol;
  *Get the screen sizes for the /etc/plotcap and /etc/termcap data bases.
  *Leaves the terminal in alpha mode.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+tty_parm (void)
+#else
+
 char * tty_parm()
+#endif
 {
     int ierr, tgetent(), tgetnum();
     int iv[4];
@@ -80,9 +87,19 @@ char * tty_parm()
 /*-----------------GOTO_IJ----------------------------------------------
  * Go to position i,j on the alphanumeric screen 
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+int 
+goto_ij (
+    int i,	/* Row */
+    int j	/* Column */
+)
+#else
+
 goto_ij (i,j)
     int i;	/* Row */
     int j;	/* Column */
+#endif
 {
     printf ("%s", tgoto (AlGoto, j, i));
 }
@@ -91,7 +108,14 @@ goto_ij (i,j)
 /*-----------------AL_CLEAR---------------------------------------------
  * Clear to the end of the alphanumeric screen.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+int 
+al_clear (void)
+#else
+
 al_clear ()
+#endif
 {
     printf ("%s", AlClear);
 }
@@ -99,14 +123,28 @@ al_clear ()
 /*-----------------AL_CLEAR---------------------------------------------
  * Clear to the end of the alphanumeric line.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+int 
+al_cleol (void)
+#else
+
 al_cleol ()
+#endif
 {
     printf ("%s", AlCleol);
 }
 /*-----------------DO_SIGNAL--------------------------------------------
  *Trap signals.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+int 
+do_signal (void)
+#else
+
 int do_signal()
+#endif
 {
     int really_exit(), hung(), tstop();
 
@@ -121,7 +159,14 @@ int do_signal()
 /*-----------------UESCAPE----------------------------------------------
  * @ takes a break.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+uescape (void)
+#else
+
 char *uescape()
+#endif
 {
 #   define CLEN 80
     char commandline[CLEN], *allover();
@@ -145,7 +190,15 @@ char *uescape()
 /*-----------------ALLOVER----------------------------------------------
  * Exit.
  *----------------------------------------------------------------------*/
-char *allover()		/* because it was defined as char* in the menu. */
+#ifdef ANSI_FUNC
+
+char *
+allover (void)
+#else
+
+char *allover()
+#endif
+		/* because it was defined as char* in the menu. */
 {
     ggtoa();
     goto_ij (AlRow-2, 0);

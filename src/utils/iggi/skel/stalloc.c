@@ -17,7 +17,14 @@
 #include "menu.h"
 
 
+#ifdef ANSI_FUNC
+
+int 
+global_init (void)
+#else
+
 global_init()
+#endif
 {
   /*...This is basically a BLOCK DATA. */
     root.node = 0;

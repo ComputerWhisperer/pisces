@@ -16,12 +16,19 @@
 
 extern double RATIO_LAT;
 
+#ifdef ANSI_FUNC
+
+int 
+writesup3ascii (FILE *fp, dop_str dopant, double left_edge, double right_edge, char *str)
+#else
+
 writesup3ascii( fp, dopant, left_edge, right_edge, str )
 FILE *fp;
 dop_str dopant;
 double left_edge;
 double right_edge;
 char *str;
+#endif
 
 {
 

@@ -1,3 +1,4 @@
+
 /*----------------------------------------------------------------------
 **  Copyright 1986 by
 **  The Board of Trustees of the Leland Stanford Junior University
@@ -32,9 +33,14 @@
 /* Needed for the 'rindex()' used below */
 #include "auxfns.h"
 
+#ifdef ANSI_FUNC
+int 
+mkuniq (char *name, char *tmploc)
+#else
 int
 mkuniq(name, tmploc)
 	char *name, *tmploc;
+#endif
 	{
 
 	int  l ;                /* the letter */
@@ -70,9 +76,16 @@ mkuniq(name, tmploc)
  *	point in namr. Else return 0.
  */
 
+#ifdef ANSI_FUNC
+
+char *
+needunq (char *namr)
+#else
+
 char *
 needunq(namr)
 	char *namr;
+#endif
 	{
 
 	char *tp, *rindex();

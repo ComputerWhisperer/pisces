@@ -18,8 +18,15 @@
  * (The inevitable) distance function.
  * Don't call it with big arguments!
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+double 
+dis (double ax, double ay, double bx, double by)
+#else
+
 double dis (ax, ay, bx, by)
     double ax,ay,bx,by;
+#endif
 {
     double dx = ax-bx,  dy = ay-by;
     return (sqrt (dx*dx + dy*dy));
@@ -28,9 +35,16 @@ double dis (ax, ay, bx, by)
 /*-----------------EDIS-------------------------------------------------
  * Perpendicular distance from a point to an edge.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+double 
+edis (struct Sedge *e, double x, double y)
+#else
+
 double edis (e, x, y)
     struct Sedge *e;
     double x,y;
+#endif
 {
     double dx, dy, c1, c2;
 
@@ -52,9 +66,16 @@ double edis (e, x, y)
  * 112 from CACM. This little gem works for clockwise, anticlockwise,
  * or even self-crossing regions.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+int 
+ptnreg (double x0, double y0, struct Sreg *r)
+#else
+
 int ptnreg (x0, y0, r)
 	double x0, y0;
 	struct Sreg *r;
+#endif
 {
     struct LLedge *f, *b;
     int flag;
@@ -83,8 +104,15 @@ int ptnreg (x0, y0, r)
 /*-----------------OBTUSE-----------------------------------------------
  * Test whether a triangle is obtuse.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+int 
+obtuse (struct Stri *t)
+#else
+
 int obtuse (t)
     struct Stri *t;
+#endif
 
 {
 #define oberr -1e-10	/* Tolerance */
@@ -120,8 +148,15 @@ int obt;
  * Return 0 if ok, 
  *        1 if parallel (or either dp, dq = 0)
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+int 
+lil (double px, double py, double dpx, double dpy, double qx, double qy, double dqx, double dqy, double *ap, double *aq)
+#else
+
 int lil (px, py, dpx, dpy, qx, qy, dqx, dqy, ap, aq)
     double px, py, dpx, dpy, qx, qy, dqx, dqy, *ap, *aq;
+#endif
 {
     double dx,dy,det;
 

@@ -22,7 +22,14 @@ extern dopingmode;
 extern piscesnodegen();
 extern stride_node();
 
+#ifdef ANSI_FUNC
+
+int 
+generate_deck (void)
+#else
+
 generate_deck()
+#endif
 {
     switch ( dopingmode )  {
     	case 0  :

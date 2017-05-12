@@ -24,6 +24,12 @@
 extern dop_str dop_data[4];
 extern vert_str vert_info;
 
+#ifdef ANSI_FUNC
+
+int 
+writecollectorIV (FILE *fp, double mincollector, double maxcollector, double minbase, double maxbase, double collectorincrement, double baseincrement)
+#else
+
 writecollectorIV( fp, mincollector, maxcollector, minbase, maxbase, 
 	collectorincrement, baseincrement )
 FILE *fp;
@@ -33,6 +39,7 @@ float maxbase;
 float minbase;
 float collectorincrement;
 float baseincrement;
+#endif
 
 {
     int nsteps;

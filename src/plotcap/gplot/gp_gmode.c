@@ -27,8 +27,15 @@
 #include "gplot.h"
 
 
+#ifdef ANSI_FUNC
+
+void 
+gp_gmode (int new_mode)
+#else
+
 gp_gmode(new_mode)
 	int	 new_mode ;
+#endif
 	{
 
 	/* don't do it twice */

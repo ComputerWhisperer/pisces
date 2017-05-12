@@ -20,12 +20,19 @@
 
 extern dop_str dop_data[10];
 
+#ifdef ANSI_FUNC
+
+int 
+writegateIV (FILE *fp, double maxdrain, double mingate, double maxgate, double gateincrement)
+#else
+
 writegateIV( fp, maxdrain, mingate, maxgate, gateincrement )
 FILE *fp;
 float maxdrain;
 float mingate;
 float maxgate;
 float gateincrement;
+#endif
 
 {
     int nsteps;

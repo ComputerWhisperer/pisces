@@ -80,9 +80,19 @@ static pfilUnset(void);
 static int gp_copen(char *cmdstr, int mode, int lus[]);
 
 /* "gp_pfil" : the real file setup routine */
+#ifdef ANSI_FUNC
+
+int 
+gp_pfil (
+    char *namr,
+    int sub	/* G_BEGIN, G_STOP */
+)
+#else
+
 gp_pfil(namr, sub)
 	char*	namr;
 	int	sub ;	/* G_BEGIN, G_STOP */
+#endif
 	{
 	char  *np, *up;     /* local pointer to name and uniq part */
 	Bool  appendit = F; /* open in append mode ?? */
@@ -165,8 +175,15 @@ gp_pfil(namr, sub)
 	return(ierr);
 	}
 
+#ifdef ANSI_FUNC
+
+static 
+pfilUnset (void)
+#else
+
 static
 pfilUnset()
+#endif
 	{
 	if (lu_oplt != LUODEF) {
 		gpclose(lu_oplt);	/* post and release buffers */
@@ -178,11 +195,22 @@ pfilUnset()
 	}
 
 /* command open: return 0 if opened ok. else -1 if some error */
+#ifdef ANSI_FUNC
+
+static int 
+gp_copen (
+    char *cmdstr,	/* the command string to open */
+    int mode,		/* COP_PIPE, COP_CROSS */
+    int lus[]		/* the input (if 1 or 3) & ouput (if 2 or 3) */
+)
+#else
+
 static int
 gp_copen(cmdstr, mode, lus)
 	char*	cmdstr ;	/* the command string to open */
 	int	mode ;		/* COP_PIPE, COP_CROSS */
 	int	lus[] ;		/* the input (if 1 or 3) & ouput (if 2 or 3) */
+#endif
 	{
 
 	int	pip_to[2] ;

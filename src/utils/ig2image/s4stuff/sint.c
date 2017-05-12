@@ -32,10 +32,17 @@ extern double erf(), erfc();
  *  Original:	MEL	8/85						*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+float 
+sol_interp (int type, double val1, double val2)
+#else
+
 float sol_interp( type, val1, val2 )
 int type;
 float val1;
 float val2;
+#endif
 {
     register int i;
     struct d_str data[MAXPNT];
@@ -96,9 +103,16 @@ float val2;
  *  Original:	MEL	8/85						*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+float 
+interface (int type, double loc)
+#else
+
 float interface( type, loc )
 int type;
 float loc;
+#endif
 {
     register int i;
     struct d_str data[MAXPNT];

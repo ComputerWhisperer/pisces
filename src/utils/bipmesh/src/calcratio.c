@@ -1,3 +1,4 @@
+
 /*----------------------------------------------------------------------
 **  Copyright 1988 by
 **  The Board of Trustees of the Leland Stanford Junior University
@@ -21,11 +22,17 @@
 #include <stdio.h>
 #include <math.h>
 
+#ifdef ANSI_FUNC
+
+double 
+calcratio (double init, double final, double distance, int *steps)
+#else
 double calcratio( init, final, distance, steps )
 double init;
 double final;
 double distance;
 int *steps;
+#endif
 
 {
 

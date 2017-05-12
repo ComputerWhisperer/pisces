@@ -1,3 +1,4 @@
+
 /*	s4incf.c		Version 1.4		*/
 /*	Last Modification:	3/31/90 09:36:13		*/
 /*----------------------------------------------------------------------
@@ -32,8 +33,14 @@
 #define ERROR -1
 
 
+#ifdef ANSI_FUNC
+
+int 
+s4incf (char *filename)
+#else
 s4incf(filename)
 char *filename;
+#endif
 {
     int extension;
     int index;

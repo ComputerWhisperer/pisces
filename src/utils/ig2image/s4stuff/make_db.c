@@ -27,7 +27,14 @@
  *  Original:	MEL	10/85						*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+make_db (void)
+#else
+
 make_db()
+#endif
 {
     /*if we have no nodes read in*/
     if (nn == 0)
@@ -61,7 +68,14 @@ make_db()
  *					 history buffs)			*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+make_nodes (void)
+#else
+
 make_nodes()
+#endif
 {
     register int i;	/*every routine needs an i for indexing*/
     register int p;	/*point count*/
@@ -123,7 +137,14 @@ make_nodes()
  *  Original:	MEL	4/86						*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+pt_to_node (void)
+#else
+
 pt_to_node()
+#endif
 {
     int i, p;
 
@@ -150,7 +171,14 @@ pt_to_node()
  *  Original:	MEL	10/85						*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+tri_to_node (void)
+#else
+
 tri_to_node()
+#endif
 {
     int t;	/*triangle counter*/
     int i;	/*vertex counter*/
@@ -180,7 +208,14 @@ tri_to_node()
 /*-----------------INIT_TRI0--------------------------------------------*
  * A dumb routine to make sure nd0 and nb0 are initialized for regrid
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+int 
+init_tri0 (void)
+#else
+
 init_tri0()
+#endif
 {
     int t, i;
 
@@ -208,7 +243,14 @@ init_tri0()
  *  Revised:	MEL	(Made it work for the latest greatest data base)*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+node_to_tri (void)
+#else
+
 node_to_tri()
+#endif
 {
     struct pt_str  *p;
     int i, j;

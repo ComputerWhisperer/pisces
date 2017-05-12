@@ -20,6 +20,12 @@
 extern dop_str dop_data[10];
 extern vert_str vert_info;
 
+#ifdef ANSI_FUNC
+
+int 
+writedrainIV (FILE *fp, double mindrain, double maxdrain, double mingate, double maxgate, double drainincrement, double gateincrement)
+#else
+
 writedrainIV( fp, mindrain, maxdrain, mingate, maxgate, drainincrement, gateincrement )
 FILE *fp;
 float mindrain;
@@ -28,6 +34,7 @@ float maxgate;
 float mingate;
 float drainincrement;
 float gateincrement;
+#endif
 
 {
     int nsteps;

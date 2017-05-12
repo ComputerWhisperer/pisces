@@ -27,7 +27,18 @@ char *stab_gn() ;
 static void prdat(FILE *fp, int l, int *p, int cnt);
 
 /* Disassemble a program sending output to FP */
+#ifdef ANSI_FUNC
+
 int dis18(FILE *fp, int prog[], int poff, char idat[])
+#else
+
+int 
+dis18 (fp, prog, poff, idat)
+FILE *fp;
+int prog[];
+int poff;
+char idat[];
+#endif
 	{
 
 	int	plc = 0 ;
@@ -74,7 +85,18 @@ int dis18(FILE *fp, int prog[], int poff, char idat[])
 /* "dis18i" : Disassemble one instuction taking as may words as needed from
  *	prog.
  */
+#ifdef ANSI_FUNC
+
 int dis18i(FILE *fp, int prog[], int *plc, char idat[])
+#else
+
+int 
+dis18i (fp, prog, plc, idat)
+FILE *fp;
+int prog[];
+int *plc;
+char idat[];
+#endif
 	{
 
 	int	nwd, ir, wr, mr, rr, xr, xxr, it ;
@@ -256,7 +278,18 @@ int dis18i(FILE *fp, int prog[], int *plc, char idat[])
 #define FULL	0377	/* avoid sign extention */
 
 /* "prstr" : print the given string to the given file */
+#ifdef ANSI_FUNC
+
 int prstr(FILE *fp, char *str, int cnt, int lim)
+#else
+
+int 
+prstr (fp, str, cnt, lim)
+FILE *fp;
+char *str;
+int cnt;
+int lim;
+#endif
 	{
 	int c ;
 	int  n = 0 ;				/* TRASH */
@@ -301,8 +334,19 @@ int prstr(FILE *fp, char *str, int cnt, int lim)
 	}
 
 /* "prdat" : print the plc and data for an instruction */
+#ifdef ANSI_FUNC
+
 static void
 prdat(FILE *fp, int l, int *p, int cnt)
+#else
+
+static void 
+prdat (fp, l, p, cnt)
+FILE *fp;
+int l;
+int *p;
+int cnt;
+#endif
 	{
 	switch (cnt) {
 	case 0: fprintf(fp,"                 " ) ;                    break ;

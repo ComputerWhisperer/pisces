@@ -46,6 +46,23 @@ static char SccsID[] = "@(#)makeframe.c	1.12\t3/31/90";
 	nyfac= number of pixels per element in the y direction (4 is good)
 	name= name to call output frame files ('movie' is good)
 */
+#ifdef ANSI_FUNC
+
+int 
+makeframe (
+    float *data,
+    int JSTART,
+    int NX,
+    int NY,
+    int NXFAC,
+    int NYFAC,
+    char *name,
+    double min_value,
+    int mode,  /* scaling mode - for some extra "hooks" */
+    int macfile
+)
+#else
+
 makeframe(data, JSTART, NX, NY, NXFAC, NYFAC, name, min_value, mode,
     macfile)
 float *data;
@@ -58,6 +75,7 @@ char *name;
 float min_value;
 int mode;  /* scaling mode - for some extra "hooks" */
 int macfile;
+#endif
 {
 float min, max,t, u, width;
 int k, ix, iy, iix, iiy, fdd,value;
@@ -193,12 +211,19 @@ array = (unsigned char *) calloc( NX * NY , sizeof(char));
 	fdd=open(filename,O_WRONLY | O_CREAT | O_TRUNC,0644);
 	write(fdd,array,NX*NY);
 	close(fdd);
-        cfree( array );
+        free( array );
 	return(0);
 }
 
+#ifdef ANSI_FUNC
+
+int 
+mysmooth (int value)
+#else
+
 mysmooth(value)
 int value;
+#endif
 {
     int quotient;
     int remainder;

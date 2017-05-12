@@ -25,10 +25,21 @@ static char SccsID[] = "@(#)intersect.c	1.1\t4/25/89";
  *  Original: 	MEL	1/85 						*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+intersect (
+    float a[3][3], 		/*the coordinates of the triangle*/
+    double val,		/*the constant value being searched for*/
+    float x[2][3]		/*the intersection points*/
+)
+#else
+
 intersect(a, val, x)
 float a[3][3]; 		/*the coordinates of the triangle*/
 float val;		/*the constant value being searched for*/
 float x[2][3];		/*the intersection points*/
+#endif
 {
     int s1, s2;		/*side pointers*/
     int i;		/*side counters*/

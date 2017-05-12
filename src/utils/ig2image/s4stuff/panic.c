@@ -1,4 +1,5 @@
 
+
 static char SccsID[] = "@(#)panic.c	1.1\t4/25/89";
 
 /*----------------------------------------------------------------------
@@ -21,8 +22,14 @@ static char SccsID[] = "@(#)panic.c	1.1\t4/25/89";
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifdef ANSI_FUNC
+
+void
+panic (char *s)
+#else
 char *panic (s)
     char *s;
+#endif
 {
     
     fprintf(stderr,"suprem4 panic: %s\n",s);

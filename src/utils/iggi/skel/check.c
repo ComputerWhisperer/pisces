@@ -18,8 +18,15 @@
 /*-----------------PROX-------------------------------------------------
  * Check a position for proximity to other things.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+prox (double x, double y)
+#else
+
 char * prox (x, y)
     double x,y;
+#endif
 {
     node *n,*dum; 			/* Walkers */
     double tol,dis(),edis();		/* Error tolerance */
@@ -44,8 +51,15 @@ char * prox (x, y)
 /*-----------------BADEDGE----------------------------------------------
  * Check if an edge is already present (user must be retarded or blind or both)
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+badedge (node *i, node *j)
+#else
+
 char *badedge (i, j)
     node *i,*j;
+#endif
 {
     edge *e, *edum;
 
@@ -64,9 +78,16 @@ char *badedge (i, j)
  * Verification that a link is really part of a region.
  * This error checking is getting out of hand.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+int 
+l_in_r (region *r, lledge *l)
+#else
+
 int l_in_r (r, l)
     region *r;
     lledge *l;
+#endif
 {
     lledge *f, *b;
 

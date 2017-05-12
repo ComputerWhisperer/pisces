@@ -24,6 +24,18 @@
 #define CLEAN_SZ	50	/* how much of a wierd buffer to print */
 static void	clean_buf() ;
 
+#ifdef ANSI_FUNC
+
+int 
+pg_erset (
+    char *rot,		/* routine with the error */
+    int eno,		/* pg - error number */
+    char *sval,		/* possible string value */
+    int ival,		/* possible integer value */
+    int syseno	/* system error number (!= 0) */
+)
+#else
+
 int
 pg_erset(rot, eno, sval, ival, syseno)
 	char	*rot ;		/* routine with the error */
@@ -31,6 +43,7 @@ pg_erset(rot, eno, sval, ival, syseno)
 	char	*sval ;		/* possible string value */
 	int	 ival ;		/* possible integer value */
 	int	 syseno ;	/* system error number (!= 0) */
+#endif
 	{
 
 	char	tmp[NAM_SIZE] ;
@@ -157,10 +170,17 @@ pg_erset(rot, eno, sval, ival, syseno)
 	return(E_ERR) ;
 	}
 
+#ifdef ANSI_FUNC
+
+static void 
+clean_buf (char *newbf, char *buf)
+#else
+
 static void
 clean_buf(newbf,buf)
 	char*	newbf ;
 	char*	buf ;
+#endif
 	{
 
 	int	sz = CLEAN_SZ - 3 ;	/* room for the "..." */

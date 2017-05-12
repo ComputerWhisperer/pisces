@@ -1,3 +1,4 @@
+
 /*----------------------------------------------------------------------
  *
  * meshio.c - Reads/writes mesh files.
@@ -30,8 +31,14 @@
 /*-----------------RUMESH-----------------------------------------------
  * Read mesh. Converts input integers to pointers, sets up data base.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+rumesh (char name[])
+#else
 char * rumesh(name)
     char name[];
+#endif
 {
     
     node *nadd[MAXNODE]; triangle *tadd[MAXTRI]; region *radd[MAXREG]; 
@@ -157,9 +164,16 @@ char * rumesh(name)
 	}
 }
 
+#ifdef ANSI_FUNC
+
+int 
+umesh_err (int line, char *s, int ierr)
+#else
+
 umesh_err(line,s,ierr)
     char *s;
     int line,ierr;
+#endif
 {
     char ebuf[80];
     sprintf (ebuf,"Input mesh error in line %d: %s \0",line,s);
@@ -170,8 +184,15 @@ umesh_err(line,s,ierr)
 /*-----------------WUMESH-----------------------------------------------
  * Write mesh. Convert the data base pointers to integers, write.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+wumesh (char name[])
+#else
+
 char * wumesh(name)
     char name[];
+#endif
 {
 /* DECLARE */
     int ii; 
@@ -226,8 +247,15 @@ return(0);
 /*-----------------WGMESH-----------------------------------------------
  * Function to dump stick pictures so dplot can read them. Fairly stupid.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+wgmesh (char name[])
+#else
+
 char * wgmesh(name)
     char name[];
+#endif
 {
     FILE *fp; 
     static char err[80];

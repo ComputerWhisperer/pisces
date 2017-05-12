@@ -34,8 +34,15 @@ extern dopingmode;
 extern writedrainIV();
 extern writeanaldoping();
 
+#ifdef ANSI_FUNC
+
+int 
+write_info (char *name)
+#else
+
 write_info( name ) 
 char *name;
+#endif
 { 
     FILE *fp;
     register int i;

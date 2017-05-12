@@ -20,7 +20,14 @@ extern lat_str lat_info;
 extern vert_str vert_info;
 extern dop_str dop_data[10];
 
+#ifdef ANSI_FUNC
+
+int 
+dump_info (void)
+#else
+
 dump_info()
+#endif
 {
     struct anal_str an;
     struct sup3_str s3;

@@ -22,7 +22,14 @@
 /*-----------------WRESET-----------------------------------------------
  * Reset the mesh window to just cover the device.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+wreset (void)
+#else
+
 char *wreset()
+#endif
 {
     node *n, *b; double xlo, xhi, ylo, yhi; char *err;
     
@@ -42,9 +49,16 @@ char *wreset()
  * Draw a node. If the background grid is on, or if the node is on
  * an edge, add a little diamond so it can be distinguished.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+void 
+draw_node (node *n, int color)
+#else
+
 void draw_node (n,color)
     node *n;
     int color;
+#endif
 {
     if (!DsNode) return;
 
@@ -57,8 +71,15 @@ void draw_node (n,color)
 /*---------------------------SHADE_TRI----------------------------------
  * In the absence of area fill, this routine shades a triangle.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+void 
+shade_tri (triangle *t)
+#else
+
 void shade_tri (t)
     triangle *t;
+#endif
 {
     double  x1, x2, x3, y1, y2, y3, delx31, delx32, dely31, dely32;
     int i ;
@@ -89,9 +110,16 @@ void shade_tri (t)
 /*-----------------DRAW_TRI---------------------------------------------
  * Draw a triangle some color. 0 is erase, -1 is default.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+void 
+draw_tri (triangle *t, int color)
+#else
+
 void draw_tri (t, color)
     triangle *t;
     int color;
+#endif
 {
 	int obtuse();
 
@@ -110,9 +138,16 @@ void draw_tri (t, color)
  * Draw an edge some color. 0 is erase, -1 is default.
  * Someday I'll work out what the electrode convention is and adjust.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+void 
+draw_edge (edge *e, int color)
+#else
+
 void  draw_edge (e, color)
     edge *e;
     int color;
+#endif
 {
     if (!DsEdge) return;
 
@@ -135,9 +170,16 @@ void  draw_edge (e, color)
  * Otherwise just draw the edges which belong to the region.
  * For terminals with area fill, we let the hardware do the work. -not yet
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+void 
+draw_reg (region *r, int color)
+#else
+
 void draw_reg (r, color)
     region *r;
     int color;
+#endif
 {
 #ifdef BOGUS /*This is not here any more.*/
 lledge *b, *f;
@@ -174,8 +216,15 @@ lledge *b, *f;
 /*-----------------WLABEL-----------------------------------------------
  *Put axes on a window.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+void 
+wlabel (window w)
+#else
+
 void wlabel (w)
     window w;
+#endif
 {
     double xlo, ylo, xhi, yhi; 
     float tlo, thi, tdel; 
@@ -275,7 +324,14 @@ void wlabel (w)
 /*-----------------SKEL_SCREEN------------------------------------------
  *Draw a new screen for skel.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+void 
+skel_screen (void)
+#else
+
 void skel_screen()
+#endif
 {
     gclear();
     ggtoa();
@@ -293,7 +349,14 @@ void skel_screen()
  * - 	Badly need an update routine instead of redrawing all the time.
  *----------------------------------------------------------------------*/
 #define DRAW 1
+#ifdef ANSI_FUNC
+
+void 
+draw_mesh (void)
+#else
+
 void draw_mesh ()
+#endif
 { 
     node *n, *bn; triangle *t, *bt; region *r, *br; edge *e,*be;
 
@@ -336,8 +399,15 @@ void draw_mesh ()
  * node/edge or an including region. If the input is invalid for any
  * reason, it is "unread" and 0 is returned.  
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+node *
+npick (char *text)
+#else
+
 node *npick (text)
     char *text;
+#endif
 {
     double x,y, mdis, d, dis(); int ip; 
     node *n, *bn, *closest;
@@ -358,8 +428,15 @@ node *npick (text)
 	}
 }
 
+#ifdef ANSI_FUNC
+
+edge *
+epick (char *text)
+#else
+
 edge *epick (text)
     char *text;
+#endif
 {
     double x,y, mdis, d, edis(); int ip; 
     edge *e, *be, *closest;
@@ -380,8 +457,15 @@ edge *epick (text)
 	}
 }
 
+#ifdef ANSI_FUNC
+
+region *
+rpick (char *text)
+#else
+
 region *rpick (text)
     char *text;
+#endif
 {
     double x, y; int ip, ptnreg(); region *r, *br;
 

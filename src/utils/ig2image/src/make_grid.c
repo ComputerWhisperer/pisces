@@ -14,6 +14,12 @@
 #include <stdio.h>
 #include "bound.h"
 
+#ifdef ANSI_FUNC
+
+int 
+make_grid (int xsize, int ysize, float **xd, float **yd, int *win_xmin_index, int *win_xmax_index, int *win_ymin_index, int *win_ymax_index)
+#else
+
 make_grid(xsize, ysize, xd, yd, 
 	win_xmin_index, win_xmax_index, win_ymin_index, win_ymax_index)
 int xsize;
@@ -24,6 +30,7 @@ int *win_xmin_index;
 int *win_xmax_index;
 int *win_ymin_index;
 int *win_ymax_index;
+#endif
 {
     int index;
     int junk_index;
@@ -172,6 +179,12 @@ int *win_ymax_index;
 }    
 
 
+#ifdef ANSI_FUNC
+
+int 
+shiftwindow (float *array, int size, double min, double max, int min_index, int max_index)
+#else
+
 shiftwindow( array, size, min, max, min_index, max_index )
 float *array;
 int size;
@@ -179,6 +192,7 @@ float min;
 float max;
 int min_index;
 int max_index;
+#endif
 {
     float loc;
     float *ptr;
@@ -199,16 +213,30 @@ int max_index;
     return(0);
 }
 
+#ifdef ANSI_FUNC
+
+float 
+Fmax (double x, double y)
+#else
+
 float Fmax(x,y)
 float x;
 float y;
+#endif
 {
     return (x > y)? x: y;
 }
 
+#ifdef ANSI_FUNC
+
+float 
+Fmin (double x, double y)
+#else
+
 float Fmin(x,y)
 float x;
 float y;
+#endif
 {
     return (x < y)? x: y;
 }

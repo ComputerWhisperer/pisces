@@ -1,3 +1,4 @@
+
 /*----------------------------------------------------------------------
  *
  * alpha.c      - Alpha numeric utilities for skel
@@ -22,8 +23,14 @@
 /*-----------------UERR-------------------------------------------------
  *You erred.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+void 
+uerr (char *text)
+#else
 void uerr (text)
     char *text;
+#endif
 {
     char ebuf[80];
     sprintf (ebuf,"*WARNING* %s\0",text);
@@ -39,8 +46,15 @@ void uerr (text)
 static int 
     tpos, 	/*Current position in the buffer*/
     fresh;	/*Message has been read?        */
+#ifdef ANSI_FUNC
+
+void 
+topl (char *text)
+#else
+
 void topl (text)
     char *text;
+#endif
 {
     ggtoa();
   /*...Clear? */
@@ -67,7 +81,14 @@ void topl (text)
  *If the stuff in the buffer is stale, erase it.
  *This should be called after every `user move', in practise after input.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+void 
+topl_upd (void)
+#else
+
 void topl_upd()
+#endif
 {
     if (--fresh < 0) topl("");
 }
@@ -75,8 +96,15 @@ void topl_upd()
 /*-----------------DREAD_TOPL-------------------------------------------
  *Read things on the top line.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+sread_topl (char *prompt)
+#else
+
 char *sread_topl (prompt)
     char *prompt;
+#endif
 {
 #   define LLEN 80
     static char t[LLEN];	/* return pointer to static storage */
@@ -95,8 +123,15 @@ char *sread_topl (prompt)
     return (t);
 }
 
+#ifdef ANSI_FUNC
+
+double 
+dread_topl (char *prompt)
+#else
+
 double dread_topl (prompt)
     char *prompt;
+#endif
 {
     double t; char *s;
 
@@ -109,7 +144,14 @@ double dread_topl (prompt)
 /*-----------------WAIT_MORE--------------------------------------------
  *Wait for the word to proceed
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+void 
+wait_more (void)
+#else
+
 void wait_more()
+#endif
 {
     char t[LLEN];
     fgets (t, LLEN, stdin);

@@ -1,3 +1,5 @@
+#ifdef ANSI_FUNC
+
 
 
 static char SccsID[] = "@(#)list.c	1.1\t4/25/89";
@@ -32,6 +34,13 @@ static char SccsID[] = "@(#)list.c	1.1\t4/25/89";
  *									*
  ************************************************************************/
 char *list_parse(char **s, int first )
+#else
+
+__END_DECLS char *
+list_parse (s, first)
+char **s;
+int first;
+#endif
 {
     char *value, *str;
     int count, i;
@@ -86,8 +95,15 @@ char *list_parse(char **s, int first )
  *  Original:	MEL	4/85						*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+loop_check (char **str)
+#else
+
 loop_check(str)
 char **str;
+#endif
 {
     float start, stop, step;
     float index;

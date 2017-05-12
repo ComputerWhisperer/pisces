@@ -53,9 +53,16 @@
 
 #ifdef DEBUG
 
+#ifdef ANSI_FUNC
+
+int 
+main (int argc, char *argv[])
+#else
+
 main(argc, argv)
 int argc;
 char *argv[];
+#endif
 {
     char name[20];
     int boron=5;
@@ -85,6 +92,12 @@ char *argv[];
 #endif /*DEBUG*/
 
 
+#ifdef ANSI_FUNC
+
+int 
+reads3as (char *supfil, int imptyp, double *oxth, double *peakcon, double *junc, double *std, double *subdop, int *type, double *depth)
+#else
+
 reads3as( supfil, imptyp, oxth, peakcon, junc, std, subdop, type, depth )
 char *supfil;
 int imptyp;
@@ -95,6 +108,7 @@ double *std;
 double *subdop;
 int *type;
 double *depth;
+#endif
 {
 
 	FILE	*fp ;

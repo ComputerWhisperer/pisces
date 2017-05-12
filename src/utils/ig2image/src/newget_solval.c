@@ -1,3 +1,4 @@
+
 /*	newget_solval.c		Version 1.8		*/
 /*	Last Modification:	3/31/90 09:36:22		*/
 
@@ -14,7 +15,6 @@
 
 #include <stdio.h>
 #include <math.h>
-extern double erf(), erfc();
 #include <ctype.h>
 #include "global.h"
 #include "constant.h"
@@ -43,10 +43,16 @@ extern double erf(), erfc();
  * 				absolute value is to be taken		*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+newget_solval (float *val, int type, int takeabs)
+#else
 newget_solval( val, type, takeabs)
 float *val;
 int type;
 int takeabs;
+#endif
 {
     int index;
     register int i, j;

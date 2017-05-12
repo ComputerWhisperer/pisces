@@ -58,7 +58,14 @@ static rast_work(void);
 
 static	fpoint2d  P0	= { 0.0, 0.0 } ;
 
+#ifdef ANSI_FUNC
+
 gp_work(void)
+#else
+
+int 
+gp_work ()
+#endif
 {
 	fpoint2d  P1 ;
 	fpoint2d  Pa, Pb ;	/* temp points */
@@ -119,7 +126,17 @@ gp_work(void)
 	 */
 	}
 
+#ifdef ANSI_FUNC
+
 static phys_work(struct _fpoint2d *P_1, struct _fpoint2d *P_0, int cmd)
+#else
+
+static 
+phys_work (P_1, P_0, cmd)
+struct _fpoint2d *P_1;
+struct _fpoint2d *P_0;
+int cmd;
+#endif
 	{
 
 	fpoint2d	P_to , P_fr ;
@@ -169,7 +186,16 @@ static phys_work(struct _fpoint2d *P_1, struct _fpoint2d *P_0, int cmd)
  *	this elsewhere (not in this file,ie: from gp_area() ) so
  *	it cannot be declared as a static function.
  */
+#ifdef ANSI_FUNC
+
 simp_work(struct _fpoint2d *Pto, struct _fpoint2d *Pfr)
+#else
+
+int 
+simp_work (Pto, Pfr)
+struct _fpoint2d *Pto;
+struct _fpoint2d *Pfr;
+#endif
 {
 	register int	n, dir, pn ;
 	int	 i1, j1, i0, j0 ;
@@ -250,8 +276,15 @@ simp_work(struct _fpoint2d *Pto, struct _fpoint2d *Pfr)
  * Note: this is called from gp_lines.c so cannot be declared a
  *  static functions.
  */
+#ifdef ANSI_FUNC
+
 int
 hard_work(void)
+#else
+
+int 
+hard_work ()
+#endif
 {
 	int	this_ent = NOENT ;
 
@@ -282,8 +315,16 @@ hard_work(void)
 	}
 
 #ifdef DEBUG
+#ifdef ANSI_FUNC
+
+static 
+CheckI (void)
+#else
+
 static
-CheckI() {
+CheckI()
+#endif
+ {
 	switch (g_cmd) {
 	case G_DRAW:
 	case G_MOVE:
@@ -299,8 +340,15 @@ CheckI() {
 
 
 /* do the work for vector type devices */
+#ifdef ANSI_FUNC
+
 static
 vect_work(void)
+#else
+
+static 
+vect_work ()
+#endif
 {
 
 	int    this_ent;
@@ -437,8 +485,15 @@ vect_work(void)
 
 
 /* do all the work for a rastor type plotter */
+#ifdef ANSI_FUNC
+
 static
 rast_work(void)
+#else
+
+static 
+rast_work ()
+#endif
 {
 
 	/* start */
@@ -517,7 +572,13 @@ rast_work(void)
 
 
 /* gplot2() calls this directly so this must not be decl'ed static */
-save_work(void)
+#ifdef ANSI_FUNC
+void save_work(void)
+#else
+
+int 
+save_work ()
+#endif
 {
 	static	 Bool	 first = T ;
 

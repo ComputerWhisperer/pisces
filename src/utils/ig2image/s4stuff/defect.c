@@ -34,8 +34,15 @@ static int vadd = 0, iadd = 0, tadd = 0;
  *  Original:	MEL	11/85						*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+init_pseudo (double temp)
+#else
+
 init_pseudo( temp )
 double temp;
+#endif
 {
     register int i, s;
 
@@ -84,8 +91,15 @@ double temp;
  * Original:	MEL	5/88						*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+get_defaults (int imp)
+#else
+
 get_defaults(imp)
 int imp;
+#endif
 {
     int ret;
 
@@ -114,6 +128,12 @@ int imp;
  *  Original:	MEL	11/85						*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+get_Cstar (int imp, int nv, double temp, double *noni, double *equil, double *dequ)
+#else
+
 get_Cstar( imp, nv, temp, noni, equil, dequ )
 int imp;
 int nv;
@@ -121,6 +141,7 @@ float temp;
 double *noni;
 double *equil;
 double *dequ;
+#endif
 {
     register int i, mat;
     register int f = which(imp);

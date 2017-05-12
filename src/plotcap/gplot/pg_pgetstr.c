@@ -52,9 +52,16 @@
 
 #define isoctal(CH) (CH >= '0' && CH <= '7')
 
+#ifdef ANSI_FUNC
+
+int 
+pgetstr (char *id, char *area)
+#else
+
 int
 pgetstr(id, area)
 	char *id, *area;
+#endif
 	{
 
 	char	*np, *ap = area ;
@@ -91,10 +98,17 @@ pgetstr(id, area)
 /* "pg_cvtstr": copy string interp'ing escape chars and embedded octal
  *	constants ("\032" -> ' ')
  */
+#ifdef ANSI_FUNC
+
+int 
+pg_cvtstr (char *dp, char *sp)
+#else
+
 int
 pg_cvtstr(dp, sp)
 	char	*dp ;
 	/*register*/ char	*sp ;
+#endif
 	{
 
 	register int  c ;

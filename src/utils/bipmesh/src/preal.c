@@ -41,9 +41,16 @@ int nn;
  *	Original	Mark E. Law		Oct, 1984		*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+char *
+parse_real (char *str, float *dval)
+#else
+
 char *parse_real(str, dval)
 char *str;
 float *dval;
+#endif
 {
     char *s;
     int leading = FALSE, decimal = FALSE;
@@ -106,9 +113,16 @@ char *vfunc( )
  *  Original:	MEL	2/85						*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+constants (char *str, struct tok_str *tok)
+#else
+
 constants( str, tok )
 char *str;
 struct tok_str *tok;
+#endif
 {
     
     /*sort of a mass case statement*/

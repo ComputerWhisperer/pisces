@@ -43,10 +43,20 @@ static int cpy_in(char *dst, char *dstend, char *src);
  *
  * written:  Michael Eldredge (jan 85)
  */
+#ifdef ANSI_FUNC
+
+int 
+pgetent (
+    char *capfile,		/* Beginning file to search */
+    char *devname		/* Device for which to look */
+)
+#else
+
 int
 pgetent(capfile, devname)
 	char	*capfile ;		/* Beginning file to search */
 	char	*devname ;		/* Device for which to look */
+#endif
 	{
 
 	int	 iret = E_ERR ;
@@ -102,8 +112,17 @@ pgetent(capfile, devname)
 /* "pg_init": init things (common) for pget-ing
  * note: note "static" function; all pgetXXX() funcs use this.
  */
+#ifdef ANSI_FUNC
+
+int 
+pg_init (
+    char *forwhat	/*Getting from cap file. OR Entok from buffer*/
+)
+#else
+
 pg_init(forwhat)
 	char	*forwhat ;	/*Getting from cap file. OR Entok from buffer*/
+#endif
 	{
 
 	if (! forwhat) {		/* from cap file */
@@ -142,9 +161,16 @@ pg_init(forwhat)
  *	(eg: devnam = "tekc@/usr/tmp/Plotcap") get the devname and file name
  *	in the proper places in common.
  */
+#ifdef ANSI_FUNC
+
+static int 
+set_nam (char *cap, char *dev)
+#else
+
 static int
 set_nam(cap, dev)
 	char	*cap , *dev ;
+#endif
 	{
 	char	 c , *bp ;
 
@@ -202,9 +228,16 @@ set_nam(cap, dev)
 /* "gat_nam": gather a name list together into the internal buffer space 
  *	If 'check' is set, check each name against 'devnam'
  */
+#ifdef ANSI_FUNC
+
+static int 
+gat_nam (Bool check)
+#else
+
 static int
 gat_nam(check)
 	Bool	 check ;
+#endif
 	{
 
 	char	 buf[NAM_SIZE] ;
@@ -269,9 +302,18 @@ gat_nam(check)
 	}
 
 /* "gat_ent" : gather together the currently pointed to entry */
+#ifdef ANSI_FUNC
+
+static int 
+gat_ent (
+    Bool keep		/* save or not save what we get? */
+)
+#else
+
 static int
 gat_ent(keep)
 	Bool	 keep ;		/* save or not save what we get? */
+#endif
 	{
 
 	char	*ep = p.defp, *np  ;		/* prev entry found... */
@@ -360,8 +402,15 @@ gat_ent(keep)
 /* "sync_up": Sync up the input file.  Basically, just find the end of the
  *	current entry to that parsing can resume.
  */
+#ifdef ANSI_FUNC
+
+static 
+sync_up (void)
+#else
+
 static 
 sync_up()
+#endif
 	{
 
 	int	 n ;
@@ -372,10 +421,17 @@ sync_up()
 					&& n != GT_OVR) ;
 	}
 
+#ifdef ANSI_FUNC
+
+static void 
+getspec (char *buf, int bufsz)
+#else
+
 static void
 getspec(buf,bufsz)
 	char	*buf ;
 	int	bufsz ;
+#endif
 	{
 
 	defrot("getspec");
@@ -397,11 +453,22 @@ getspec(buf,bufsz)
 	}
 
 /* "cpy_in": Like strcpy(), but return then number of chars copied */
+#ifdef ANSI_FUNC
+
+static int 
+cpy_in (
+    char *dst,
+    char *dstend,	/* last available character */
+    char *src
+)
+#else
+
 static int
 cpy_in(dst,dstend, src)
 	char	*dst ;
 	char	*dstend ;	/* last available character */
 	char	*src ;
+#endif
 	{
 
 	register int n = 0 ;
@@ -423,9 +490,16 @@ cpy_in(dst,dstend, src)
  *	found then return a pointer to the first character after the '='. 
  *	Else return a null pointer. (Not found).
  */
+#ifdef ANSI_FUNC
+
+char *
+pg_fndid (char *id)
+#else
+
 char *
 pg_fndid(id)
 	char	*id ;
+#endif
 	{
 
 	register char	*ep1, *ep ;

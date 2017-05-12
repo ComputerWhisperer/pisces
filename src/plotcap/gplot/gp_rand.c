@@ -22,14 +22,29 @@
  *	made that will include one or more of the routines.
  *	So: define a dummy routine, just incase.
  */
+#ifdef ANSI_FUNC
+
+static void 
+RandDummy (void)
+#else
+
 static void
-RandDummy() { ; }
+RandDummy()
+#endif
+ { ; }
 
 
 #ifdef really_do_need_this
 /* "gp_poke" : DEBUG. Poke in values to commons */
+#ifdef ANSI_FUNC
+
+int 
+gp_poke (int cmd, int ival)
+#else
+
 gp_poke(cmd, ival)
 	int	cmd, ival ;
+#endif
 	{
 
 	switch (cmd) {
@@ -54,7 +69,14 @@ gp_poke(cmd, ival)
 #ifdef DO_STATS
 
 /* Init statistics */
+#ifdef ANSI_FUNC
+
+int 
+init_stats (void)
+#else
+
 init_stats()
+#endif
 	{
 	long	 time() ;
 
@@ -77,7 +99,14 @@ init_stats()
 
 
 /* Put out statistics */
+#ifdef ANSI_FUNC
+
+int 
+save_stats (void)
+#else
+
 save_stats()
+#endif
 	{
 	/* BIN STATS
 	int	 lu ;

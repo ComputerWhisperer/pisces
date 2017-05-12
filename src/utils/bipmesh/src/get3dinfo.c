@@ -24,9 +24,16 @@ extern getdefprofiles();
 extern calc_junc();
 
 
+#ifdef ANSI_FUNC
+
+int 
+get_3dinfo (int dopingmode, int inputmode)
+#else
+
 get_3dinfo( dopingmode, inputmode )
 int dopingmode;
 int inputmode;
+#endif
 {
     char buf[80];
     char answer;

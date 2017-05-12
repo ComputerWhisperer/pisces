@@ -31,11 +31,18 @@ static	int	jssret[MAXRET] ;
 static	int	curret ;
 
 
+#ifdef ANSI_FUNC
+
+int 
+tst18 (int prog[], p_ent ent, char idat[])
+#else
+
 int
 tst18(prog, ent, idat)
 	int	prog[] ;
 	p_ent	ent ;
 	char	idat[] ;
+#endif
 	{
 	int	plc , nout = 0 ;
 	int	ntyp, nval ;
@@ -118,10 +125,17 @@ tst18(prog, ent, idat)
 
 
 /* "tst18i" : */
+#ifdef ANSI_FUNC
+
+int 
+tst18i (int prog[], int plc, char idat[], int *ityp, int *ival)
+#else
+
 int
 tst18i(prog, plc , idat, ityp, ival)
 	int	prog[], plc, *ityp, *ival ; 
 	char	idat[] ;
+#endif
 	{
 
 	int	ir, wr, mr, rr ;
@@ -187,9 +201,16 @@ tst18i(prog, plc , idat, ityp, ival)
 
 
 /* "irwds" : return how many words a given instruction will take */
+#ifdef ANSI_FUNC
+
+int 
+irwds (int ir, int mr)
+#else
+
 int
 irwds(ir, mr)
 	int	ir, mr ;
+#endif
 	{
 
 	int   nwds  = 1;		/* at least one word */

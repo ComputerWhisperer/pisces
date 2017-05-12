@@ -24,7 +24,14 @@
 /*-----------------UCR2_REG---------------------------------------------
  * Create a region by nodes. 
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+ucr_reg (void)
+#else
+
 char *ucr_reg()
+#endif
 {
     node *n0, *n1, *n2, *nn;		 /* First 3 nodes, generic new node. */
     region *r;				 /* Region created. */
@@ -68,7 +75,14 @@ char *ucr_reg()
 /*-----------------USP_EDGE---------------------------------------------
  * Add new nodes to an edge.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+usp_edge (void)
+#else
+
 char *usp_edge()
+#endif
 {
     edge *ework, *ef, *eb;	/* Edge before and after being broken. */
     node *stg, *fng, *n;	/* Starting, finishing, and working node */
@@ -100,7 +114,14 @@ char *usp_edge()
 /*-----------------UJOIN_EDGE-------------------------------------------
  * Join two edges, freeing the node between them.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+ujoin_edge (void)
+#else
+
 char *ujoin_edge()
+#endif
 {
     edge *ej[2], *enew;
     char *err;
@@ -120,7 +141,14 @@ char *ujoin_edge()
 /*-----------------USP_REG----------------------------------------------
  * Nodewise region split routine.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+usp_reg (void)
+#else
+
 char *usp_reg ()
+#endif
 {
     node *head, *tail;
     edge *enew;
@@ -161,7 +189,14 @@ char *usp_reg ()
  * Join two regions nodewise.
  * This version insists that they share just one common edge.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+ujoin_reg (void)
+#else
+
 char *ujoin_reg ()
+#endif
 {
     lledge *l, *L, *ldum, *lshare, *Lshare, *lnext, *Lnext;
     region *r, *R;
@@ -205,7 +240,14 @@ char *ujoin_reg ()
 /*-----------------UDS_REG----------------------------------------------
  * Destroy a region.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+uds_reg (void)
+#else
+
 char *uds_reg()
+#endif
 {
     region *r;
 

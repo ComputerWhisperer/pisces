@@ -19,6 +19,12 @@
 #define NETCARRIERS 22
 #define ERROR -1
 
+#ifdef ANSI_FUNC
+
+int 
+write_imagetool (int material, int variable, char *image_filename, int takelog, int takeabs, int outfindex, int win_xmin_index, int win_xmax_index, int win_ymin_index, int win_ymax_index, int xsize, int ysize, float *xdata, float *ydata, int mode, double min_value, int plotxsize, int plotysize, int nxfac, int nyfac, int macfile)
+#else
+
 write_imagetool(material, variable, 
     image_filename, takelog, takeabs, outfindex,
     win_xmin_index, win_xmax_index, win_ymin_index, win_ymax_index,
@@ -45,6 +51,7 @@ int plotysize;
 int nxfac;
 int nyfac;
 int macfile;
+#endif
 {
     static float *mydata;
     static float *val;

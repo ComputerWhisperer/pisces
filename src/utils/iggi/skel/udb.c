@@ -24,9 +24,16 @@
 /*-----------------ISCC-------------------------------------------------
  * Is an edge counterclockwise in a region?
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+int 
+iscc (region *r, lledge *e)
+#else
+
 int iscc (r, e)
 	region *r;
 	lledge *e;
+#endif
 {
     if (!r || !e || r->len < 2) panic ("bad call");
 
@@ -47,9 +54,16 @@ int iscc (r, e)
  * (the edge which has a least counter-clockwise node == n)
  * This depends on closed regions.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+lledge *
+efoll (region *r, node *n)
+#else
+
 lledge *efoll (r, n)
     region *r;
     node *n;
+#endif
 {
     lledge *l, *ldum;
     int cc;
@@ -65,9 +79,16 @@ lledge *efoll (r, n)
  * Possibly Create Edge.
  * Create an edge, if it is not already there.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+pcr_edge (node *i, node *j, edge **en)
+#else
+
 char *pcr_edge (i, j, en)
     node *i, *j;
     edge **en;
+#endif
 {
     edge *e, *edum;
     if (!i || !j || !en) panic ("bad parameters to pcr_edge");
@@ -85,8 +106,15 @@ char *pcr_edge (i, j, en)
  * Totally Destroy Region.
  * Unlinks, then zaps the edges of a region.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+tds_reg (region *r)
+#else
+
 char * tds_reg (r)
 	region *r;
+#endif
 {
     lledge *l;
     edge *esave;
@@ -110,9 +138,16 @@ char * tds_reg (r)
 /*-----------------SPLIT_EDGE-------------------------------------------
  * Add a new node to an edge.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+split_edge (edge *e, node *n, edge **eb, edge **ef)
+#else
+
 char *split_edge (e, n, eb, ef)
     edge *e, **eb, **ef;
     node *n;
+#endif
 {
     char *err;
     region *r, *rdum, *rsave[2];
@@ -161,8 +196,15 @@ char *split_edge (e, n, eb, ef)
 /*-----------------JOIN_EDGE--------------------------------------------
  * Join two consecutive edges, with appropriate region modifications.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+join_edge (edge *ej[2], edge **enew)
+#else
+
 char *join_edge (ej, enew)
     edge *ej[2], **enew;
+#endif
 {
     int i, ir;
     char *err;
@@ -213,8 +255,15 @@ char *join_edge (ej, enew)
 /*-----------------PANIC------------------------------------------------
  * This is what comes of trying to be user friendly.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+int 
+panic (char *s)
+#else
+
 panic (s)
     char *s;
+#endif
 {
     char ebuf[80], *err, *wumesh();
 

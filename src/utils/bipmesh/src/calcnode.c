@@ -28,11 +28,18 @@
 
 extern double dmax();
 
+#ifdef ANSI_FUNC
+
+int 
+calcnode (double width, double ratio, double init, double final)
+#else
+
 calcnode( width, ratio, init, final )
 double width;
 double ratio;
 double init;
 double final;
+#endif
 {
     double tmp;
     double node;

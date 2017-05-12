@@ -28,8 +28,15 @@ static char SccsID[] = "@(#)limits.c	1.1\t4/25/89";
  *    Revision : MEL	       (C translation)		  Oct, 1984	*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+dev_lmts (float *dxmin, float *dxmax, float *dymin, float *dymax)
+#else
+
 dev_lmts(dxmin, dxmax, dymin, dymax)
 float *dxmin, *dxmax, *dymin, *dymax;
+#endif
 {
     register float *val;
     register struct pt_str **p;

@@ -1,3 +1,4 @@
+
 /*	skelp.c		Version 1.3		*/
 /*	Last Modification:	3/27/90 13:15:18		*/
 
@@ -28,7 +29,13 @@
  *this routine allows the user to set up a window
  *simple malloc and return pointer.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+window 
+cr_window (void)
+#else
 window cr_window()
+#endif
 {
     window temp; char *set_window();
 
@@ -50,8 +57,15 @@ window cr_window()
 /*---------------------------DEL_WIN------------------------------------
  *this routine allows a user to dispose of a window.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+void 
+del_win (window ptr)
+#else
+
 void del_win(ptr)
     window ptr;
+#endif
 {
     /*free up the malloc'ed space*/
     free(ptr);
@@ -61,9 +75,16 @@ void del_win(ptr)
 /*---------------------------SET_VIEWPORT-------------------------------
  *this function allows the viewport to be set in a window
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+set_viewport (window win, double vxmin, double vxmax, double vymin, double vymax)
+#else
+
 char *set_viewport(win, vxmin, vxmax, vymin, vymax)
     window win;
     double vxmin, vxmax, vymin, vymax;
+#endif
 {
     if (vxmin >= vxmax || vymin >= vymax) 
 	return("Bad data to set_viewport");
@@ -80,9 +101,16 @@ char *set_viewport(win, vxmin, vxmax, vymin, vymax)
 /*---------------------------SET_WINDOW---------------------------------
  *this function allows the window to be set in a window
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+set_window (window win, double wxmin, double wxmax, double wymin, double wymax)
+#else
+
 char *set_window(win, wxmin, wxmax, wymin, wymax)
     window win;
     double wxmin, wxmax, wymin, wymax;
+#endif
 {
     if (wxmin >= wxmax || wymin >= wymax) 
 	return("Bad data to set_window");
@@ -100,8 +128,15 @@ char *set_window(win, wxmin, wxmax, wymin, wymax)
  * of a window which is a little bigger than the problem window, and
  * which may be fixed for astigmatism.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+int 
+wadjust (window w)
+#else
+
 wadjust (w)
     window w;
+#endif
 {
     double  delx,dely ;
     double  txmax, txmin, tymax, tymin, wratio, vratio ;
@@ -133,10 +168,23 @@ wadjust (w)
 /*-----------------WV_XFORM---------------------------------------------
  *Transform from window(problem) to viewport(inches) coordinates.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+void 
+wv_xform (
+    window w,
+    double x,
+    double y,		/* Window   coords */
+    double *rx,
+    double *ry	/* Viewport coords */
+)
+#else
+
 void wv_xform (w, x, y, rx, ry)
     window w; 
     double x,y;		/* Window   coords */
     double *rx, *ry;	/* Viewport coords */
+#endif
 {
     *rx = (x - w->cxa) * (w->cxm) + w->cxb;
     *ry = (y - w->cya) * (w->cym) + w->cyb;
@@ -145,10 +193,23 @@ void wv_xform (w, x, y, rx, ry)
 /*-----------------VW_XFORM---------------------------------------------
  *Transform from viewport(inches) to window(problem) coordinates.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+void 
+vw_xform (
+    window w,
+    double rx,
+    double ry,	/* Inches */
+    double *x,
+    double *y	/* Microns, lightyears, or furlongs. */
+)
+#else
+
 void vw_xform (w, rx, ry, x, y)
     window w;
     double rx, ry;	/* Inches */
     double *x, *y;	/* Microns, lightyears, or furlongs. */
+#endif
 {
     *x = w->cxa + (rx - w->cxb) / w->cxm;
     *y = w->cya + (ry - w->cyb) / w->cym;
@@ -159,9 +220,16 @@ void vw_xform (w, rx, ry, x, y)
  *----------------------------------------------------------------------*/
 #define CLEAR -1
 #define DRAW 1
+#ifdef ANSI_FUNC
+
+void 
+draw_viewport (window w, int mode)
+#else
+
 void draw_viewport (w, mode)
     window w;
     int mode;
+#endif
 {
     float dummy1;
 
@@ -181,12 +249,27 @@ void draw_viewport (w, mode)
 /*---------------------------VLABEL-------------------------------------
  *Label a viewport.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+void 
+vlabel (
+    window v,
+    double x,
+    double y,	/* Fractional coordinates from bottom left. */
+    double hadj,
+    double vadj,	/* Horizontal and vertical adjust. */
+    char *text,
+    int color
+)
+#else
+
 void vlabel (v, x, y, hadj, vadj, text, color)
     window v; 
     double x, y;	/* Fractional coordinates from bottom left. */
     double hadj, vadj;	/* Horizontal and vertical adjust. */
     char *text;
     int color;
+#endif
 {
     {gnline (color);} /* gpost(); */	/* TPLOT/GPLOT dependence. */
     symb2 (v->vxmin + x*(v->vxmax - v->vxmin),
@@ -202,9 +285,16 @@ void vlabel (v, x, y, hadj, vadj, text, color)
  *Draw a line in a window. Takes problem coordinates and converts to
  *screen coordinates, clips to window, draws.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+void 
+lwin (window win, double x, double y)
+#else
+
 void lwin(win, x, y)
     window win;
     double x, y;
+#endif
 { 
     int inside, in_view();
     double rx, ry, clipax, clipay, clipbx, clipby;
@@ -242,9 +332,16 @@ void lwin(win, x, y)
  *Move to a point in a window. Takes problem coordinates, converts to
  *screen coordinates, moves.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+void 
+mwin (window win, double x, double y)
+#else
+
 void mwin(win, x, y)
     window win;
     double x, y;
+#endif
 {
     int inside, in_view();
     double rx, ry;
@@ -266,10 +363,17 @@ void mwin(win, x, y)
 /*---------------------------DOTWIN-------------------------------------
  *Draw a "dot" at a point in a window. Input in problem coordinates.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+void 
+dotwin (window win, double x, double y, int size, int color)
+#else
+
 void dotwin(win, x, y, size, color)
     window win;
     double x, y;
     int size, color;
+#endif
 { 
     int inside; double rx, ry, ht;
 
@@ -306,17 +410,31 @@ void dotwin(win, x, y, size, color)
 /*---------------------------IN_WIN-------------------------------------
  *Is screen point in the viewport?
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+int 
+in_view (window win, double rx, double ry)
+#else
+
 int in_view (win, rx, ry)
     double rx, ry;
     window win;
+#endif
 {
     return ( (rx >= win->vxmin) && (rx <= win->vxmax) && 
 	     (ry >= win->vymin) && (ry <= win->vymax) );
 }
 
+#ifdef ANSI_FUNC
+
+int 
+in_win (window win, double x, double y)
+#else
+
 int in_win (win, x, y)
     double x,y;
     window win;
+#endif
 {
     return ( (x >= win->wxmin) && (x <= win->wxmax) && 
 	     (y >= win->wymin) && (y <= win->wymax) );
@@ -331,9 +449,16 @@ int in_win (win, x, y)
  *  Original : CSR Sep 84
  *  C port   : CSR Feb 85
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+int 
+clip (window w, double *pax, double *pay, double *pbx, double *pby)
+#else
+
 int clip (w, pax, pay, pbx, pby)
     window w;
     double *pax, *pay, *pbx, *pby;
+#endif
 {
     double tx,ty,ax = *pax, ay = *pay, bx = *pbx, by = *pby;
     int aleft,aright,atop,abot,bleft,bright,btop,bbot, 
@@ -410,10 +535,17 @@ static struct Sgrin
      struct Sgrin *prev;} 
     *grinstack;
 
+#ifdef ANSI_FUNC
+
+int 
+get_grin (window v, double *x, double *y, int *p, char *text)
+#else
+
 int get_grin (v, x, y, p, text)
     window v;
     double *x, *y; int *p;
     char *text;
+#endif
 {
     struct Sgrin *t; float fx, fy; 
     int iv[4];
@@ -447,8 +579,15 @@ int get_grin (v, x, y, p, text)
     return (in_view (v, *x, *y));
 }
 
+#ifdef ANSI_FUNC
+
+void 
+unget_grin (double x, double y, int p)
+#else
+
 void unget_grin (x, y, p)
     double x, y; int p;
+#endif
 {
     struct Sgrin *t;
     t = grinstack;
@@ -464,10 +603,24 @@ void unget_grin (x, y, p)
  *Also allows the user to type coordinates if they so desire.
  *Kludge to detect numerical input.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+int 
+wget_grin (
+    window win,
+    double *x,
+    double *y,
+    int *p,
+    char *text,				/* What to print on window */
+    int fix				/* Whether to round coords */
+)
+#else
+
 int wget_grin (win, x, y, p, text, fix)
     window win; double *x, *y; int *p;
     char *text;				/* What to print on window */
     int fix;				/* Whether to round coords */
+#endif
 {
     double dread_topl(), inside, rx, ry;
 
@@ -498,8 +651,15 @@ int wget_grin (win, x, y, p, text, fix)
     return (inside);
 }
 
+#ifdef ANSI_FUNC
+
+void 
+wunget_grin (window win, double x, double y, int p)
+#else
+
 void wunget_grin (win, x, y, p)
     window win; double x, y; int p;
+#endif
 {
   /*...Convert */
     x = (x - win->cxa)*win->cxm + win->cxb;
@@ -510,8 +670,15 @@ void wunget_grin (win, x, y, p)
 /*-----------------POLKADOT---------------------------------------------
  * Cover the viewport with regularly spaced little dots to help with input.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+void 
+polkadot (window w)
+#else
+
 polkadot (w)
     window w;
+#endif
 {
     double rx0, ry0, rdx, rdy, rx, ry, x0, y0, xratio, yratio; 
     static char err[80]; 

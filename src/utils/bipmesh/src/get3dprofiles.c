@@ -17,7 +17,14 @@
 #include <stdio.h>
 #include "struct.h"
 
+#ifdef ANSI_FUNC
+
+int 
+get3dprofiles (void)
+#else
+
 get3dprofiles()
+#endif
 
 {
     int typeofprofile;

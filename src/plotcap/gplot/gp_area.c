@@ -98,7 +98,14 @@ static void l_xform(fpoint2d *Pnew, float oldx, float oldy);
 /* "gp_area": Handle gplot calls for area help...
  *	Expect commands to be in common (g_cmd/g_sub/etc....)
  */
+#ifdef ANSI_FUNC
+
+void 
+gp_area (void)
+#else
+
 void gp_area()
+#endif
 	{
 
 	int	lin_sav ;
@@ -150,7 +157,15 @@ void gp_area()
 		}
 	}
 
+#ifdef ANSI_FUNC
+
 static void gpa_pass(float ang)
+#else
+
+static void 
+gpa_pass (ang)
+float ang;
+#endif
 	{
 
 	int	i ;
@@ -175,7 +190,16 @@ static void gpa_pass(float ang)
 	}
 		
 
+#ifdef ANSI_FUNC
+
 static void gpa_draw(float yinc, float ang)
+#else
+
+static void 
+gpa_draw (yinc, ang)
+float yinc;
+float ang;
+#endif
 	{
 
 	float	y ;
@@ -243,9 +267,16 @@ static void gpa_draw(float yinc, float ang)
  * "gp_arset" : set a new area fill pattern for subsequent area fill calls 
  * modified:  User settable style.
  */
+#ifdef ANSI_FUNC
+
+int 
+gp_arset (int n)
+#else
+
 int
 gp_arset(n)
 	int	 n ;
+#endif
 	{
 
 	if (n > 1) {		/* simple: use internal values */
@@ -269,7 +300,14 @@ gp_arset(n)
  *	This is a very simple non-recursive bubble sort method.
  *	In general there are not that many points to sort, so....
  */
+#ifdef ANSI_FUNC
+
+static int 
+isort (void)
+#else
+
 static int isort()
+#endif
 	{
 
 	register float	 temp ;
@@ -306,7 +344,15 @@ static	double	l_yx = 0.0,  l_yy = 1.0 ;
 
 /* "l_rotate": simple form of gp_xfrm(G_ROTATE, ... ) and reduct3() */
 /* in degees */
+#ifdef ANSI_FUNC
+
 static void l_rotate(float ang)
+#else
+
+static void 
+l_rotate (ang)
+float ang;
+#endif
 	{
 	double	txx, txy, tyx, tyy ;	/* until new eval is done */
 	double	inrads, cr, sr ;
@@ -333,7 +379,17 @@ static void l_rotate(float ang)
 	}
 
 /* "l_xform": simpified/local version of xform() */
+#ifdef ANSI_FUNC
+
 static void l_xform(fpoint2d *Pnew, float oldx, float oldy)
+#else
+
+static void 
+l_xform (Pnew, oldx, oldy)
+fpoint2d *Pnew;
+float oldx;
+float oldy;
+#endif
 	{
 	float	xtemp ;		/* see xform() */
 

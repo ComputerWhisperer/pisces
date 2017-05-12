@@ -25,7 +25,14 @@
  *Do all the the things that should be done every time the user moves.
  *For now, we just check on the the top-line buffer.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+void 
+something_happened (void)
+#else
+
 void something_happened()
+#endif
 {
     topl_upd();
 }
@@ -33,7 +40,14 @@ void something_happened()
 /*-----------------URMESH-----------------------------------------------
  * Prompt for the name of a file, read it, update the screen.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+urmesh (void)
+#else
+
 char *urmesh()
+#endif
 {
     char *name, *err, *rumesh();
 
@@ -47,7 +61,14 @@ char *urmesh()
 /*-----------------UWMESH-----------------------------------------------
  * Prompt for a filename, then write the mesh.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+uwmesh (void)
+#else
+
 char *uwmesh()
+#endif
 {
     char *name, *err, *wumesh();
 
@@ -58,7 +79,14 @@ char *uwmesh()
 /*-----------------UGMESH-----------------------------------------------
  * Prompt for a filename, then make a dplot copy of the edges.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+ugmesh (void)
+#else
+
 char *ugmesh()
+#endif
 {
     char *name, *err, *wgmesh();
 
@@ -68,7 +96,14 @@ char *ugmesh()
 }
 
 /*-----------------UCR_NODE---------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+ucr_node (void)
+#else
+
 char *ucr_node()
+#endif
 {
     double x, y; int p; node *new; char *err;
 
@@ -80,7 +115,14 @@ char *ucr_node()
 }
 
 /*-----------------UDS_NODE---------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+uds_node (void)
+#else
+
 char *uds_node()
+#endif
 {
     node *n; char *err;
     while (n = npick("Node")) {
@@ -93,7 +135,14 @@ char *uds_node()
 /*-----------------UDS_ALL----------------------------------------------
  * Clear the data base.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+uds_all (void)
+#else
+
 char *uds_all()
+#endif
 {
     char *err, *really = sread_topl ("Really destroy everything?");
     if (really[0] == 'y' || really[0] == 'Y') {
@@ -114,7 +163,14 @@ char *uds_all()
 /*-----------------UMV_NODE---------------------------------------------
  * Move a node, updating all edges connected to it. 
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+umv_node (void)
+#else
+
 char *umv_node()
+#endif
 {
     node *n; double x,y; int p; char *do_mv_node(), *prox(), *err;
 
@@ -126,9 +182,20 @@ char *umv_node()
     return (0);
 }
 
+#ifdef ANSI_FUNC
+
+char *
+do_mv_node (
+    node *n,
+    double dx,
+    double dy	/* Increment. */
+)
+#else
+
 char *do_mv_node (n, dx, dy)
     node *n;
     double dx, dy;	/* Increment. */
+#endif
 {
     edge *ef, *eb; triangle *tf, *tb; region *rf, *rb; lledge *lf, *lb;
 
@@ -163,7 +230,14 @@ char *do_mv_node (n, dx, dy)
 /*-----------------UMV_EDGE---------------------------------------------
  * Move an edge, updating adjacent edges. 
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+umv_edge (void)
+#else
+
 char *umv_edge()
+#endif
 {
     edge *e; double sx, sy, ex, ey; int p; char *err, *prox();
 
@@ -183,7 +257,14 @@ char *umv_edge()
 /*-----------------UMV_REG----------------------------------------------
  * Move a region, updating half the world.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+umv_reg (void)
+#else
+
 char *umv_reg()
+#endif
 {
     region *r; double sx, sy, ex, ey; int p; node *nf, *nb; lledge *bf, *bb;
     char *err, *prox();
@@ -215,7 +296,14 @@ char *umv_reg()
 /*-----------------UMV_ORG----------------------------------------------
  * Move the origin to one of the nodes of the grid.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+umv_org (void)
+#else
+
 char *umv_org()
+#endif
 {
     node *n, *fn, *bn; double x,y; window t;
 
@@ -243,7 +331,14 @@ char *umv_org()
  *The idea is that everything lying between start and end is shifted
  *by a fraction of new-end.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+umv_block (void)
+#else
+
 char *umv_block()
+#endif
 {
     double sx, sy, ex, ey, nx, ny; int p; 
     char *err, *do_mv_block();
@@ -263,9 +358,16 @@ char *umv_block()
 
 /*...This used to be a nice piece of code, until these error-checks moved in */
 
+#ifdef ANSI_FUNC
+
+char *
+do_mv_block (double sx, double sy, double ex, double ey, double nx, double ny, int for_real)
+#else
+
 char *do_mv_block (sx, sy, ex, ey, nx, ny, for_real)
     double sx, sy, ex, ey, nx, ny;
     int for_real;
+#endif
 {
     node *n, *b; double ap, aq; char *err, *prox();
 
@@ -293,7 +395,14 @@ char *do_mv_block (sx, sy, ex, ey, nx, ny, for_real)
 /*-----------------UAL_NODE---------------------------------------------
  *Print node stats and let @ change h.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+ual_node (void)
+#else
+
 char *ual_node()
+#endif
 {
     static char obuf[80]; node *n; double newh;
     while (n = npick("Node")) {
@@ -309,7 +418,14 @@ char *ual_node()
 /*-----------------UAL_EDGE---------------------------------------------
  *Print edge stats and let @ change boundary code.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+ual_edge (void)
+#else
+
 char *ual_edge()
+#endif
 {
     static char obuf[80]; edge *e; double d; triangle *t, *bt; int j;
 
@@ -334,7 +450,14 @@ char *ual_edge()
 /*-----------------UAL_REG----------------------------------------------
  *Print region stats and let @ change material number
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+ual_reg (void)
+#else
+
 char *ual_reg()
+#endif
 {
     static char obuf[80]; region *r;  int len; lledge *f, *b; double d;
     while (r = rpick("Region")) {
@@ -352,7 +475,14 @@ char *ual_reg()
 /*-----------------UWI_REFR---------------------------------------------
  * Refresh window.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+uwi_refr (void)
+#else
+
 char *uwi_refr()
+#endif
 {
     skel_screen(); 	return(0);
 }
@@ -360,7 +490,14 @@ char *uwi_refr()
 /*-----------------UWI_ZIN----------------------------------------------
  * Zoom in. Maintains a stack.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+uwi_zin (void)
+#else
+
 char *uwi_zin()
+#endif
 {
     double xlo, xhi, ylo, yhi; int inp;
     window t; char *err;
@@ -386,7 +523,14 @@ char *uwi_zin()
 /*-----------------UWI_ZOUT---------------------------------------------
  *Window out. If we have have a stack, just pop, else get new coords.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+uwi_zout (void)
+#else
+
 char *uwi_zout()
+#endif
 {
     double xlo, xhi, ylo, yhi; 
     window t; char *err;
@@ -414,7 +558,14 @@ char *uwi_zout()
 /*-----------------UWI_PAN----------------------------------------------
  * Pan window.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+uwi_pan (void)
+#else
+
 char *uwi_pan()
+#endif
 {
     double xs,ys, xe,ye; int inp;
     if (!(wget_grin (wmesh, &xs, &ys, &inp, "Start", TRUE) &&
@@ -431,7 +582,14 @@ char *uwi_pan()
 /*-----------------UWI_POP----------------------------------------------
  * Pop to initial window, recalculate coords.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+uwi_pop (void)
+#else
+
 char *uwi_pop()
+#endif
 {
     window t; char *err;
     while (wmesh->pw) {
@@ -447,21 +605,84 @@ char *uwi_pop()
 /*-----------------UOP_XXXX---------------------------------------------
  *Toggle display options.
  *----------------------------------------------------------------------*/
-char *uop_node() {DsNode = !DsNode; skel_screen(); return(0);}
-char *uop_reg()  {DsReg  = !DsReg ; skel_screen(); return(0);}
-char *uop_edge() {DsEdge = !DsEdge; skel_screen(); return(0);}
-char *uop_tri()  {DsTri  = !DsTri;  skel_screen(); return(0);}
-char *uop_obt()  {DsObt = !DsObt; if (DsTri) skel_screen(); return(0);}
-char *uop_axis() {DsAxis = !DsAxis; if (DsAxis) skel_screen(); return(0);}
+#ifdef ANSI_FUNC
 
-char *uop_fill() 
+char *
+uop_node (void)
+#else
+
+char *uop_node()
+#endif
+ {DsNode = !DsNode; skel_screen(); return(0);}
+#ifdef ANSI_FUNC
+
+char *
+uop_reg (void)
+#else
+
+char *uop_reg()
+#endif
+  {DsReg  = !DsReg ; skel_screen(); return(0);}
+#ifdef ANSI_FUNC
+
+char *
+uop_edge (void)
+#else
+
+char *uop_edge()
+#endif
+ {DsEdge = !DsEdge; skel_screen(); return(0);}
+#ifdef ANSI_FUNC
+
+char *
+uop_tri (void)
+#else
+
+char *uop_tri()
+#endif
+  {DsTri  = !DsTri;  skel_screen(); return(0);}
+#ifdef ANSI_FUNC
+
+char *
+uop_obt (void)
+#else
+
+char *uop_obt()
+#endif
+  {DsObt = !DsObt; if (DsTri) skel_screen(); return(0);}
+#ifdef ANSI_FUNC
+
+char *
+uop_axis (void)
+#else
+
+char *uop_axis()
+#endif
+ {DsAxis = !DsAxis; if (DsAxis) skel_screen(); return(0);}
+
+#ifdef ANSI_FUNC
+
+char *
+uop_fill (void)
+#else
+
+char *uop_fill()
+#endif
+ 
 {
     DsFill = !DsFill; 
     set_window (wmesh, wmesh->wxmin, wmesh->wxmax, wmesh->wymin, wmesh->wymax);
     skel_screen(); return(0);
 } 
 
+#ifdef ANSI_FUNC
+
+char *
+uop_bgrid (void)
+#else
+
 char *uop_bgrid()
+#endif
 {
     double dx = 0, dy = 0;
 

@@ -89,7 +89,14 @@ node_mat (in, wanted)
  * Dumb routines to allocate storage and bump np, nn.
  * A good place to put malloc smarts.
  *---------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+alloc_pt (void)
+#else
+
 char *alloc_pt()
+#endif
 {
     int j;
 
@@ -109,7 +116,14 @@ char *alloc_pt()
     return(0);
 }
 
+#ifdef ANSI_FUNC
+
+char *
+alloc_nd (void)
+#else
+
 char *alloc_nd()
+#endif
 {
     int j;
 
@@ -149,7 +163,14 @@ char *alloc_nd()
     return(0);
 }
 
+#ifdef ANSI_FUNC
+
+char *
+alloc_tri (void)
+#else
+
 char *alloc_tri()
+#endif
 {
     int j;
 
@@ -178,7 +199,14 @@ char *alloc_tri()
  *  memory for the mesh information.					*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+dis_all (void)
+#else
+
 dis_all()
+#endif
 {
     int i;
     dis_pt(pt); np=0;
@@ -191,15 +219,29 @@ dis_all()
     MeshInvalidate();
 }
 
+#ifdef ANSI_FUNC
+
+int 
+dis_pt (struct pt_str **p)
+#else
+
 dis_pt (p)
     struct pt_str **p;
+#endif
 {
     for (; *p != NULL; p++)
 	dis_1pt (p);
 }
 
+#ifdef ANSI_FUNC
+
+int 
+dis_1pt (struct pt_str **p)
+#else
+
 dis_1pt (p)
     struct pt_str **p;
+#endif
 {
 	/*free the rest of the structure*/
 	free(p[0]);
@@ -208,16 +250,30 @@ dis_1pt (p)
 	p[0] = NULL;
 }
 
+#ifdef ANSI_FUNC
+
+int 
+dis_tri (struct tri_str **t)
+#else
+
 dis_tri (t)
     struct tri_str **t;
+#endif
 {
     /*free the triangle information*/
     for (; *t != NULL; t++) 
 	dis_1tri (t);
 }
 
+#ifdef ANSI_FUNC
+
+int 
+dis_1tri (struct tri_str **t)
+#else
+
 dis_1tri (t)
     struct tri_str **t;
+#endif
 {
     /*free the structure*/
     free(t[0]);
@@ -226,16 +282,30 @@ dis_1tri (t)
 }
 
 
+#ifdef ANSI_FUNC
+
+int 
+dis_nd (struct nd_str **n)
+#else
+
 dis_nd (n)
     struct nd_str **n;
+#endif
 {
     /*free the node information*/
     for (; *n != NULL; n++)
 	dis_1nd (n);
 }
 
+#ifdef ANSI_FUNC
+
+int 
+dis_1nd (struct nd_str **n)
+#else
+
 dis_1nd (n)
     struct nd_str **n;
+#endif
 {
     /*free the structure*/
     if (n[0]->tri) free(n[0]->tri);
@@ -249,7 +319,14 @@ dis_1nd (n)
 /*-----------------WASTE------------------------------------------------
  * To standardize global grid removals
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+int 
+waste (void)
+#else
+
 int waste()
+#endif
 {
     int ie, save_ne = ne, new_tri[MAXTRI],
 	in, save_nn = nn, new_nd[MAXPNT],
@@ -316,10 +393,21 @@ int waste()
 /*-----------------ADD_IMPURITY-----------------------------------------
  * Adds a new impurity to the solution set...
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+int 
+add_impurity (
+    int imp,			/* The impurity number */
+    double background,		/* A default value to give nodes */
+    int mat			/* If default is only to be given to some */
+)
+#else
+
 add_impurity( imp, background, mat)
      int imp;			/* The impurity number */
      float background;		/* A default value to give nodes */
      int mat;			/* If default is only to be given to some */
+#endif
 {
     int i, sol;
     
@@ -333,8 +421,15 @@ add_impurity( imp, background, mat)
     }
 }
 
+#ifdef ANSI_FUNC
+
+int 
+lose_impurity (int imp)
+#else
+
 lose_impurity( imp)
      int imp;
+#endif
 {
     int i, j, sol = imptosol[ imp ];
     
@@ -355,21 +450,42 @@ lose_impurity( imp)
 /*-----------------MeshValid--------------------------------------------
  * Try not to crash due to absence of mesh.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+int 
+MeshValid (void)
+#else
+
 MeshValid()
+#endif
 {
     /* This is as good a guess as any. */
     /* Maybe someday we'll keep a global flag */
     return( ne != 0 && np != 0 && nn != 0);
 }
 
+#ifdef ANSI_FUNC
+
+int 
+MeshInvalidate (void)
+#else
+
 MeshInvalidate()
+#endif
 {
     ne = 0;
     np = 0;
     nn = 0;
 }
 
+#ifdef ANSI_FUNC
+
+int 
+InvalidMeshCheck (void)
+#else
+
 InvalidMeshCheck()
+#endif
 {
     if( !MeshValid()) {
 	fprintf( stderr, "No mesh defined!\n");

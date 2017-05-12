@@ -18,8 +18,15 @@
 #include <math.h>
 #include "struct.h"
 
+#ifdef ANSI_FUNC
+
+int 
+write_stride (char *name)
+#else
+
 write_stride( name ) 
 char *name;
+#endif
 { 
     FILE *fp;
     register int i;

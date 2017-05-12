@@ -1,3 +1,4 @@
+
 /*	scan_s4file.c		Version 1.11		*/
 /*	Last Modification:	3/31/90 09:36:34		*/
 /*----------------------------------------------------------------------
@@ -51,6 +52,11 @@
 #define DELA 19		/*change in interface area - not solution variable*/
 
 
+#ifdef ANSI_FUNC
+
+void 
+scan_s4file (char *filename, int key, int mat, float *x_min, float *x_max, float *y_min, float *y_max, float *min_data, float *max_data, int flip, double scale, int take_log, int take_abs)
+#else
 scan_s4file( filename, key, mat, x_min, x_max, y_min, y_max,  min_data, 
 	max_data, flip, scale, take_log, take_abs )
 char *filename;
@@ -66,6 +72,7 @@ int flip;
 double scale;
 int take_log;
 int take_abs;
+#endif
 {
     FILE *fp;
     int i;

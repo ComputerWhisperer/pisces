@@ -75,12 +75,18 @@ static	int	entcur  ;
 
 static int getprog(char *id, int id_type);
 static int maki23(int ir, int val1, int val2);
-static ppi(int ir, int wr, int mr, int rr, int xr);
+static void ppi(int ir, int wr, int mr, int rr, int xr);
 static pis(char *str, int len, int term);
 static int tlbtab(int cmd, int lab, int *val);
 static int pglex(char str[], int strsz, int *ival, float *rval);
-static makprg(void);
+static void makprg(void);
 
+
+#ifdef ANSI_FUNC
+
+int 
+pgetprg (char *id, int prog[], int *poff, char idat[], int *ioff)
+#else
 
 int
 pgetprg(id, prog, poff, idat, ioff)
@@ -88,6 +94,7 @@ pgetprg(id, prog, poff, idat, ioff)
 	int  prog[], *poff ;
 	char idat[]; 
 	int  *ioff;
+#endif
 	{
 	
 	int  i , n, ent ;
@@ -145,9 +152,17 @@ pgetprg(id, prog, poff, idat, ioff)
 	return (ent) ;
 	}
 
+#ifdef ANSI_FUNC
+
+static int 
+getprog (char *id, int id_type)
+#else
+
 static int
 getprog(id, id_type)
-	char *id , id_type ;     
+	char *id , id_type ;
+#endif
+     
 	{
 
 	int  len ;
@@ -245,11 +260,22 @@ getprog(id, id_type)
  *	else in the word after the instruction.
  *	Return number of words put.
  */
+#ifdef ANSI_FUNC
+
+static int 
+maki23 (
+    int ir,
+    int val1,	/* number of chars to copy out */
+    int val2	/* beginning of character seq to be copied */
+)
+#else
+
 static int
 maki23(ir, val1, val2)
 	int	ir   ;
 	int	val1 ;	/* number of chars to copy out */
 	int	val2 ;	/* beginning of character seq to be copied */
+#endif
 	{
 	int  nw = (IS_SMALL(val1) ? 2 : 3) ;
 
@@ -271,8 +297,16 @@ maki23(ir, val1, val2)
 /* #define DONTPUT(IR)   return */
 
 /* DEBUG: for now: simple ppi, more complex later */
+#ifdef ANSI_FUNC
+
+static 
+void
+ppi (int ir, int wr, int mr, int rr, int xr)
+#else
+
 static
 ppi(ir, wr, mr, rr, xr)
+#endif
 	{
 	int	ityp , irt ;	/* temp copy of ir */
 
@@ -329,10 +363,17 @@ ppi(ir, wr, mr, rr, xr)
 
 
 /* PASSn: for now: put a string */
+#ifdef ANSI_FUNC
+
+static 
+pis (char *str, int len, int term)
+#else
+
 static
 pis(str, len, term)
 	char  *str ;
 	int    len, term ;
+#endif
 	{
 
 	if (len <= 0) len = strlen(str) ;
@@ -343,10 +384,17 @@ pis(str, len, term)
 	}
 
 /* "tlbtab" : Maintain temp key/value table */
+#ifdef ANSI_FUNC
+
+static int 
+tlbtab (int cmd, int lab, int *val)
+#else
+
 static int
 tlbtab(cmd, lab, val)
 	int	 cmd ;
 	int	 lab, *val ;
+#endif
 	{
 	static	 int labs[MAX_TLABS] , vals[MAX_TLABS] ;
 	static	 int lmax = 0 ;
@@ -427,12 +475,19 @@ tlbtab(cmd, lab, val)
  *	This is the basic lex (entok) used for all pg_pgetXXX.c routines
  *	with a little extra mapping done.
  */
+#ifdef ANSI_FUNC
+
+static int 
+pglex (char str[], int strsz, int *ival, float *rval)
+#else
+
 static int
 pglex(str,strsz, ival, rval)
 	char	 str[] ;
 	int	 strsz ;
 	int	*ival ;
 	float	*rval ;
+#endif
 	{
 
 	register int	n ;		/* token type */
@@ -767,9 +822,16 @@ static short	 pstates[] = {
 #define   NEWACTS	1
 
 
+#ifdef ANSI_FUNC
+
+static 
+void makprg (void)
+#else
+
 static
 
 makprg()
+#endif
 
 	{
 	register int	s , t , a ;

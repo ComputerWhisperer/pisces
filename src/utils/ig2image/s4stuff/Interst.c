@@ -53,8 +53,15 @@ extern float form_eval();
  *  Original:	MEL	3/88						*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+comp_intparam (double temp)
+#else
+
 comp_intparam( temp )
 float temp;
+#endif
 {
     double Vt = kb * temp;
     register int mat1, mat2;
@@ -97,10 +104,17 @@ float temp;
 }
 
 
+#ifdef ANSI_FUNC
+
+float 
+form_eval (char *expr, double total, float cord[2])
+#else
+
 float form_eval( expr, total, cord )
 char *expr;
 float total;
 float cord[2];
+#endif
 {
     float val, string_to_real();
 

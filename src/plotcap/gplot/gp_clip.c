@@ -65,10 +65,23 @@
 
 
 /* "fclip": clip floats to within box B */
+#ifdef ANSI_FUNC
+
+int 
+fclip (
+    fpoint2d *P1new,
+    fpoint2d *P2new,
+    fpoint2d *P1old,
+    fpoint2d *P2old,
+    fpoint2d B[]		/* bounding box */
+)
+#else
+
 int
 fclip(P1new, P2new, P1old, P2old, B)
 	fpoint2d *P1new, *P2new, *P1old, *P2old;
 	fpoint2d  B[] ;		/* bounding box */
+#endif
 	{
 
 	Bool   P1out, P2out;         /* flag if point out of box */
@@ -181,9 +194,16 @@ fclip(P1new, P2new, P1old, P2old, B)
  */
 
 #define rnd .001
+#ifdef ANSI_FUNC
+
+int 
+fnsect (fpoint2d *P, fpoint2d *A1, fpoint2d *A2, fpoint2d *B1, fpoint2d *B2)
+#else
+
 int
 fnsect(P,  A1,A2, B1,B2)
 	fpoint2d  *P, *A1, *A2, *B1, *B2;
+#endif
 	{
 
 	double  x43, x21, x31;

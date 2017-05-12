@@ -25,7 +25,14 @@ extern doublenode();
 extern double calcratio();
 extern debug;
 
+#ifdef ANSI_FUNC
+
+int 
+piscesnodegen (void)
+#else
+
 piscesnodegen()
+#endif
 
 /* generate internal grid for a bipolar structure.  to make life easier
  *	on the cpu, assume a symmetric structure.  thus the right edge is

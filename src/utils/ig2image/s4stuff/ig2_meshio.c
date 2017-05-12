@@ -39,10 +39,21 @@ static char SccsID[] = "@(#)ig2_meshio.c	1.2\t5/3/89";
  *       in a line-oriented instead of token-oriented fashion. Some day.
  * Warnings: user input point / triangle / node numbers must be consecutive.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+int 
+ig2_read (
+    char *name,		/* where the data is hiding */
+    int flip,		/* flip y coords? */
+    double scale	/* scale factor */
+)
+#else
+
 ig2_read (name, flip, scale)
     char *name;		/* where the data is hiding */
     int flip;		/* flip y coords? */
     float scale;	/* scale factor */
+#endif
 {
 
     char iline[BUFSIZ];
@@ -215,9 +226,16 @@ ig2_read (name, flip, scale)
     return(-ierr);
 }
 
+#ifdef ANSI_FUNC
+
+int 
+ugh (int line, char *s, int ierr)
+#else
+
 ugh(line,s,ierr)
     char *s;
     int line,ierr;
+#endif
 {
     fprintf (stderr,"Input mesh error in line %d: %s \0",line,s);
 }

@@ -47,9 +47,16 @@
 #include "gp_com.h"
 #include "gplot.h"
 
+#ifdef ANSI_FUNC
+
+int 
+gp_xfrm (int cmd, int sub, double xval, double yval, double aval)
+#else
+
 gp_xfrm(cmd, sub, xval, yval, aval)
 	int   cmd, sub ;
 	float xval, yval, aval;
+#endif
 	{
 	double sr, cr, xr, yr;
 	double InRads;
@@ -119,8 +126,22 @@ gp_xfrm(cmd, sub, xval, yval, aval)
  *	   \                           /
  */
 /*static: nope! needed by gpmisc() */
+#ifdef ANSI_FUNC
+
+int 
+gp_reduct3 (
+    double a,
+    double b,
+    double c,
+    double d,
+    double e,
+    double f   /* constants for Rows 1 & 2 */
+)
+#else
+
 gp_reduct3(a, b, c,    d, e, f)
 	double a,b,c, d,e,f;   /* constants for Rows 1 & 2 */
+#endif
 	{
 	double txx, txy, tyx, tyy;    /*temp values until conversion is done */
 
@@ -156,8 +177,15 @@ gp_reduct3(a, b, c,    d, e, f)
  */
 
 /*xform(Xnew,Ynew, Xold, Yold)*/
+#ifdef ANSI_FUNC
+
+int 
+xform (fpoint2d *Pnew, fpoint2d *Pold)
+#else
+
 xform(Pnew, Pold)
 	fpoint2d *Pnew, *Pold ;
+#endif
 	{
 	float	 xtemp ;	/* HPUX likes this if Pold->x::Pnew->x */
 
@@ -167,8 +195,15 @@ xform(Pnew, Pold)
 	}
 
 /* "uform" : inverse of "xform" */
+#ifdef ANSI_FUNC
+
+int 
+uform (float *Xold, float *Yold, double Xnew, double Ynew)
+#else
+
 uform(Xold,Yold, Xnew, Ynew)
 	float	*Xold, *Yold, Xnew, Ynew ;
+#endif
 	{
 	float	 den ;
 
@@ -217,9 +252,16 @@ uform(Xold,Yold, Xnew, Ynew)
 /* interesting way to get this, huh? */
 #define PI (PIO180*180.)
 
+#ifdef ANSI_FUNC
+
+int 
+gp_unxfrm (int order)
+#else
+
 int
 gp_unxfrm(order)
 	int order;
+#endif
 	{
 	double arad ;	/* angle in radians */
 	double t ;
@@ -263,9 +305,19 @@ gp_unxfrm(order)
  *		in calling gplot2() so that the values will go to save files.
  *	Use the given order.
  */
+#ifdef ANSI_FUNC
+
+void 
+gp_reform (
+    int order,
+    int defs	/* use the defaults OR those from unxfrm */
+)
+#else
+
 gp_reform(order, defs)
 	int  order;
 	int  defs ;	/* use the defaults OR those from unxfrm */
+#endif
 	{
 	int   i, xwch[3] ;
 

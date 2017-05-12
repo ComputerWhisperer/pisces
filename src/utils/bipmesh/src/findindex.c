@@ -16,10 +16,17 @@
 
 #include "struct.h"
 
+#ifdef ANSI_FUNC
+
+int 
+findindex (node_str array[], double value, int arraysize)
+#else
+
 findindex( array, value, arraysize )
 node_str array[];
 double value;
 int arraysize;
+#endif
 {
     int low = 0;
     int high = arraysize - 1;

@@ -51,6 +51,12 @@
 
 
 /* "gpmisc": misc. gplot functions */
+#ifdef ANSI_FUNC
+
+int 
+gpmisc (int cmd, int sub, int iv[], float fv[], char str[])
+#else
+
 int
 gpmisc(cmd, sub, iv, fv, str)
 	int	 cmd ;
@@ -58,6 +64,7 @@ gpmisc(cmd, sub, iv, fv, str)
 	int	 iv[] ;
 	float	 fv[] ;
 	char	 str[] ;
+#endif
 	{
 	float	 x, y ;			/* scratch floats */
 	float	 a ;

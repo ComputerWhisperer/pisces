@@ -102,7 +102,7 @@ Thu Sep 21 11:58:01 PDT 1989
 #define gpgeti(C,IV,FV)	gpmisc(C      , G_GET , IV     , FV	  , "")
 #define gpseti(C,IV,FV)	gpmisc(C      , G_SET , IV     , FV	  , "")
 
-int gplot2(int cmd, int sub, double x, double y);
+void gplot2(int cmd, int sub, double x, double y);
 
 #define gclear()       gplot2(G_CLEAR, 0, 0.,0.)
 #define gpend()        gplot2(G_PEND , 0, 0.,0.)

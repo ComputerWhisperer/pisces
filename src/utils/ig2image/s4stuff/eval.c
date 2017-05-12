@@ -57,9 +57,16 @@ extern char *newget_solval(), *vfunc();
  *  Original:	MEL	8/85						*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+char *
+eval_real (struct vec_str *expr, float *val)
+#else
+
 char *eval_real( expr, val )
 struct vec_str *expr;
 float *val;
+#endif
 {
     float lval, rval;
     float interface();
@@ -141,9 +148,16 @@ float *val;
  *  Original:	MEL	8/85						*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+char *
+eval_vec (struct vec_str *expr, float *val)
+#else
+
 char *eval_vec( expr, val )
 struct vec_str *expr;
 float *val;
+#endif
 {
     float lval[MAXPNT], rval[MAXPNT];
     float tmp;
@@ -240,8 +254,15 @@ float *val;
  *  Original:	MEL	12/85						*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+islogexp (struct vec_str *expr)
+#else
+
 islogexp( expr )
 struct vec_str *expr;
+#endif
 {
     return( (expr->type == FN) && (expr->value.ival == LOG10) );
 }
@@ -256,8 +277,15 @@ struct vec_str *expr;
  *  Original:	MEL	8/85						*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+void 
+free_expr (struct vec_str *t)
+#else
+
 free_expr( t )
 struct vec_str *t;
+#endif
 {
     if ( t == NULL ) return;
     free_expr( t->left );

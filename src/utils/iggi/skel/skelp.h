@@ -85,4 +85,4 @@ int get_grin(window v, double *x, double *y, int *p, char *text);
 void unget_grin(double x, double y, int p);
 int wget_grin(window win, double *x, double *y, int *p, char *text, int fix);
 void wunget_grin(window win, double x, double y, int p);
-int polkadot(window w);
+void polkadot(window w);

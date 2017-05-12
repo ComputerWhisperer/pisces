@@ -24,7 +24,14 @@ extern lat_str lat_info;
 extern vert_str vert_info;
 extern dop_str dop_data[4];
 
+#ifdef ANSI_FUNC
+
+int 
+dump_info (void)
+#else
+
 dump_info()
+#endif
 {
     anal_dopstr an;
     sup3_dopstr s3;

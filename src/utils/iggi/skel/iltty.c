@@ -20,7 +20,14 @@
 
 /*-----------------SCREEN_INIT------------------------------------------
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+screen_init (void)
+#else
+
 char * screen_init()
+#endif
 {
     double lmargin, tmargin, axmargin;
     char *err, *tty_parm();

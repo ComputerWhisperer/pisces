@@ -40,6 +40,12 @@
 #include "plot.h"
 #include "bound.h"
 
+#ifdef ANSI_FUNC
+
+int 
+fill_grid (int xsize, int ysize, float *xdata, float *ydata, float *data, float *val, int mat_num, int win_xmin_index, int win_xmax_index, int win_ymin_index, int win_ymax_index, double min_value)
+#else
+
 fill_grid(xsize, ysize, xdata, ydata, data, val, mat_num,
     win_xmin_index, win_xmax_index, win_ymin_index, win_ymax_index,
     min_value)
@@ -55,6 +61,7 @@ int win_xmax_index;
 int win_ymin_index;
 int win_ymax_index;
 float min_value;
+#endif
 {
     int i;
     register int j;
@@ -178,11 +185,18 @@ float min_value;
 
 
 
+#ifdef ANSI_FUNC
+
+float 
+interpolate (double x, double y, int tri_num, float *val)
+#else
+
 float interpolate( x, y, tri_num, val )
 float x;
 float y;
 int tri_num;
 float *val;
+#endif
 
 /*  use properties of normals to a plane to get answer.
  *	in this case first determine the equation of the normal to the
@@ -225,10 +239,17 @@ float *val;
 }
 
 /* vertex_tri determines whether point (x,y) is a vertex of triangle tri_num */
+#ifdef ANSI_FUNC
+
+int 
+vertex_tri (double x, double y, int tri_num)
+#else
+
 vertex_tri(x, y, tri_num)
 float x;
 float y;
 int tri_num;
+#endif
 {
     register int index;
     
@@ -248,8 +269,15 @@ int tri_num;
 
 
 /* si_interface determines whether point pt_num is at a silicon interface */
+#ifdef ANSI_FUNC
+
+int 
+si_interface (int pt_num)
+#else
+
 si_interface(pt_num)
 int pt_num;
+#endif
 {
     register int i;
     int nnodes;

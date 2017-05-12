@@ -33,9 +33,16 @@
  *	Use new pget routines.
  */
 
+#ifdef ANSI_FUNC
+
+int 
+pgetflag (char *id)
+#else
+
 int
 pgetflag(id)
 	char *id;
+#endif
 	{
 
 	char *pg_fndid();

@@ -69,7 +69,19 @@ static void GP_init(void);
 static int GPmakbuf(int lu, int size);
 /* "gpread" : read a single gplot record from the file opened with gpopen()
  */
+#ifdef ANSI_FUNC
+
 int gpread(int lu, int *cmd, int *sub, float *xval, float *yval)
+#else
+
+int 
+gpread (lu, cmd, sub, xval, yval)
+int lu;
+int *cmd;
+int *sub;
+float *xval;
+float *yval;
+#endif
 	{
 	struct _gp_record gp ;
 	int   n;
@@ -89,7 +101,19 @@ int gpread(int lu, int *cmd, int *sub, float *xval, float *yval)
 
 /* "gpwrite" : write one gplot record to the file opened with gpopen()
  */
+#ifdef ANSI_FUNC
+
 int gpwrite(int lu, int cmd, int sub, double x, double y)
+#else
+
+int 
+gpwrite (lu, cmd, sub, x, y)
+int lu;
+int cmd;
+int sub;
+double x;
+double y;
+#endif
 	{
 	struct _gp_record gp ;
 	
@@ -107,7 +131,16 @@ int gpwrite(int lu, int cmd, int sub, double x, double y)
  *	sure that the first record of the file is a header record to identify
  *	the file as a gplot save format file.
  */
+#ifdef ANSI_FUNC
+
 int gpopen(char *namr, int mode)
+#else
+
+int 
+gpopen (namr, mode)
+char *namr;
+int mode;
+#endif
 	{
 
 	int	lu ;
@@ -173,7 +206,15 @@ int gpopen(char *namr, int mode)
 
 /* "gpclose" : 	Post buffers and close up.
  */
+#ifdef ANSI_FUNC
+
 int gpclose(int lu)
+#else
+
+int 
+gpclose (lu)
+int lu;
+#endif
 	{
 	(void)GPmakbuf(lu, -1) ;	/* flush and free the space */
 	close(lu);
@@ -181,7 +222,15 @@ int gpclose(int lu)
 
 /* "gpwrhed" : write the header record... */
 	/* not static, gpwork() calls directly... */
+#ifdef ANSI_FUNC
+
 int gpwrhed(int lu)
+#else
+
+int 
+gpwrhed (lu)
+int lu;
+#endif
 	{
 
 	return (gpwrite(lu, GPLOT_FILE_CODE, GPLOT_DATE_CODE, 0., 0.) ) ;
@@ -189,7 +238,14 @@ int gpwrhed(int lu)
 
 /* ========================================================================= */
 /* init the io-buf structs... */
+#ifdef ANSI_FUNC
+
 static void GP_init(void)
+#else
+
+static void 
+GP_init ()
+#endif
 {
 	int	i ;
 
@@ -201,7 +257,16 @@ static void GP_init(void)
 
 
 /* GPmakbuf: establish a buffered stream.. */
+#ifdef ANSI_FUNC
+
 static int GPmakbuf(int lu, int size)
+#else
+
+static int 
+GPmakbuf (lu, size)
+int lu;
+int size;
+#endif
 	{
 
 	struct _iobufs*	iob  ;
@@ -237,7 +302,17 @@ static int GPmakbuf(int lu, int size)
 	}
 
 /* "GPread": return the number of bytes requested (if possible) */
+#ifdef ANSI_FUNC
+
 static int GPread(int lu, register char *p, register int cnt)
+#else
+
+static int 
+GPread (lu, p, cnt)
+int lu;
+register char *p;
+register int cnt;
+#endif
 	{
 
 	int	n, save_cnt = cnt ;
@@ -269,7 +344,17 @@ static int GPread(int lu, register char *p, register int cnt)
 	return save_cnt - cnt ;
 	}
 
+#ifdef ANSI_FUNC
+
 static int GPwrite(int lu, register char *p, int cnt)
+#else
+
+static int 
+GPwrite (lu, p, cnt)
+int lu;
+register char *p;
+int cnt;
+#endif
 	{
 
 	int	n, save_cnt = cnt ;
@@ -300,8 +385,15 @@ static int GPwrite(int lu, register char *p, int cnt)
 /* <<<<<<<<<<<<<TESTING WITH A MAIN>>>>>>>>>>> */
 #include <stdio.h>
 
+#ifdef ANSI_FUNC
+
+int 
+main (int argc, char **argv)
+#else
+
 main(argc, argv)
 	char**	argv ;
+#endif
 	{
 	int	lus, lud ;
 	char*	p = argv[0] ;

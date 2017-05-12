@@ -34,8 +34,15 @@ static	int stabsiz, stabent ;
 #include "gp_caps.h"
 
 
+#ifdef ANSI_FUNC
+
+int 
+gp_setcap (void)
+#else
+
 int
 gp_setcap()
+#endif
 	{
 
 	int   tcnt ;    /* number of types found in entry */

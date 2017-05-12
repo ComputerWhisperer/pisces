@@ -1,3 +1,4 @@
+
 /*	main.c		Version 1.18		*/
 /*	Last Modification:	3/31/90 09:35:58		*/
 /*----------------------------------------------------------------------
@@ -47,9 +48,15 @@
 #include <fcntl.h>
 
 
+#ifdef ANSI_FUNC
+
+int 
+main (int argc, char **argv)
+#else
 main (argc, argv)
 int argc;
 char **argv;
+#endif
 {
     char *inf;
     char *image_filename;

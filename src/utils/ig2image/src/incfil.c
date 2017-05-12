@@ -1,3 +1,4 @@
+
 /*	incfil.c		Version 1.4		*/
 /*	Last Modification:	3/31/90 09:35:49		*/
 /*----------------------------------------------------------------------
@@ -29,8 +30,14 @@
 #endif
 
 
+#ifdef ANSI_FUNC
+
+int 
+incfil (char *filename)
+#else
 incfil(filename)
 char *filename;
+#endif
 {
     int index = 80;
     int done;

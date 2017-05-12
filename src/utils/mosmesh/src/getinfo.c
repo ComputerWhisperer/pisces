@@ -22,9 +22,16 @@ extern getdefprofiles();
 extern calc_junc();
 
 
+#ifdef ANSI_FUNC
+
+int 
+get_info (int dopingmode, int inputmode)
+#else
+
 get_info( dopingmode, inputmode )
 int dopingmode;
 int inputmode;
+#endif
 {
 
 

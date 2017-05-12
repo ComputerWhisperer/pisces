@@ -15,6 +15,12 @@
 #include <math.h>
 #include "bound.h"
 
+#ifdef ANSI_FUNC
+
+int 
+get_graphsize (int *scalx, int *scaly, int *nxfac, int *nyfac, int *xfill, int *yfill, int macfile)
+#else
+
 get_graphsize( scalx, scaly, nxfac, nyfac, xfill, yfill, macfile )
 int *scalx;
 int *scaly;
@@ -23,6 +29,7 @@ int *nyfac;
 int *xfill;
 int *yfill;
 int macfile;
+#endif
 {
     int selection;
     int xsize;

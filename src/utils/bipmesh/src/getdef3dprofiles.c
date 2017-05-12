@@ -22,7 +22,14 @@ extern vert_str vert_info;
 extern read_dop();
 extern dopingmode;
 
+#ifdef ANSI_FUNC
+
+int 
+getdef3dprofiles (void)
+#else
+
 getdef3dprofiles()
+#endif
 
 {
     int typeofprofile;

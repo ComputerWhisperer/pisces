@@ -31,12 +31,25 @@ extern exporttype;
 extern reads3as(); /* reads in Suprem3 export format (ascii) */ 
 extern vert_str vert_info;
 extern reads3_();  /* reads in Suprem3 export format (binary) */
+#ifdef ANSI_FUNC
+
+int 
+read_dop (
+    char *str,
+    dop_str *dop,
+    double substratedoping,
+    int typeofprofile, /* 0 for analytic, 1	 for Suprem3 file */
+    double *junction /* junction depth */
+)
+#else
+
 read_dop( str, dop, substratedoping, typeofprofile, junction )
 char *str;
 dop_str *dop;
 double substratedoping;
 int typeofprofile; /* 0 for analytic, 1	 for Suprem3 file */
 double *junction; /* junction depth */
+#endif
 {
     char buf[512];
     char filename[MAXNAMESIZE];

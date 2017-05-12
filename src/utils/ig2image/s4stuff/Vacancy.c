@@ -50,8 +50,15 @@ extern float form_eval();
  *  Original:	MEL	3/88						*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+comp_vacparam (double temp)
+#else
+
 comp_vacparam( temp )
 float temp;
+#endif
 {
     double Vt = kb * temp;
     register int mat1, mat2;

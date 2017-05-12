@@ -29,9 +29,16 @@
 #include "gp_com.h"
 
 
+#ifdef ANSI_FUNC
+
+int 
+get_txt (char *capfil, char *devnam)
+#else
+
 int
 get_txt(capfil, devnam)
 	char  *capfil, *devnam;
+#endif
 	{
 	int  ierr;
 
@@ -45,9 +52,16 @@ get_txt(capfil, devnam)
 	}
 
 #ifdef SET_BIN
+#ifdef ANSI_FUNC
+
+int 
+get_bin (char *capfil, char *devnam)
+#else
+
 int 
 get_bin(capfil, devnam)
 	char *capfil, *devnam;
+#endif
 	{
 #ifdef lint
 	if (capfil == devnam) return 0 ;

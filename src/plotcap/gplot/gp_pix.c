@@ -30,8 +30,15 @@
  *              it does the proper indexing (using externals) to set
  *              the pixel in column 'col' and row 'row'.
  */
+#ifdef ANSI_FUNC
+
+int 
+setpix (int col, int row)
+#else
+
 setpix(col,row)
 	int row, col;
+#endif
 
 {
 	int p_byt;                  /* indexed byte in 'pixels' */
@@ -72,7 +79,14 @@ setpix(col,row)
 
 
 
+#ifdef ANSI_FUNC
+
+int 
+out_pix (void)
+#else
+
 out_pix()
+#endif
 	{
 	int nextot, curtot;
 
@@ -104,7 +118,14 @@ out_pix()
  * date: 03 feb 83 (mje)
  */
 
+#ifdef ANSI_FUNC
+
+int 
+clear_pix (void)
+#else
+
 clear_pix()
+#endif
 	{
 	register int  i;
 

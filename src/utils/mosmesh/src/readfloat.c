@@ -26,9 +26,16 @@ extern changetag;  /* tag of next modification */
 extern char changebuf[80]; /* stores replacement string */
 
 
+#ifdef ANSI_FUNC
+
+int 
+read_float (char *str, float *ans)
+#else
+
 read_float( str, ans )
 char *str;
 float *ans;
+#endif
 {
     char buf[512];
     char *err = "";

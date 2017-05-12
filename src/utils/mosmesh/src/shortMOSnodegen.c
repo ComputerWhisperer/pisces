@@ -35,7 +35,14 @@ extern double calcratio();
 extern debug;
 
 
+#ifdef ANSI_FUNC
+
+int 
+shortMOS (void)
+#else
+
 shortMOS()
+#endif
 
 /*  generate internal grid for a short channel MOS structure */
 

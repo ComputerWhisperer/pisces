@@ -24,7 +24,14 @@ extern dop_str dop_data[10];
 extern double depl_width();
 
 
+#ifdef ANSI_FUNC
+
+int 
+generate_deck (void)
+#else
+
 generate_deck()
+#endif
 {
   switch ( dopingmode )  {
     case 0  :

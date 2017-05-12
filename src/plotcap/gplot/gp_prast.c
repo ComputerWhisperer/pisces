@@ -18,8 +18,15 @@
 #define abs(X)    ((X < 0) ? -X : X)
 
 /* the rasterizer */
+#ifdef ANSI_FUNC
+
+int 
+prast (int x1, int y1, int x2, int y2)
+#else
+
 prast(x1,y1, x2,y2)
 	int x1, y1, x2,y2;
+#endif
 	{
 
 	int   dx, dy;            /* delta x,y */

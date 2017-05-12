@@ -47,9 +47,16 @@ static int stab_fd(char *sym);
  *	0	- OK. It was made.
  *	-1	- Not enough space.
  */
+#ifdef ANSI_FUNC
+
+int 
+stab_mk (int mxsize, int mxents)
+#else
+
 int
 stab_mk(mxsize, mxents)
 	int	 mxsize, mxents ;
+#endif
 	{
 
 	/* If we have a table release it */
@@ -85,9 +92,16 @@ stab_mk(mxsize, mxents)
  *	0	- Have a symbol table, current counts returned.
  *	-1	- Haven't allocated anything yet.
  */
+#ifdef ANSI_FUNC
+
+int 
+stab_iq (int *curloc, int *curent)
+#else
+
 int
 stab_iq(curloc, curent)
 	int	*curloc, *curent ;
+#endif
 	{
 
 	if (!have1) return(-1) ;
@@ -105,10 +119,17 @@ stab_iq(curloc, curent)
  *	-2	- Symbol not found.
  *	<n>	- Symbol number.
  */
+#ifdef ANSI_FUNC
+
+int 
+stab_gt (char *sym, int *val, int *typ)
+#else
+
 int
 stab_gt(sym, val, typ)
 	char *sym ;
 	int  *val , *typ ;
+#endif
 	{
 	struct _sent *sp ;
 	int    n ;
@@ -133,10 +154,17 @@ stab_gt(sym, val, typ)
  *	-2	- No more entry slots for the symbol.
  *	-3	- No more space for symbol.
  */
+#ifdef ANSI_FUNC
+
+int 
+stab_pt (char *sym, int val, int typ)
+#else
+
 int
 stab_pt(sym, val, typ)
 	char  *sym ;
 	int    val , typ ;
+#endif
 	{
 	struct _sent *sp ;
 	int    nsym ;
@@ -162,9 +190,16 @@ stab_pt(sym, val, typ)
  *	(char *)0	- Symbol number invalid or stab never allocated.
  *	<else>		- character pointer to static symbol.
  */
+#ifdef ANSI_FUNC
+
+char *
+stab_gn (int n)
+#else
+
 char *
 stab_gn(n)
 	int  n ;
+#endif
 	{
 	if (!have1 || n < 0 || n >= epnt) return( (char *)0 ) ;
 	return( sent[n].s_sym ) ;
@@ -177,9 +212,16 @@ stab_gn(n)
  *	-2	- Not found.
  *	<n>	- Symbol number
  */
+#ifdef ANSI_FUNC
+
+static int 
+stab_fd (char *sym)
+#else
+
 static int
 stab_fd(sym)
 	char *sym ;
+#endif
 	{
 	int  i ;
 

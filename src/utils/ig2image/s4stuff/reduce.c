@@ -54,8 +54,15 @@ static char SccsID[] = "@(#)reduce.c	1.1\t4/25/89";
  *  Original:	MEL	2/85						*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+expr_reduce (struct tok_str *a, struct tok_str *b, struct tok_str *c, struct tok_str *d)
+#else
+
 expr_reduce(a, b, c, d)
 struct tok_str *a, *b, *c, *d;
+#endif
 {
     struct vec_str *tmp;
 
@@ -107,7 +114,14 @@ struct tok_str *a, *b, *c, *d;
  *  Original:	MEL	2/85						*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+reduce (void)
+#else
+
 reduce()
+#endif
 {
     struct tok_str *top, *prev, *old, *old1, *old2, *old3;
 

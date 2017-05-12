@@ -68,9 +68,16 @@
  *  Original:	MEL	2/85						*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+single_char (char *s, struct tok_str *tok)
+#else
+
 single_char( s, tok )
 char *s;
 struct tok_str *tok;
+#endif
 {
     /*parse this particular character*/
     switch( *s ) {
@@ -116,9 +123,16 @@ struct tok_str *tok;
  *  Original:	MEL	2/85						*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+functions (char *str, struct tok_str *tok)
+#else
+
 functions( str, tok )
 char *str;
 struct tok_str *tok;
+#endif
 {
     
     /*sort of a mass case statement*/
@@ -167,9 +181,16 @@ struct tok_str *tok;
  *  Original:	MEL	2/85						*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+lexical (char *str, struct tok_str *tok)
+#else
+
 lexical( str, tok )
 char *str;
 struct tok_str *tok;
+#endif
 {
     char *s, *t;
     char tmp[256];

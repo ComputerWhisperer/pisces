@@ -59,10 +59,17 @@
 #include "pg_def.h"
 
 
+#ifdef ANSI_FUNC
+
+int 
+pgetnum (char *id, float *nval)
+#else
+
 int
 pgetnum(id, nval)
 	char  *id;
 	float *nval;
+#endif
 	{
 
 	int	 ival ;

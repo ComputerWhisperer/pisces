@@ -21,12 +21,19 @@
 extern double RATIO_LAT;
 extern exporttype;
 
+#ifdef ANSI_FUNC
+
+int 
+writesup3export (FILE *fp, dop_str *dop, double left_edge, double right_edge, char *str)
+#else
+
 writesup3export( fp, dop, left_edge, right_edge, str )
 FILE *fp;
 dop_str *dop;
 double left_edge;
 double right_edge;
 char *str;
+#endif
 
 {
     char *dop_type[9];

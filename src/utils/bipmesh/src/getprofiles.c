@@ -23,7 +23,14 @@ extern read_dop();
 extern dopingmode;
 extern panic();
 
+#ifdef ANSI_FUNC
+
+int 
+getprofiles (void)
+#else
+
 getprofiles()
+#endif
 
 {
     int typeofprofile;

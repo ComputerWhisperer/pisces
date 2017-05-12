@@ -85,10 +85,20 @@
 static pdevUnset(void);
 
 /* "gp_pdev" : the real device setup routine */
+#ifdef ANSI_FUNC
+
+int 
+gp_pdev (
+    char *devnam,
+    int sub		/* G_BEGIN or G_STOP */
+)
+#else
+
 int
 gp_pdev(devnam, sub)
 	char*	devnam;
 	int	sub ;		/* G_BEGIN or G_STOP */
+#endif
 	{
 
 	int  ierr;
@@ -206,8 +216,15 @@ gp_pdev(devnam, sub)
  * "pdevUnset" : undo some of the things done by 'setpdev'. mostly release 
  *	some of the buffer space used
  */
+#ifdef ANSI_FUNC
+
+static 
+pdevUnset (void)
+#else
+
 static
 pdevUnset()
+#endif
 	{
 
 	(void) alu_mkb(MKB_OBUF, FREE_IT) ;

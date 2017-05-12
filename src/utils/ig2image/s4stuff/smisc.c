@@ -23,9 +23,16 @@ static char SccsID[] = "@(#)smisc.c	1.1\t4/25/89";
 /*-----------------STRING_TO_REAL---------------------------------------
  * Hide everything from the innocent users
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+float 
+string_to_real (char *expr, double defval)
+#else
+
 float string_to_real( expr, defval)
      char *expr;
      float defval;
+#endif
 {
     char *parse_expr(), *eval_real(), *err, *dexpr;
     struct vec_str *rexp; int len;
@@ -53,17 +60,31 @@ float string_to_real( expr, defval)
  * Define and undefine macros without including the whole expression parser.
  *----------------------------------------------------------------------*/
 
+#ifdef ANSI_FUNC
+
+int 
+smacro (char *name, char *def)
+#else
+
 smacro( name, def)
      char *name, *def;
+#endif
 {
     char buffer[512];
     sprintf( buffer, "%s %s", name, def);
     define_macro( buffer, &macro);
 }
 
+#ifdef ANSI_FUNC
+
+int 
+fmacro (char *name, double val, char *format)
+#else
+
 fmacro( name, val, format)
      char *name, *format;
      float val;
+#endif
 {
     char buffer[512], formbuf[512];
     strcpy( formbuf, "%s ");
@@ -72,8 +93,15 @@ fmacro( name, val, format)
     define_macro( buffer, &macro);
 }
 
+#ifdef ANSI_FUNC
+
+int 
+umacro (char *name)
+#else
+
 umacro( name)
      char *name;
+#endif
 {
     undef_macro( name, &macro);
 }

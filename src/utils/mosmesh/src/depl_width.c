@@ -1,3 +1,4 @@
+
 /*----------------------------------------------------------------------
 **  Copyright 1988 by
 **  The Board of Trustees of the Leland Stanford Junior University
@@ -12,11 +13,17 @@
 
 #include <math.h>
 
+#ifdef ANSI_FUNC
+
+double 
+depl_width (double rev_bias, double pconc, double nconc)
+#else
 /*  determine the depletion depth - returned in microns */
 double depl_width( rev_bias, pconc, nconc )
 double rev_bias;
 double pconc;
 double nconc;
+#endif
 
 {
     double q = 1.6e-19;

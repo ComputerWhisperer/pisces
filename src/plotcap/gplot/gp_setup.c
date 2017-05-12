@@ -27,8 +27,15 @@
 #include "gp_com.h"
 #include "gplot.h"
 
+#ifdef ANSI_FUNC
+
+int 
+gp_setup (void)
+#else
+
 int
 gp_setup()
+#endif
 	{
 
 	char *defdev ;                  /* name of default device */
@@ -123,7 +130,14 @@ gp_setup()
  * date: 30 jan 84 (mje)
  */
 
+#ifdef ANSI_FUNC
+
+int 
+gp_setdn (void)
+#else
+
 gp_setdn()
+#endif
 	{
 
 

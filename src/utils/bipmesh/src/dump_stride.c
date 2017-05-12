@@ -1,8 +1,15 @@
 #include <stdio.h>
 #include "struct.h"
 
+#ifdef ANSI_FUNC
+
+int 
+dump_stride (stride_dopstr *ptr)
+#else
+
 dump_stride(ptr)
 stride_dopstr *ptr;
+#endif
 {
     printf("\tpeak doping is %g\n", ptr->peak_dop);
     printf("\txdev is %g\n", ptr->xdev);

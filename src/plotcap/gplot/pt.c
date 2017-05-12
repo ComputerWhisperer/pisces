@@ -221,17 +221,31 @@ main(argc, argv)
 	}
 
 /* ask for some more info ... */
+#ifdef ANSI_FUNC
+
+int 
+ask (char *prompt, char *buf)
+#else
+
 ask(prompt, buf)
 	char	*prompt, *buf ;
+#endif
 	{
 	printf("%s: ",prompt) ;
 	scanf("%s", buf) ;
 	}
 
 /* open a file, write errors, (set fp to stdout if error) */
+#ifdef ANSI_FUNC
+
+FILE *
+opfile (char *name)
+#else
+
 FILE *
 opfile(name)
 	char	*name ;
+#endif
 	{
 
 	char	*how = "w" ;		/* for writting... */
@@ -252,8 +266,15 @@ opfile(name)
 	}
 
 /* to catch interrupts */
+#ifdef ANSI_FUNC
+
+int 
+onintr (void)
+#else
+
 int
 onintr()
+#endif
 	{
 	printf("\n") ;
 	longjmp(env) ;

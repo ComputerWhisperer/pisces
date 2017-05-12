@@ -30,9 +30,16 @@ extern changetag; /* tag of next modification */
 extern char changebuf[80]; /* stores replacement string */
 
 
+#ifdef ANSI_FUNC
+
+int 
+read_defreal (char *str, double *variable)
+#else
+
 read_defreal( str, variable )
 char *str;
 double *variable;
+#endif
 {
     char buf[512];
     char *err = "";

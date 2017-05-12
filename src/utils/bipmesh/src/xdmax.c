@@ -1,3 +1,4 @@
+
 /*----------------------------------------------------------------------
 **  Copyright 1988 by
 **  The Board of Trustees of the Leland Stanford Junior University
@@ -23,8 +24,16 @@
 
 #include <math.h>
 
+#ifdef ANSI_FUNC
+
+double 
+xdmax (
+    double nsub  /* substrate doping */
+)
+#else
 double xdmax( nsub )
 double nsub;  /* substrate doping */
+#endif
 {
     double ni = 1.45e10; /* intrinsic doping concentration */
     double epsilon_si = 1.04e-12; /* permittivity of silicon */

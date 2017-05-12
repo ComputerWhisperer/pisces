@@ -37,10 +37,21 @@ extern double erf(), erfc();
  *  Original:	MEL	8/85						*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+char *
+vfunc (
+    float *val,
+    int type,
+    struct vec_str *expr	/*argument of the vector function*/
+)
+#else
+
 char *vfunc( val, type, expr )
 float *val;
 int type;
 struct vec_str *expr;	/*argument of the vector function*/
+#endif
 {
     register int i, j, imp, s;
     register int ploc;
@@ -122,9 +133,16 @@ struct vec_str *expr;	/*argument of the vector function*/
  *  Original:	MEL	2/85						*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+constants (char *str, struct tok_str *tok)
+#else
+
 constants( str, tok )
 char *str;
 struct tok_str *tok;
+#endif
 {
     
     /*sort of a mass case statement*/
@@ -144,9 +162,16 @@ struct tok_str *tok;
  *  Original:	MEL	2/85						*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+sol_values (char *s, struct tok_str *tok)
+#else
+
 sol_values( s, tok )
 char *s;
 struct tok_str *tok;
+#endif
 {
     int len;
 
@@ -285,9 +310,16 @@ struct tok_str *tok;
  *  Original:	MEL	2/86						*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+vec_func (char *s, struct tok_str *tok)
+#else
+
 vec_func( s, tok )
 char *s;
 struct tok_str *tok;
+#endif
 {
     int len;
 
@@ -322,9 +354,16 @@ struct tok_str *tok;
 #define XC 0
 #define YC 1
 
+#ifdef ANSI_FUNC
+
+int 
+RoughGrad (int which, float *vector)
+#else
+
 RoughGrad( which, vector)
     int which;
     float *vector;
+#endif
 {
     int i, ie, j, *local;
     float *accum, *weight, v0, v1, v2, *p0, *p1, *p2, denom, gradx, grady;

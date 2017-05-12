@@ -19,9 +19,16 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#ifdef ANSI_FUNC
+
+int 
+main (int ac, char *av[])
+#else
+
 main (ac, av)
     int ac;
     char * av[];
+#endif
 
 {
     char *err, *screen_init(), *rumesh(), *wreset();

@@ -46,8 +46,15 @@ float a[2], b[2];
  *  the triangle formed by the coordintes passed.			*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+float 
+area_tri (double a1, double a2, double b1, double b2, double c1, double c2)
+#else
+
 float area_tri(a1,a2,b1,b2,c1,c2)
 float a1,a2,b1,b2,c1,c2;
+#endif
 {
     return( (b1*(c2-a2) + c1*(a2-b2) + a1*(b2-c2) ) * 0.5 );
 }
@@ -60,9 +67,16 @@ float a1,a2,b1,b2,c1,c2;
  *  triangle number tr.							*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+int 
+pt_in_tri (double x, double y, int tr)
+#else
+
 pt_in_tri(x,y,tr)
 float x,y;
 int tr;
+#endif
 {
     int locint;
     float tx1, tx2, tx3, ty1, ty2, ty3;

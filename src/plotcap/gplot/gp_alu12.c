@@ -145,7 +145,15 @@ static int al_revb(int val, int n);
 static void AL_dump(int *curpc);
 
 /* "alu12" : if "ent" is < 0 then a special alu command (ie: POST) */
-int alu12(int ent)
+#ifdef ANSI_FUNC
+
+void alu12(int ent)
+#else
+
+int 
+alu12 (ent)
+int ent;
+#endif
 	{
 
 	register  int  *pc, ir, nwd, rr, wr, mr ;
@@ -589,7 +597,15 @@ at_end:
 /* ALU create buffer space routines */
 
 /* "alu_mkp" : malloc and init program array */
+#ifdef ANSI_FUNC
+
 int *alu_mkp(int progsz)
+#else
+
+int *
+alu_mkp (progsz)
+int progsz;
+#endif
 	{
 
 	if (progsz > 0) {
@@ -605,9 +621,16 @@ int *alu_mkp(int progsz)
 	}
 
 /* "alu_mkb" : malloc and init a character buffer */
+#ifdef ANSI_FUNC
+
+char *
+alu_mkb (int buftyp, int bufsiz)
+#else
+
 char *
 alu_mkb(buftyp, bufsiz)
 	int	 buftyp, bufsiz ;
+#endif
 	{
 	char	**bp, **mp, **pp ;
 	char    *junk = (char*)0 ;
@@ -654,7 +677,16 @@ alu_mkb(buftyp, bufsiz)
 /* ALU OUTPUT routines...  Uses a whole bunch of specific ones ... */
 
 /* "al_outb" : Add a buffer to the output buffer. */
+#ifdef ANSI_FUNC
+
 int al_outb(char *buf, int len)
+#else
+
+int 
+al_outb (buf, len)
+char *buf;
+int len;
+#endif
 	{
 	while (len-- > 0) {
 		if (alu_opnt == alu_omax) al_post() ;
@@ -664,7 +696,15 @@ int al_outb(char *buf, int len)
 	}
 
 /* "al_outs" : Add a null terminated string to the output buffer */
+#ifdef ANSI_FUNC
+
 static int al_outs(char *str)
+#else
+
+static int 
+al_outs (str)
+char *str;
+#endif
 	{
 	while (*str) {
 		if (alu_opnt == alu_omax) al_post() ;
@@ -675,7 +715,15 @@ static int al_outs(char *str)
 
 #ifdef NEEDED_SOMEDAY
 /* "al_outc" : Add a single character to the output buffer */
+#ifdef ANSI_FUNC
+
 static int al_outc(char c)
+#else
+
+static int 
+al_outc (c)
+char c;
+#endif
 	{
 	if (alu_opnt == alu_omax) al_post() ;
 	*alu_opnt++ = c ;
@@ -684,7 +732,16 @@ static int al_outc(char c)
 #endif /*NEEDED_SOMEDAY*/
 
 /* "al_outi" : Output from an integer a byte, word, or long */
+#ifdef ANSI_FUNC
+
 static int al_outi(int ival, int nbyte)
+#else
+
+static int 
+al_outi (ival, nbyte)
+int ival;
+int nbyte;
+#endif
 /* Nbyte is format */
 	{
 	char *bp ;
@@ -723,7 +780,15 @@ static int al_outi(int ival, int nbyte)
 
 /* "al_geti" : Input to an integer as byte, word, or long */
 /* Nbyte is format */
+#ifdef ANSI_FUNC
+
 static int al_geti(int nbyte)
+#else
+
+static int 
+al_geti (nbyte)
+int nbyte;
+#endif
 	{
 	register int ival = 0 ; 
 	union {
@@ -755,7 +820,15 @@ static int al_geti(int nbyte)
 /* field can be any length */
 #define VARIED	10000
 
+#ifdef ANSI_FUNC
+
 static int al_gtia(char	*frm)
+#else
+
+static int 
+al_gtia (frm)
+char *frm;
+#endif
 	{
 	int	 n ;
 	int	 base = 10 , mx = (int)(alu_imax - alu_ipnt) ;
@@ -778,7 +851,17 @@ static int al_gtia(char	*frm)
 	}
 
 /* base and max len */
+#ifdef ANSI_FUNC
+
 static int al_atoi(char **p, int b, int m)
+#else
+
+static int 
+al_atoi (p, b, m)
+char **p;
+int b;
+int m;
+#endif
 	{
 	int	 v = 0 ;	/* value to return */
 		
@@ -792,7 +875,14 @@ static int al_atoi(char **p, int b, int m)
 
 
 /* "al_post" : Post the output buffer to the output device */
+#ifdef ANSI_FUNC
+
+static int 
+al_post (void)
+#else
+
 static int al_post()
+#endif
 	{
 	register  int  len = (int)(alu_opnt - alu_obuf) ;
 
@@ -809,7 +899,16 @@ static int al_post()
 	}
 
 /* "al_revb" : Reverse the lower N bits in an int */
+#ifdef ANSI_FUNC
+
 static int al_revb(int val, int n)
+#else
+
+static int 
+al_revb (val, n)
+int val;
+int n;
+#endif
 	{
 	int	t_bit, r_bit = 1 , temp = 0 ;
 			   
@@ -824,7 +923,14 @@ static int al_revb(int val, int n)
 	}
 
 /* "alu_2old" : Make the current point values the old (previous) ones */
+#ifdef ANSI_FUNC
+
+int 
+alu_2old (void)
+#else
+
 int alu_2old()
+#endif
 	{
 	int	i ;
 
@@ -833,7 +939,18 @@ int alu_2old()
 	}
 
 /* "alu_givl" : Give pointers to the alu's value locations */
+#ifdef ANSI_FUNC
+
 int alu_givl(int **iv1, int **iv0, float **fv1, float **fv0)
+#else
+
+int 
+alu_givl (iv1, iv0, fv1, fv0)
+int **iv1;
+int **iv0;
+float **fv1;
+float **fv0;
+#endif
 	{
 	*iv1 = alu_ivar1 ;
 	*iv0 = alu_ivar0 ;
@@ -846,7 +963,16 @@ int alu_givl(int **iv1, int **iv0, float **fv1, float **fv0)
 	}
 
 /* "al_poki" : Poke integers into alu variables */
+#ifdef ANSI_FUNC
+
 int al_poki(int cmd, int ival)
+#else
+
+int 
+al_poki (cmd, ival)
+int cmd;
+int ival;
+#endif
 	{
 
 	switch (cmd) {
@@ -858,7 +984,16 @@ int al_poki(int cmd, int ival)
 	}
 
 /* "AL_dump" : Dump out the current alu state information */
-static void AL_dump(int *curpc) 
+#ifdef ANSI_FUNC
+
+static void AL_dump(int *curpc)
+#else
+
+static void 
+AL_dump (curpc)
+int *curpc;
+#endif
+ 
 	{
 	int	 n , i ;
 	char	*cp , buf[20];

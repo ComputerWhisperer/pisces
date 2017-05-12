@@ -21,6 +21,12 @@ extern double dmax();
 extern double calcratio();
 extern calcnode();
 
+#ifdef ANSI_FUNC
+
+int 
+doublenode (double ratio, double init, double final, double distance, int *num1, double *x1, double *rat1, int *num2, double *x2, double *rat2, int *num3, double *x3, double *rat3)
+#else
+
 doublenode( ratio, init, final, distance, num1, x1, rat1, 
 	num2, x2, rat2,  num3, x3, rat3 )
 double ratio;
@@ -36,6 +42,7 @@ double *rat2;
 int *num3;
 double *x3;
 double *rat3;
+#endif
 {
     double spacing1 = 0.0;
     double spacing2 = 0.0;

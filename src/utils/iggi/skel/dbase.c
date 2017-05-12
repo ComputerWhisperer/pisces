@@ -1,3 +1,4 @@
+
 /*----------------------------------------------------------------------
  *
  * dbase.c - data base routines for skel
@@ -21,9 +22,15 @@
 /*-----------------CR_NODE----------------------------------------------
  * Create a node.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+cr_node (node **rv, double x, double y)
+#else
 char * cr_node(rv,x,y)
     node **rv;
     double x,y;
+#endif
 {
     node *new, *behind;  char *err, *prox();
 
@@ -56,9 +63,16 @@ char * cr_node(rv,x,y)
 /*-----------------CR_EDGE----------------------------------------------
  * Create an edge
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+cr_edge (node *i, node *j, edge **rv)
+#else
+
 char * cr_edge (i, j, rv)
     node *i, *j;
     edge **rv;
+#endif
 {
     edge *new, *behind; char *err, *badedge();
 
@@ -94,8 +108,15 @@ char * cr_edge (i, j, rv)
 /*-----------------CR_REG-----------------------------------------------
  * Create a (n empty) region.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+cr_reg (region **rv)
+#else
+
 char * cr_reg (rv)
     region **rv;
+#endif
 {
     region *new, *behind;
 
@@ -125,11 +146,18 @@ char * cr_reg (rv)
 /*-----------------CR_TRI-----------------------------------------------
  * Create a triangle.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+cr_tri (triangle **rv, node *n1, node *n2, node *n3, region *r, int e1, int e2, int e3)
+#else
+
 char * cr_tri (rv, n1, n2, n3, r, e1, e2, e3)
     triangle **rv;
     node *n1, *n2, *n3;
     region *r;
     int e1, e2, e3;
+#endif
 {
     triangle *new, *behind;
 
@@ -163,8 +191,15 @@ char * cr_tri (rv, n1, n2, n3, r, e1, e2, e3)
  * Destroy node. Nodes on an edge must be freed first.
  * After destruction, n points into deep hyperspace.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+ds_node (node *n)
+#else
+
 char *ds_node (n)
 	node *n;
+#endif
 {
     if (inhibit()) return ("No data base operations with triangles!");
 	if (!n) return ("bad data base call");
@@ -181,8 +216,15 @@ char *ds_node (n)
 /*-----------------DS_EDGE----------------------------------------------
  * Destroy an edge. Edges inside regions must be unlinked first.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+ds_edge (edge *e)
+#else
+
 char *ds_edge (e)
 	edge *e;
+#endif
 {
 	if (inhibit()) return ("No data base operations with triangles!");
 	if (!e) return ("bad data base call");
@@ -200,8 +242,15 @@ char *ds_edge (e)
 /*-----------------DS_REG-----------------------------------------------
  * Destroy a region.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+ds_reg (region *r)
+#else
+
 char *ds_reg (r)
 	region *r;
+#endif
 {
 	lledge *f, *b, *te;
 	if (inhibit()) return ("No data base operations with triangles!");
@@ -229,9 +278,16 @@ char *ds_reg (r)
 /*-----------------E_IN_R-----------------------------------------------
  * Find which link of a region has the edge.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+lledge *
+e_in_r (region *r, edge *e)
+#else
+
 lledge *e_in_r (r, e)
     region *r;
     edge *e;
+#endif
 {
     lledge *f, *b;
 
@@ -245,11 +301,23 @@ lledge *e_in_r (r, e)
  * Link an edge into a region. 
  * We check only against the most obvious errors.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+link_edge (
+    region *r,			/* Region to add to. */
+    edge *e,			/* Edge to add. */
+    lledge *lep,		/* Edge to enter around */
+    int pos			/* Whether before or after lep. */
+)
+#else
+
 char *link_edge (r, e, lep, pos)
     region *r;			/* Region to add to. */
     edge *e;			/* Edge to add. */
     lledge *lep;		/* Edge to enter around */
     int pos;			/* Whether before or after lep. */
+#endif
 {
     lledge *new,*ahead,*behind;
     if (inhibit()) return ("No data base operations with triangles!");
@@ -284,9 +352,19 @@ char *link_edge (r, e, lep, pos)
 
 /*-----------------UNLINK_EDGE------------------------------------------
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+unlink_edge (
+    region *r,
+    lledge *e	/* already know the location of the edge */
+)
+#else
+
 char *unlink_edge (r, e)
 	region *r;
 	lledge *e;	/* already know the location of the edge */
+#endif
 {
 	if (inhibit()) return ("No data base operations with triangles!");
 	if (!r || !e ) return ("bad data base call");
@@ -306,8 +384,15 @@ char *unlink_edge (r, e)
  * do edges a and b share a common node?
  * high order bits store the number of hits, low order the positions.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+int 
+shared (edge *a, edge *b)
+#else
+
 int shared (a, b)
     edge *a, *b;
+#endif
 {
     return (
 	(a->n[0] == b->n[0]) *16 +
@@ -327,10 +412,22 @@ int shared (a, b)
  *         ----
  *          re
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+split_reg (
+    region *r,		/* Region to break */
+    lledge *rs,
+    lledge *Rs,	/* Pointers to start of new regions */
+    region **nr	/* Pointer to the new region created. */
+)
+#else
+
 char *split_reg (r, rs, Rs, nr)
     region *r;		/* Region to break */
     lledge *rs, *Rs;	/* Pointers to start of new regions */
     region **nr;	/* Pointer to the new region created. */
+#endif
 {
     lledge *re, *Re;	/* Ends of new regions */
     region *R;		/* New region */
@@ -369,9 +466,21 @@ char *split_reg (r, rs, Rs, nr)
  *Join two regions. More pointer trickiness.
  *On return, R points into hyperspace, since that region has been zapped.
  *----------------------------------------------------------------------*/
+#ifdef ANSI_FUNC
+
+char *
+join_reg (
+    region *r,
+    region *R,	/* Regions to join. */
+    lledge *rs,
+    lledge *Rs	/* Edge after the join. */
+)
+#else
+
 char *join_reg (r, R, rs, Rs)
     region *r, *R;	/* Regions to join. */
     lledge *rs, *Rs;	/* Edge after the join. */
+#endif
 {
     lledge *re, *Re, *l, *f;
     

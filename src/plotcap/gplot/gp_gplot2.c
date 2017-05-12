@@ -42,10 +42,19 @@ static  float  areaX1, areaY1 ;
 static void x_kludge() ;
 static void gp_setbox() ;
 
+void 
+AdjustClip (int Which, int How, double x, double y);
+
+#ifdef ANSI_FUNC
+
+void 
+gplot2 (int cmd, int sub, double x, double y)
+#else
 
 gplot2(cmd, sub, x, y)
 	int   cmd, sub ;
 	float x, y;
+#endif
 	{
 
 	/* start */
@@ -275,9 +284,16 @@ gplot2(cmd, sub, x, y)
  *  How   : {G_RESET , G_ONLOG , G_ONPYS }
  */
 /*static --called from gp_pdev.c */
+#ifdef ANSI_FUNC
+
+void 
+AdjustClip (int Which, int How, double x, double y)
+#else
+
 AdjustClip(Which, How, x, y)
 	int	Which, How ;
 	float	x, y ;
+#endif
 	{
 
 	/* just change dobreak flag.. */
@@ -344,10 +360,17 @@ AdjustClip(Which, How, x, y)
 	}
 
 /* fill in the box with the low and high points */
+#ifdef ANSI_FUNC
+
+static void 
+gp_setbox (fpoint2d box[], double x0, double y0, double x1, double y1)
+#else
+
 static void
 gp_setbox(box, x0, y0, x1, y1)
 	fpoint2d box[] ;
 	float	 x0, y0, x1, y1 ;
+#endif
 	{
 	float	t ;
 	if (x0 > x1) { t = x0; x0 = x1 ; x1 = t ; }	/* just in case */
@@ -373,8 +396,15 @@ gp_setbox(box, x0, y0, x1, y1)
  * So saving happens with point and angle being separate calls to
  *  gplot, but they get implemented (here) at the same time.
  */
+#ifdef ANSI_FUNC
+
+static void 
+x_kludge (void)
+#else
+
 static void
 x_kludge()
+#endif
 	{
 	static	Bool   rot_todo = F , ang_todo = F;
 	static	float  xrot=0.0, yrot=0.0, arot=0.0;   /* rotation factors */

@@ -34,9 +34,16 @@ extern char *parse_expr(), *eval_real();
  *	Original	Mark E. Law		Oct, 1984		*
  *									*
  ************************************************************************/
+#ifdef ANSI_FUNC
+
+char *
+parse_real (char *str, float *dval)
+#else
+
 char *parse_real(str, dval)
 char *str;
 float *dval;
+#endif
 {
     char *s;
     int leading = FALSE, decimal = FALSE, exp = FALSE;

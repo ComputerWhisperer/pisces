@@ -75,7 +75,14 @@ static int getnextlen(float *len);
 static void drawto(float len, int pen);
 /*
  */
+#ifdef ANSI_FUNC
+
+int 
+gp_linplt (void)
+#else
+
 gp_linplt()
+#endif
 	{
 
 	register float togo;      /* amount of line segment to go */
@@ -131,7 +138,16 @@ gp_linplt()
 
 
 /* "drawto" : draw or move from `thisX', `thisY' a line `len' long */
+#ifdef ANSI_FUNC
+
 static void drawto(float len, int pen)
+#else
+
+static void 
+drawto (len, pen)
+float len;
+int pen;
+#endif
 	{
 
 	g_cmd = pen ;
@@ -166,9 +182,16 @@ static void drawto(float len, int pen)
  *of
  * written: Michael Eldredge (apr 84) 
  */
+#ifdef ANSI_FUNC
+
+int 
+gp_lnset (int type)
+#else
+
 int
 gp_lnset(type)
 	int  type;
+#endif
 	{
 
 	int newpattern, i;
@@ -203,7 +226,15 @@ gp_lnset(type)
 
 
 /* "getnextlen" :  get the next dashed line segment length and pen condition */
+#ifdef ANSI_FUNC
+
 static int getnextlen(float *len)
+#else
+
+static int 
+getnextlen (len)
+float *len;
+#endif
 	{
 	char FirstBit;    /* bit on or off */
 	int  nbits;      /* number in current sequence */
@@ -261,9 +292,16 @@ static int getnextlen(float *len)
  *
  * written: Michael Eldredge (apr 84)
  */
+#ifdef ANSI_FUNC
+
+int 
+lndef (int ntype, int patt, int scal)
+#else
+
 int
 lndef(ntype, patt, scal)
 	int ntype, patt, scal;
+#endif
 	{
 
 	int oldpat;

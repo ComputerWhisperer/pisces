@@ -17,9 +17,16 @@
 
 /*  in the case of a tie, the first one is returned */
 
+#ifdef ANSI_FUNC
+
+double 
+dmin (double a, double b)
+#else
+
 double dmin( a, b )
 double a;
 double b;
+#endif
 {
     if (a <= b)
 	return(a);

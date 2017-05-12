@@ -1,3 +1,4 @@
+
 /*	mylog.c		Version 1.3		*/
 /*	Last Modification:	3/31/90 09:36:09		*/
 /*----------------------------------------------------------------------
@@ -17,9 +18,15 @@
  */
 #include <math.h>
 
+#ifdef ANSI_FUNC
+
+int 
+mylog (float *array, int size)
+#else
 mylog(array, size)
 float *array;
 int size;
+#endif
 {
     int index;
     for (index = 0; index < size; index++)  {

@@ -22,10 +22,17 @@
 #include <math.h>
 #include "struct.h"
 
+#ifdef ANSI_FUNC
+
+double 
+calcspacing (double initial, double ratio, int nodes)
+#else
+
 double calcspacing( initial, ratio, nodes )
 double initial;
 double ratio;
 int nodes;
+#endif
 
 {
     double spacing;

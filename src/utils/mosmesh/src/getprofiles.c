@@ -19,7 +19,14 @@ extern read_dop();
 extern dopingmode;
 
 
+#ifdef ANSI_FUNC
+
+int 
+getprofiles (void)
+#else
+
 getprofiles()
+#endif
 
 {
     int typeofprofile;
